@@ -1,0 +1,3 @@
+[submodule "src/hashtable"]
+	path = src/hashtable
+	url = https://github.com/DominikHorn/hashtable.git

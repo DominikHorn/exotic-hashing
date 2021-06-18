@@ -8,4 +8,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -static-libsan -fsani
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 add_executable(benchmarks benchmarks.cpp)
-target_link_libraries(benchmarks PRIVATE ${GOOGLEBENCHMARK_LIBRARY})
+
+# Add (thirdparty) libraries to project scope
+#include(${CMAKE_SOURCE_DIR}/thirdparty/googlebenchmark.cmake)
+add_subdirectory(hashtable)
+target_link_libraries(benchmarks PRIVATE hashtable ${GOOGLEBENCHMARK_LIBRARY})
