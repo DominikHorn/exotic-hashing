@@ -10,6 +10,5 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 add_executable(benchmarks benchmarks.cpp)
 
 # Add (thirdparty) libraries to project scope
-#include(${CMAKE_SOURCE_DIR}/thirdparty/googlebenchmark.cmake)
 add_subdirectory(hashtable)
 target_link_libraries(benchmarks PRIVATE hashtable ${GOOGLEBENCHMARK_LIBRARY})

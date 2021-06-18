@@ -15,4 +15,5 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 target_sources(${PROJECT_NAME} INTERFACE exotic_hashing.hpp include/)
 
 # Benchmark code
+include(${PROJECT_SOURCE_DIR}/thirdparty/googlebenchmark.cmake)
 add_subdirectory(src)
