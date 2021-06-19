@@ -5,57 +5,12 @@
 #include <string>
 #include <vector>
 
+#include <exotic_hashing.hpp>
 #include <hashtable.hpp>
 #include <benchmark/benchmark.h>
 
 #include "../include/convenience/builtins.hpp"
 #include "../include/convenience/tidy.hpp"
-
-template<class Data>
-struct DoNothingHash {
-   DoNothingHash(const std::vector<Data>& d) {
-      UNUSED(d);
-   }
-
-   static std::string name() {
-      return "DoNothingHash";
-   }
-
-   constexpr forceinline std::uint64_t operator()(const Data& key) const {
-      return key;
-   }
-
-   size_t byte_size() const {
-      return 0;
-   };
-};
-
-template<class Data>
-struct RankHash {
-   RankHash(const std::vector<Data>& d) : dataset(d) {
-      // sort the dataset
-      std::sort(dataset.begin(), dataset.end());
-   }
-
-   static std::string name() {
-      return "RankHash";
-   }
-
-   constexpr forceinline std::uint64_t operator()(const Data& key) const {
-      // primitively compute rank of key by:
-      // 1. binary searching it in the sorted dataset
-      const auto iter = std::lower_bound(dataset.begin(), dataset.end(), key);
-      // 2. returning the found index (computed based on returned iter)
-      return std::distance(dataset.begin(), iter);
-   }
-
-   size_t byte_size() const {
-      return dataset.size() * sizeof(Data) + sizeof(std::vector<Data>);
-   };
-
-  private:
-   std::vector<Data> dataset;
-};
 
 template<class Data>
 struct Clamp {
@@ -160,8 +115,8 @@ int main(int argc, char** argv) {
       dataset[i] = dist(rng_gen);
 
    // Benchmark hash functions
-   BM_SPACE_VS_PROBE(DoNothingHash<Data>, dataset);
-   BM_SPACE_VS_PROBE(RankHash<Data>, dataset);
+   BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset);
+   BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset);
 
    benchmark::Initialize(&argc, argv);
    benchmark::RunSpecifiedBenchmarks();
