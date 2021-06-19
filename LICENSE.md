@@ -1,5 +1,5 @@
-Please note that major parts of this repository/code stem from other authors. 
-Their respective licenses are embedded inline within those respective files. 
+Please note that many parts of this repository/code stem from other authors. 
+Their respective licenses are embedded inline within the respective code. 
 For my personal modifications and code, the following license applies:
 
 Copyright 2021 Dominik Horn
