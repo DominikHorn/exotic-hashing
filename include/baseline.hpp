@@ -13,6 +13,9 @@
 #include "convenience/builtins.hpp"
 #include "convenience/tidy.hpp"
 
+// import (therefore effectively export) recsplit code
+#include "recsplit/recsplit.hpp"
+
 namespace exotic_hashing {
    template<class Data>
    struct DoNothingHash {
@@ -59,4 +62,4 @@ namespace exotic_hashing {
      private:
       std::vector<Data> dataset;
    };
-} // namespace exotic_hash
+} // namespace exotic_hashing

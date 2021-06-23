@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include <exotic_hashing.hpp>
@@ -106,17 +107,26 @@ int main(int argc, char** argv) {
 
    // TODO: load dataset from disk instead
    // generate uniform random numbers dataset
-   const size_t dataset_size = 20000000;
-   std::vector<Data> dataset;
-   std::default_random_engine rng_gen;
-   std::uniform_int_distribution<Data> dist(0, static_cast<size_t>(0x1) << 50);
-   dataset.resize(dataset_size);
-   for (size_t i = 0; i < dataset_size; i++)
-      dataset[i] = dist(rng_gen);
+   const size_t dataset_size = 1000000;
+   std::vector<Data> dataset(dataset_size, 0);
+   {
+      std::unordered_set<Data> seen;
+      std::default_random_engine rng_gen;
+      std::uniform_int_distribution<Data> dist(0, static_cast<size_t>(0x1) << 50);
+      for (size_t i = 0; i < dataset_size; i++) {
+         const Data rand_num = dist(rng_gen);
+         if (seen.contains(rand_num))
+            continue;
+
+         dataset[i] = rand_num;
+         seen.insert(rand_num);
+      }
+   }
 
    // Benchmark hash functions
    BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset);
    BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset);
+   BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset);
 
    benchmark::Initialize(&argc, argv);
    benchmark::RunSpecifiedBenchmarks();

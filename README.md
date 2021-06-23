@@ -7,4 +7,4 @@ of the following attributes:
 * *perfect*: produce **no** collisions, i.e., is injective
 * *minimal perfect*: perfect and output range is [0, N] for N-element keyset.
 * *order preserving*: keys retain a certain order after being hashed
-* *monotone*: h(k1) <= h(k2) <==> k1 <= k2 
+* *monotone*: k1 <= k2 -->  h(k1) <= h(k2)
