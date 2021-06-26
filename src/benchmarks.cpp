@@ -12,19 +12,21 @@
 
 #include "../include/convenience/builtins.hpp"
 #include "../include/convenience/tidy.hpp"
+
 template<class Hashfn, class Data>
 auto __BM_build = [](benchmark::State& state, const std::vector<Data> dataset, const std::string dataset_name) {
    for (auto _ : state) {
       const Hashfn hashfn(dataset);
       benchmark::DoNotOptimize(hashfn);
-
-      state.counters["hashfn_bytes"] = hashfn.byte_size();
    }
 
+   const Hashfn hashfn(dataset);
+   state.counters["hashfn_bytes"] = hashfn.byte_size();
    state.counters["num_elements"] = dataset.size();
+
    state.SetLabel(Hashfn::name() + "@" + dataset_name);
-   state.SetItemsProcessed(dataset.size());
-   state.SetBytesProcessed(dataset.size() * sizeof(Data));
+   state.SetItemsProcessed(dataset.size() * state.iterations());
+   state.SetBytesProcessed(dataset.size() * sizeof(Data) * state.iterations());
 };
 
 template<class Hashfn, class Data>
@@ -42,8 +44,8 @@ auto __BM_throughput = [](benchmark::State& state, const std::vector<Data> datas
    state.counters["num_elements"] = dataset.size();
 
    state.SetLabel(Hashfn::name() + "@" + dataset_name);
-   state.SetItemsProcessed(dataset.size());
-   state.SetBytesProcessed(dataset.size() * sizeof(Data));
+   state.SetItemsProcessed(dataset.size() * state.iterations());
+   state.SetBytesProcessed(dataset.size() * sizeof(Data) * state.iterations());
 };
 
 template<class Hashfn, class Data>
@@ -92,8 +94,8 @@ auto __BM_chained = [](benchmark::State& state, const std::vector<Data> dataset,
    state.counters["num_elements"] = dataset.size();
 
    state.SetLabel(Hashfn::name() + "@" + dataset_name);
-   state.SetItemsProcessed(dataset.size());
-   state.SetBytesProcessed(dataset.size() * sizeof(Data));
+   state.SetItemsProcessed(dataset.size() * state.iterations());
+   state.SetBytesProcessed(dataset.size() * sizeof(Data) * state.iterations());
 };
 
 #define BM_SPACE_VS_PROBE(Hashfn, dataset, dataset_name)                                                            \
