@@ -12,27 +12,6 @@
 
 #include "../include/convenience/builtins.hpp"
 #include "../include/convenience/tidy.hpp"
-
-template<class Data>
-struct Clamp {
-   Clamp(const size_t& N) : N(N) {}
-
-   static std::string name() {
-      return "clamp";
-   }
-
-   constexpr forceinline size_t operator()(const Data& hash) const {
-      if (unlikely(hash < 0))
-         return 0;
-      if (unlikely(hash >= N))
-         return N - 1;
-      return hash;
-   }
-
-  private:
-   const size_t N;
-};
-
 template<class Hashfn, class Data>
 auto __BM_build = [](benchmark::State& state, const std::vector<Data> dataset, const std::string dataset_name) {
    for (auto _ : state) {
@@ -42,6 +21,7 @@ auto __BM_build = [](benchmark::State& state, const std::vector<Data> dataset, c
       state.counters["hashfn_bytes"] = hashfn.byte_size();
    }
 
+   state.counters["num_elements"] = dataset.size();
    state.SetLabel(Hashfn::name() + "@" + dataset_name);
    state.SetItemsProcessed(dataset.size());
    state.SetBytesProcessed(dataset.size() * sizeof(Data));
@@ -59,6 +39,7 @@ auto __BM_throughput = [](benchmark::State& state, const std::vector<Data> datas
 
    // Avoid overhead in loop -> measure again
    state.counters["hashfn_bytes"] = hashfn.byte_size();
+   state.counters["num_elements"] = dataset.size();
 
    state.SetLabel(Hashfn::name() + "@" + dataset_name);
    state.SetItemsProcessed(dataset.size());
@@ -67,9 +48,28 @@ auto __BM_throughput = [](benchmark::State& state, const std::vector<Data> datas
 
 template<class Hashfn, class Data>
 auto __BM_chained = [](benchmark::State& state, const std::vector<Data> dataset, const std::string dataset_name) {
+   struct Clamp {
+      Clamp(const size_t& N) : N(N) {}
+
+      static std::string name() {
+         return "clamp";
+      }
+
+      constexpr forceinline size_t operator()(const Data& hash) const {
+         if (unlikely(hash < 0))
+            return 0;
+         if (unlikely(hash >= N))
+            return N - 1;
+         return hash;
+      }
+
+     private:
+      const size_t N;
+   };
+
    const Hashfn hashfn(dataset);
    const size_t ht_size = dataset->size(); // load factor 1
-   hashtable::Chained<std::uint64_t, std::uint64_t, 4, Hashfn, Clamp<std::uint64_t>> ht(ht_size, hashfn);
+   hashtable::Chained<Data, std::uint64_t, 4, Hashfn, Clamp> ht(ht_size, hashfn);
 
    for (const auto key : dataset) {
       ht.insert(key, key - 1);
@@ -89,6 +89,7 @@ auto __BM_chained = [](benchmark::State& state, const std::vector<Data> dataset,
    }
    state.counters["hashtable_slots"] = ht_size;
    state.counters["hashfn_bytes"] = hashfn.byte_size();
+   state.counters["num_elements"] = dataset.size();
 
    state.SetLabel(Hashfn::name() + "@" + dataset_name);
    state.SetItemsProcessed(dataset.size());
