@@ -34,26 +34,24 @@ struct Clamp {
 };
 
 template<class Hashfn, class Data>
-auto __BM_build = [](benchmark::State& state, const std::vector<Data>* dataset) {
+auto __BM_build = [](benchmark::State& state, const std::vector<Data> dataset, const std::string dataset_name) {
    for (auto _ : state) {
-      const Hashfn hashfn(*dataset);
+      const Hashfn hashfn(dataset);
       benchmark::DoNotOptimize(hashfn);
+
+      state.counters["hashfn_bytes"] = hashfn.byte_size();
    }
 
-   // Avoid overhead in loop -> measure again
-   const Hashfn hashfn(*dataset);
-   state.counters["hashfn_bytes"] = hashfn.byte_size();
-
-   state.SetLabel(Hashfn::name());
-   state.SetItemsProcessed(dataset->size());
-   state.SetBytesProcessed(dataset->size() * sizeof(Data));
+   state.SetLabel(Hashfn::name() + "@" + dataset_name);
+   state.SetItemsProcessed(dataset.size());
+   state.SetBytesProcessed(dataset.size() * sizeof(Data));
 };
 
 template<class Hashfn, class Data>
-auto __BM_throughput = [](benchmark::State& state, const std::vector<Data>* dataset) {
-   const Hashfn hashfn(*dataset);
+auto __BM_throughput = [](benchmark::State& state, const std::vector<Data> dataset, const std::string dataset_name) {
+   const Hashfn hashfn(dataset);
    for (auto _ : state) {
-      for (const auto key : *dataset) {
+      for (const auto key : dataset) {
          const auto hash = hashfn(key);
          benchmark::DoNotOptimize(hash);
       }
@@ -62,23 +60,23 @@ auto __BM_throughput = [](benchmark::State& state, const std::vector<Data>* data
    // Avoid overhead in loop -> measure again
    state.counters["hashfn_bytes"] = hashfn.byte_size();
 
-   state.SetLabel(Hashfn::name());
-   state.SetItemsProcessed(dataset->size());
-   state.SetBytesProcessed(dataset->size() * sizeof(Data));
+   state.SetLabel(Hashfn::name() + "@" + dataset_name);
+   state.SetItemsProcessed(dataset.size());
+   state.SetBytesProcessed(dataset.size() * sizeof(Data));
 };
 
 template<class Hashfn, class Data>
-auto __BM_chained = [](benchmark::State& state, const std::vector<Data>* dataset) {
-   const Hashfn hashfn(*dataset);
+auto __BM_chained = [](benchmark::State& state, const std::vector<Data> dataset, const std::string dataset_name) {
+   const Hashfn hashfn(dataset);
    const size_t ht_size = dataset->size(); // load factor 1
    hashtable::Chained<std::uint64_t, std::uint64_t, 4, Hashfn, Clamp<std::uint64_t>> ht(ht_size, hashfn);
 
-   for (const auto key : *dataset) {
+   for (const auto key : dataset) {
       ht.insert(key, key - 1);
    }
 
    for (auto _ : state) {
-      for (const auto& key : *dataset) {
+      for (const auto& key : dataset) {
          const auto payload = ht.lookup(key);
          benchmark::DoNotOptimize(payload);
       }
@@ -92,41 +90,53 @@ auto __BM_chained = [](benchmark::State& state, const std::vector<Data>* dataset
    state.counters["hashtable_slots"] = ht_size;
    state.counters["hashfn_bytes"] = hashfn.byte_size();
 
-   state.SetLabel(Hashfn::name());
-   state.SetItemsProcessed(dataset->size());
-   state.SetBytesProcessed(dataset->size() * sizeof(Data));
+   state.SetLabel(Hashfn::name() + "@" + dataset_name);
+   state.SetItemsProcessed(dataset.size());
+   state.SetBytesProcessed(dataset.size() * sizeof(Data));
 };
 
-#define BM_SPACE_VS_PROBE(Hashfn, dataset)                                                                       \
-   benchmark::RegisterBenchmark("build", __BM_build<Hashfn, decltype(dataset)::value_type>, &dataset);           \
-   benchmark::RegisterBenchmark("throughput", __BM_throughput<Hashfn, decltype(dataset)::value_type>, &dataset); \
-   //benchmark::RegisterBenchmark("chained", __BM_chained<Hashfn, decltype(dataset)::value_type>, &dataset);
+#define BM_SPACE_VS_PROBE(Hashfn, dataset, dataset_name)                                                            \
+   benchmark::RegisterBenchmark("build", __BM_build<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name); \
+   benchmark::RegisterBenchmark("throughput", __BM_throughput<Hashfn, decltype(dataset)::value_type>, dataset,      \
+                                dataset_name);                                                                      \
+   //benchmark::RegisterBenchmark("chained", __BM_chained<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name);
 
 int main(int argc, char** argv) {
    using Data = std::uint64_t;
 
-   // TODO: load dataset from disk instead
-   // generate uniform random numbers dataset
-   const size_t dataset_size = 1000000;
-   std::vector<Data> dataset(dataset_size, 0);
-   {
-      std::unordered_set<Data> seen;
-      std::default_random_engine rng_gen;
-      std::uniform_int_distribution<Data> dist(0, static_cast<size_t>(0x1) << 50);
-      for (size_t i = 0; i < dataset_size; i++) {
-         const Data rand_num = dist(rng_gen);
-         if (seen.contains(rand_num))
-            continue;
+   // Test different dataset sizes
+   for (const size_t dataset_size : {100000, 1000000, 10000000, 100000000, 200000000}) {
+      std::vector<Data> dataset(dataset_size, 0);
 
-         dataset[i] = rand_num;
-         seen.insert(rand_num);
+      // uniform random numbers dataset
+      {
+         std::unordered_set<Data> seen;
+         std::default_random_engine rng_gen;
+         std::uniform_int_distribution<Data> dist(0, static_cast<size_t>(0x1) << 50);
+         for (size_t i = 0; i < dataset_size; i++) {
+            const Data rand_num = dist(rng_gen);
+            if (seen.contains(rand_num))
+               continue;
+
+            dataset[i] = rand_num;
+            seen.insert(rand_num);
+         }
       }
-   }
+      BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset, "uniform");
+      BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "uniform");
+      BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "uniform");
 
-   // Benchmark hash functions
-   BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset);
-   BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset);
-   BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset);
+      // sequential dataset
+      {
+         const size_t start_offset = 10000;
+         for (size_t i = 0; i < dataset_size; i++) {
+            dataset[i] = i + start_offset;
+         }
+      }
+      BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset, "seqential");
+      BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "sequential");
+      BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "sequential");
+   }
 
    benchmark::Initialize(&argc, argv);
    benchmark::RunSpecifiedBenchmarks();
