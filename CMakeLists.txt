@@ -12,6 +12,10 @@ target_include_directories(${PROJECT_NAME} INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 
+# Add sdsl dependency
+include(${PROJECT_SOURCE_DIR}/thirdparty/sdsl-lite.cmake)
+target_link_libraries(${PROJECT_NAME} INTERFACE ${SDSL_LIBRARY})
+
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-fconstexpr-steps=999999999 CONSTEXPR_RECURSION_DEPTH_CONFIGURABLE)
 if (CONSTEXPR_RECURSION_DEPTH_CONFIGURABLE)
@@ -23,5 +27,4 @@ target_sources(${PROJECT_NAME} INTERFACE exotic_hashing.hpp include/)
 
 # Benchmark code
 include(${PROJECT_SOURCE_DIR}/thirdparty/googlebenchmark.cmake)
-include(${PROJECT_SOURCE_DIR}/thirdparty/sdsl-lite.cmake)
 add_subdirectory(src)

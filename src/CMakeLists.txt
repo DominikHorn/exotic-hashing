@@ -11,4 +11,4 @@ add_executable(benchmarks benchmarks.cpp)
 
 # Add (thirdparty) libraries to project scope
 add_subdirectory(hashtable)
-target_link_libraries(benchmarks PRIVATE exotic-hashing hashtable ${GOOGLEBENCHMARK_LIBRARY} ${SDSL_LIBRARY})
+target_link_libraries(benchmarks PRIVATE exotic-hashing hashtable ${GOOGLEBENCHMARK_LIBRARY})
