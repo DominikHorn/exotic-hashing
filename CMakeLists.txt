@@ -23,4 +23,5 @@ target_sources(${PROJECT_NAME} INTERFACE exotic_hashing.hpp include/)
 
 # Benchmark code
 include(${PROJECT_SOURCE_DIR}/thirdparty/googlebenchmark.cmake)
+include(${PROJECT_SOURCE_DIR}/thirdparty/sdsl-lite.cmake)
 add_subdirectory(src)
