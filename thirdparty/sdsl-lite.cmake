@@ -25,13 +25,30 @@ ExternalProject_Add(
 # path to installed artifacts
 ExternalProject_Get_Property(${SDSL_LIBRARY}_src install_dir)
 set(SDSL_INCLUDE_DIR ${install_dir}/include)
-set(SDSL_LIBRARY_PATH ${install_dir}/lib/libsdsl.a)
+set(SDSL_LIBRARY_PATH ${install_dir}/lib)
 
 # build library from external project
 file(MAKE_DIRECTORY ${SDSL_INCLUDE_DIR})
-add_library(${SDSL_LIBRARY} STATIC IMPORTED)
-set_property(TARGET ${SDSL_LIBRARY} PROPERTY IMPORTED_LOCATION ${SDSL_LIBRARY_PATH})
-set_property(TARGET ${SDSL_LIBRARY} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${SDSL_INCLUDE_DIR})
+add_library(${SDSL_LIBRARY}::main UNKNOWN IMPORTED)
+set_target_properties(${SDSL_LIBRARY}::main PROPERTIES
+  IMPORTED_LOCATION ${SDSL_LIBRARY_PATH}/libsdsl.a
+  INTERFACE_INCLUDE_DIRECTORIES ${SDSL_INCLUDE_DIR}
+  )
+add_library(${SDSL_LIBRARY}::divsufsort UNKNOWN IMPORTED)
+set_target_properties(${SDSL_LIBRARY}::divsufsort PROPERTIES
+  IMPORTED_LOCATION ${SDSL_LIBRARY_PATH}/libdivsufsort.a
+  INTERFACE_INCLUDE_DIRECTORIES ${SDSL_INCLUDE_DIR}
+  )
+add_library(${SDSL_LIBRARY}::divsufsort64 UNKNOWN IMPORTED)
+set_target_properties(${SDSL_LIBRARY}::divsufsort64 PROPERTIES
+  IMPORTED_LOCATION ${SDSL_LIBRARY_PATH}/libdivsufsort64.a
+  INTERFACE_INCLUDE_DIRECTORIES ${SDSL_INCLUDE_DIR}
+  )
+
+add_library(${SDSL_LIBRARY} INTERFACE IMPORTED)
+set_property(TARGET ${SDSL_LIBRARY} PROPERTY
+  INTERFACE_LINK_LIBRARIES ${SDSL_LIBRARY}::main ${SDSL_LIBRARY}::divsufsort ${SDSL_LIBRARY}::divsufsort64
+  )
 add_dependencies(${SDSL_LIBRARY} ${SDSL_LIBRARY}_src)
 
 message(STATUS "[SDSL] settings")
