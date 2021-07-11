@@ -6,19 +6,53 @@
 #include <optional>
 #include <sdsl/bit_vectors.hpp>
 
-#include "../convenience/builtins.hpp"
-#include "../convenience/tidy.hpp"
+#include "convenience/builtins.hpp"
+#include "convenience/tidy.hpp"
 
 namespace exotic_hashing {
    template<class Key, class BitConverter>
    struct CompactedTrieRank {
       CompactedTrieRank() {}
 
+      CompactedTrieRank(const std::vector<Key>& keyset) {
+         insert(keyset);
+      }
+
       ~CompactedTrieRank() {
          if (root != nullptr)
             delete root;
       }
 
+      static std::string name() {
+         return "CompactedTrieRank";
+      }
+
+      size_t byte_size() const {
+         return sizeof(CompactedTrieRank) + root->byte_size();
+      };
+
+      /**
+       * Inserts a set of keys into the trie. Each Key's binary encoding
+       * mustn't be a prefix of any other previously inserted key's binary
+       * encoding.
+       *
+       * Duplicate insertions will be ignored.
+       *
+       * @param key
+       */
+      void insert(const std::vector<Key>& keyset) {
+         for (const auto key : keyset)
+            insert(key);
+      }
+
+      /**
+       * Inserts a key into the trie. Key's binary encoding mustn't be a
+       * prefix of any other previously inserted key's binary encoding.
+       *
+       * Duplicate insertions will be ignored.
+       *
+       * @param key
+       */
       void insert(const Key& key) {
          sdsl::bit_vector key_bits = converter(key);
 
@@ -28,6 +62,13 @@ namespace exotic_hashing {
             root = root->insert(key_bits, 0);
       }
 
+      /**
+       * Returns the rank of a given key relative to the sorted set of
+       * previously inserted keys, or std::numeric_limits<size_t>::max() if
+       * said key is not a member of the previously inserted keyset.
+       *
+       * @param key
+       */
       forceinline size_t operator()(const Key& key) const {
          if (unlikely(root == nullptr))
             return 0;
@@ -39,6 +80,20 @@ namespace exotic_hashing {
       // TODO: function for converting to hollow trie that
       // acts as monotone hash function (index = amount of nodes left of exit node)
 
+      /**
+       * Prints a latex tikz forest representation of the compacted trie.  To
+       * render it, embed the output as follows:
+       *
+       * ```tex
+       * \documentclass[tikz]{standalone}
+       * \usepackage[utf8]{inputenc}
+       * \usepackage{forest}
+       *
+       * \begin{document}
+       * \input{trie.tex}
+       * \end{document}
+       * ```
+       */
       void print() const {
          std::cout << "\\begin{forest}\n"
                       "for tree={\n"
@@ -72,34 +127,6 @@ namespace exotic_hashing {
                delete left;
             if (right != nullptr)
                delete right;
-         }
-
-         void print(const size_t indent = 0) const {
-            for (size_t i = 0; i < indent; i++)
-               std::cout << " ";
-
-            std::cout << "[{";
-            for (auto it = prefix.begin(); it < prefix.end(); it++)
-               std::cout << *it;
-            std::cout << "}" << std::endl;
-
-            if (left == nullptr) {
-               for (size_t i = 0; i < indent + 1; i++)
-                  std::cout << " ";
-               std::cout << "[,phantom]" << std::endl;
-            } else
-               left->print(indent + 1);
-
-            if (right == nullptr) {
-               for (size_t i = 0; i < indent + 1; i++)
-                  std::cout << " ";
-               std::cout << "[,phantom]" << std::endl;
-            } else
-               right->print(indent + 1);
-
-            for (size_t i = 0; i < indent; i++)
-               std::cout << " ";
-            std::cout << "]" << std::endl;
          }
 
          /**
@@ -208,6 +235,49 @@ namespace exotic_hashing {
 
             return this;
          }
+
+         /**
+          * Prints a latex tikz forest representation of the subtrie
+          * represented by this node
+          *
+          * @param indent current indentation level. Defaults to 0 (root node)
+          */
+         void print(const size_t indent = 0) const {
+            for (size_t i = 0; i < indent; i++)
+               std::cout << " ";
+
+            std::cout << "[{";
+            for (auto it = prefix.begin(); it < prefix.end(); it++)
+               std::cout << *it;
+            std::cout << "}" << std::endl;
+
+            if (left == nullptr) {
+               for (size_t i = 0; i < indent + 1; i++)
+                  std::cout << " ";
+               std::cout << "[,phantom]" << std::endl;
+            } else
+               left->print(indent + 1);
+
+            if (right == nullptr) {
+               for (size_t i = 0; i < indent + 1; i++)
+                  std::cout << " ";
+               std::cout << "[,phantom]" << std::endl;
+            } else
+               right->print(indent + 1);
+
+            for (size_t i = 0; i < indent; i++)
+               std::cout << " ";
+            std::cout << "]" << std::endl;
+         }
+
+         size_t byte_size() const {
+            size_t size = sizeof(Node) + size_in_bytes(prefix);
+            if (left != nullptr)
+               size += left->byte_size();
+            if (right != nullptr)
+               size += right->byte_size();
+            return size;
+         };
 
         private:
          sdsl::bit_vector prefix;

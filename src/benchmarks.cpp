@@ -108,55 +108,53 @@ auto __BM_chained = [](benchmark::State& state, const std::vector<Data> dataset,
 
 int main(int argc, char** argv) {
    using Data = std::uint64_t;
+   using CompactedTrieRank = exotic_hashing::CompactedTrieRank<Data, exotic_hashing::FixedBitConverter<Data>>;
 
-   // TODO: temporary trie debugging code
-   exotic_hashing::CompactedTrieRank<Data, exotic_hashing::FixedBitConverter<Data>> trie;
-   for (size_t i = 0; i < 100; i++) {
-      const Data d = 99 - i;
-      trie.insert(d);
-      assert(trie(d) == 0);
+   // TODO: temporary
+   CompactedTrieRank trie;
+   for (Data d = 10000; d < 1010000; d++)
+     trie.insert(d);
+   //trie.print();
+   std::cout << trie.byte_size() << std::endl;
+   return 0;
+
+   // Test different dataset sizes
+   for (const size_t dataset_size : {100000, 1000000, 10000000/*, 100000000, 200000000*/}) {
+      std::vector<Data> dataset(dataset_size, 0);
+
+      // uniform random numbers dataset
+      {
+         std::unordered_set<Data> seen;
+         std::default_random_engine rng_gen;
+         std::uniform_int_distribution<Data> dist(0, static_cast<size_t>(0x1) << 50);
+         for (size_t i = 0; i < dataset_size; i++) {
+            const Data rand_num = dist(rng_gen);
+            if (seen.contains(rand_num))
+               continue;
+
+            dataset[i] = rand_num;
+            seen.insert(rand_num);
+         }
+      }
+      BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset, "uniform")
+      BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "uniform")
+      BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "uniform")
+      BM_SPACE_VS_PROBE(CompactedTrieRank, dataset, "uniform");
+
+      // sequential dataset
+      {
+         const size_t start_offset = 10000;
+         for (size_t i = 0; i < dataset_size; i++) {
+            dataset[i] = i + start_offset;
+         }
+      }
+      BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset, "seqential")
+      BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "sequential")
+      BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "sequential")
+      BM_SPACE_VS_PROBE(CompactedTrieRank, dataset, "sequential")
    }
-   trie.print();
-   for (Data i = 0; i < 100; i++) {
-      const auto rank = trie(i);
-      assert(rank == i);
-   }
 
-   // // Test different dataset sizes
-   // for (const size_t dataset_size : {100000, 1000000, 10000000, 100000000, 200000000}) {
-   //    std::vector<Data> dataset(dataset_size, 0);
-
-   //    // uniform random numbers dataset
-   //    {
-   //       std::unordered_set<Data> seen;
-   //       std::default_random_engine rng_gen;
-   //       std::uniform_int_distribution<Data> dist(0, static_cast<size_t>(0x1) << 50);
-   //       for (size_t i = 0; i < dataset_size; i++) {
-   //          const Data rand_num = dist(rng_gen);
-   //          if (seen.contains(rand_num))
-   //             continue;
-
-   //          dataset[i] = rand_num;
-   //          seen.insert(rand_num);
-   //       }
-   //    }
-   //    BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset, "uniform");
-   //    BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "uniform");
-   //    BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "uniform");
-
-   //    // sequential dataset
-   //    {
-   //       const size_t start_offset = 10000;
-   //       for (size_t i = 0; i < dataset_size; i++) {
-   //          dataset[i] = i + start_offset;
-   //       }
-   //    }
-   //    BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset, "seqential");
-   //    BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "sequential");
-   //    BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "sequential");
-   // }
-
-   // benchmark::Initialize(&argc, argv);
-   // benchmark::RunSpecifiedBenchmarks();
-   // benchmark::Shutdown();
+   benchmark::Initialize(&argc, argv);
+   benchmark::RunSpecifiedBenchmarks();
+   benchmark::Shutdown();
 }
