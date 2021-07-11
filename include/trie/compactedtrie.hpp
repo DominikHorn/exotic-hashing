@@ -81,7 +81,6 @@ namespace exotic_hashing {
             std::cout << "[{";
             for (auto it = prefix.begin(); it < prefix.end(); it++)
                std::cout << *it;
-            std::cout << ", " << prefix.size();
             std::cout << "}" << std::endl;
 
             if (left == nullptr) {
