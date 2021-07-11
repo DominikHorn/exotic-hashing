@@ -39,7 +39,7 @@ namespace exotic_hashing {
       // acts as monotone hash function (index = amount of nodes left of exit node)
 
      private:
-      class Node {
+      struct Node {
          Node(const sdsl::bit_vector& key_bits, size_t start, size_t end, size_t left_child_cnt = 0)
             : left_child_cnt(left_child_cnt) {
             const size_t prefix_len = end - start;
@@ -119,6 +119,13 @@ namespace exotic_hashing {
 
                if (prefix[i] != key_bits[i + start]) {
                   Node* parent = new Node(key_bits, start, start + i);
+
+                  // Shorten this node's prefix
+                  sdsl::bit_vector new_prefix(prefix.size() - i, 0);
+                  for (size_t j = i; j < prefix.size(); j++)
+                     new_prefix[j - i] = prefix[j];
+                  this->prefix = new_prefix;
+
                   if (key_bits[i + start]) {
                      // New key is inserted on the right (left child count stays unchanged)
                      parent->left_child_cnt = this->left_child_cnt;
@@ -159,26 +166,36 @@ namespace exotic_hashing {
          sdsl::bit_vector prefix;
          size_t left_child_cnt = 0;
 
-         Node *left = nullptr, right = nullptr;
+         Node* left = nullptr;
+         Node* right = nullptr;
 
-         forceinline bool is_leaf() {
+         forceinline bool is_leaf() const {
             // Either both children are set or both are not set (due to
             // construction)
             return left == nullptr;
          }
       };
 
-      Node* root;
+      Node* root = nullptr;
       BitConverter converter;
    };
 
    template<class T>
    struct FixedBitConverter {
-      forceinline sdsl::bit_vector operator()(const T& data) {
+      forceinline sdsl::bit_vector operator()(const T& data) const {
          const size_t bit_size = sizeof(T) * 8;
          sdsl::bit_vector result(bit_size, 0);
-         memcpy(result.data(), &data, sizeof(T));
          assert(result.size() == bit_size);
+         for (size_t i = 0; i < bit_size; i++)
+            result[i] = (data >> (bit_size - i - 1)) & 0x1;
+#ifndef NDEBUG
+         T reconstructed = 0;
+         for (size_t i = 0; i < result.size(); i++) {
+            const uint64_t bit = result[i];
+            reconstructed |= bit << (bit_size - i - 1);
+         }
+         assert(reconstructed == data);
+#endif
          return result;
       }
    };

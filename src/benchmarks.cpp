@@ -109,12 +109,18 @@ auto __BM_chained = [](benchmark::State& state, const std::vector<Data> dataset,
 int main(int argc, char** argv) {
    using Data = std::uint64_t;
 
-   sdsl::csa_wt<> fm_index;
-   sdsl::construct_im(fm_index, "mississippi!", 1);
-   std::cout << "'si' occurs " << sdsl::count(fm_index, "si") << " times.\n";
-   sdsl::store_to_file(fm_index, "fm_index-file.sdsl");
-   std::ofstream out("fm_index-file.sdsl.html");
-   sdsl::write_structure<sdsl::HTML_FORMAT>(fm_index, out);
+   // TODO: temporary trie debugging code
+   exotic_hashing::CompactedTrieRank<Data, exotic_hashing::FixedBitConverter<Data>> trie;
+   for (size_t i = 0; i < 100; i++) {
+      const Data d = 99 - i;
+      trie.insert(d);
+      assert(trie(d) == 0);
+   }
+   trie.print();
+   for (Data i = 0; i < 100; i++) {
+      const auto rank = trie(i);
+      assert(rank == i);
+   }
 
    // // Test different dataset sizes
    // for (const size_t dataset_size : {100000, 1000000, 10000000, 100000000, 200000000}) {
