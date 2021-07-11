@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <iostream>
 #include <limits>
 #include <optional>
 #include <sdsl/bit_vectors.hpp>
@@ -38,6 +39,24 @@ namespace exotic_hashing {
       // TODO: function for converting to hollow trie that
       // acts as monotone hash function (index = amount of nodes left of exit node)
 
+      void print() const {
+         std::cout << "\\begin{forest}\n"
+                      "for tree={\n"
+                      "  rectangle,\n"
+                      "  black,\n"
+                      "  draw,\n"
+                      "  fill=blue!30,\n"
+                      "}"
+                   << std::endl;
+
+         if (unlikely(root == nullptr))
+            std::cout << "[,phantom]" << std::endl;
+         else
+            root->print();
+
+         std::cout << "\\end{forest}" << std::endl;
+      }
+
      private:
       struct Node {
          Node(const sdsl::bit_vector& key_bits, size_t start, size_t end, size_t left_child_cnt = 0)
@@ -53,6 +72,35 @@ namespace exotic_hashing {
                delete left;
             if (right != nullptr)
                delete right;
+         }
+
+         void print(const size_t indent = 0) const {
+            for (size_t i = 0; i < indent; i++)
+               std::cout << " ";
+
+            std::cout << "[{";
+            for (auto it = prefix.begin(); it < prefix.end(); it++)
+               std::cout << *it;
+            std::cout << ", " << prefix.size();
+            std::cout << "}" << std::endl;
+
+            if (left == nullptr) {
+               for (size_t i = 0; i < indent + 1; i++)
+                  std::cout << " ";
+               std::cout << "[,phantom]" << std::endl;
+            } else
+               left->print(indent + 1);
+
+            if (right == nullptr) {
+               for (size_t i = 0; i < indent + 1; i++)
+                  std::cout << " ";
+               std::cout << "[,phantom]" << std::endl;
+            } else
+               right->print(indent + 1);
+
+            for (size_t i = 0; i < indent; i++)
+               std::cout << " ";
+            std::cout << "]" << std::endl;
          }
 
          /**
