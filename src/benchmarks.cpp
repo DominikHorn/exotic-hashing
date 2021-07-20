@@ -112,14 +112,18 @@ int main(int argc, char** argv) {
 
    // TODO: temporary
    CompactedTrieRank trie;
-   for (Data d = 10000; d < 1010000; d++)
-     trie.insert(d);
-   //trie.print();
+   for (Data d = 0; d < 100; d++)
+      trie.insert(d);
    std::cout << trie.byte_size() << std::endl;
+
+   std::ofstream out;
+   out.open("tmp/trie.tex");
+   trie.print_tex(out);
+   out.close();
    return 0;
 
    // Test different dataset sizes
-   for (const size_t dataset_size : {100000, 1000000, 10000000/*, 100000000, 200000000*/}) {
+   for (const size_t dataset_size : {100000, 1000000, 10000000 /*, 100000000, 200000000*/}) {
       std::vector<Data> dataset(dataset_size, 0);
 
       // uniform random numbers dataset

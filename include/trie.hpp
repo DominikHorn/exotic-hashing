@@ -81,35 +81,36 @@ namespace exotic_hashing {
       // acts as monotone hash function (index = amount of nodes left of exit node)
 
       /**
-       * Prints a latex tikz forest representation of the compacted trie.  To
-       * render it, embed the output as follows:
-       *
-       * ```tex
-       * \documentclass[tikz]{standalone}
-       * \usepackage[utf8]{inputenc}
-       * \usepackage{forest}
-       *
-       * \begin{document}
-       * \input{trie.tex}
-       * \end{document}
-       * ```
+       * Prints a latex tikz standalone document representing this
+       * datastructuree.
        */
-      void print() const {
-         std::cout << "\\begin{forest}\n"
-                      "for tree={\n"
-                      "  rectangle,\n"
-                      "  black,\n"
-                      "  draw,\n"
-                      "  fill=blue!30,\n"
-                      "}"
-                   << std::endl;
+      template<class Stream>
+      void print_tex(Stream& out) const {
+         out << "\\documentclass[tikz]{standalone}\n"
+                "\\usepackage[utf8]{inputenc}\n"
+                "\\usepackage{forest}\n"
+                "\n"
+                "\n"
+                "\\begin{document}\n"
+                "\n"
+                " \\begin{forest}\n"
+                "  for tree={\n"
+                "   rectangle,\n"
+                "   black,\n"
+                "   draw,\n"
+                "   fill=blue!30,\n"
+                "  }"
+             << std::endl;
 
          if (unlikely(root == nullptr))
-            std::cout << "[,phantom]" << std::endl;
+            out << "  [,phantom]" << std::endl;
          else
-            root->print();
+            root->print_tikz(out, 2);
 
-         std::cout << "\\end{forest}" << std::endl;
+         out << " \\end{forest}\n"
+                "\n"
+                "\\end{document}"
+             << std::endl;
       }
 
      private:
@@ -242,32 +243,33 @@ namespace exotic_hashing {
           *
           * @param indent current indentation level. Defaults to 0 (root node)
           */
-         void print(const size_t indent = 0) const {
+         template<class Stream>
+         void print_tikz(Stream& out, const size_t indent = 0) const {
             for (size_t i = 0; i < indent; i++)
-               std::cout << " ";
+               out << " ";
 
-            std::cout << "[{";
+            out << "[{";
             for (auto it = prefix.begin(); it < prefix.end(); it++)
-               std::cout << *it;
-            std::cout << "}" << std::endl;
+               out << *it;
+            out << ", " << left_child_cnt << "}" << std::endl;
 
             if (left == nullptr) {
                for (size_t i = 0; i < indent + 1; i++)
-                  std::cout << " ";
-               std::cout << "[,phantom]" << std::endl;
+                  out << " ";
+               out << "[,phantom]" << std::endl;
             } else
-               left->print(indent + 1);
+               left->print_tikz(out, indent + 1);
 
             if (right == nullptr) {
                for (size_t i = 0; i < indent + 1; i++)
-                  std::cout << " ";
-               std::cout << "[,phantom]" << std::endl;
+                  out << " ";
+               out << "[,phantom]" << std::endl;
             } else
-               right->print(indent + 1);
+               right->print_tikz(out, indent + 1);
 
             for (size_t i = 0; i < indent; i++)
-               std::cout << " ";
-            std::cout << "]" << std::endl;
+               out << " ";
+            out << "]" << std::endl;
          }
 
          size_t byte_size() const {
