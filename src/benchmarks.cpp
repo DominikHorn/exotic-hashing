@@ -110,10 +110,14 @@ int main(int argc, char** argv) {
    using Data = std::uint64_t;
    using CompactedTrieRank = exotic_hashing::CompactedTrieRank<Data, exotic_hashing::FixedBitConverter<Data>>;
 
+   std::default_random_engine rng_gen;
+
    // TODO: temporary
+   std::uniform_int_distribution<size_t> dist(0, 100);
    CompactedTrieRank trie;
-   for (Data d = 0; d < 100; d++)
-      trie.insert(d);
+   for (Data d = 0; d < 1000; d++)
+      if (dist(rng_gen) < 10)
+         trie.insert(d);
    std::cout << trie.byte_size() << std::endl;
 
    std::ofstream out;
@@ -129,7 +133,6 @@ int main(int argc, char** argv) {
       // uniform random numbers dataset
       {
          std::unordered_set<Data> seen;
-         std::default_random_engine rng_gen;
          std::uniform_int_distribution<Data> dist(0, static_cast<size_t>(0x1) << 50);
          for (size_t i = 0; i < dataset_size; i++) {
             const Data rand_num = dist(rng_gen);

@@ -38,7 +38,7 @@ namespace exotic_hashing {
        *
        * Duplicate insertions will be ignored.
        *
-       * @param key
+       * @param keyset
        */
       void insert(const std::vector<Key>& keyset) {
          for (const auto key : keyset)
@@ -47,7 +47,7 @@ namespace exotic_hashing {
 
       /**
        * Inserts a key into the trie. Key's binary encoding mustn't be a
-       * prefix of any other previously inserted key's binary encoding.
+       * prefix of any other previously inserted key's binary encodings.
        *
        * Duplicate insertions will be ignored.
        *
@@ -115,8 +115,8 @@ namespace exotic_hashing {
 
      private:
       struct Node {
-         Node(const sdsl::bit_vector& key_bits, size_t start, size_t end, size_t left_child_cnt = 0)
-            : left_child_cnt(left_child_cnt) {
+         Node(const sdsl::bit_vector& key_bits, size_t start, size_t end, size_t local_left_leaf_cnt = 0)
+            : local_left_leaf_cnt(local_left_leaf_cnt) {
             const size_t prefix_len = end - start;
             prefix.resize(prefix_len);
             for (size_t i = 0; i < prefix_len; i++)
@@ -174,7 +174,7 @@ namespace exotic_hashing {
             assert(key_bits.size() - start - prefix.size() > 0);
 
             if (key_bits[start + prefix.size()])
-               return right->rank(key_bits, start + prefix.size(), left_leaf_cnt + this->left_child_cnt);
+               return right->rank(key_bits, start + prefix.size(), left_leaf_cnt + this->local_left_leaf_cnt);
 
             return left->rank(key_bits, start + prefix.size(), left_leaf_cnt);
          }
@@ -202,13 +202,13 @@ namespace exotic_hashing {
                   this->prefix = new_prefix;
 
                   if (key_bits[i + start]) {
-                     // New key is inserted on the right (left child count stays unchanged)
-                     parent->left_child_cnt = this->left_child_cnt;
+                     // New key is inserted on the right
+                     parent->local_left_leaf_cnt = this->leaf_count();
                      parent->left = this;
                      parent->right = new Node(key_bits, i + start, key_bits.size());
                   } else {
-                     // New key is inserted on the left (left child count of parent = 1)
-                     parent->left_child_cnt = 1;
+                     // New key is inserted on the left
+                     parent->local_left_leaf_cnt = 1;
                      parent->left = new Node(key_bits, i + start, key_bits.size());
                      parent->right = this;
                   }
@@ -230,11 +230,25 @@ namespace exotic_hashing {
             if (key_bits[start + prefix.size()]) {
                right = right->insert(key_bits, start + prefix.size());
             } else {
-               left_child_cnt++;
+               local_left_leaf_cnt++;
                left = left->insert(key_bits, start + prefix.size());
             }
 
             return this;
+         }
+
+         /**
+          * Returns the amount of leaf nodes within the subtree rooted in this
+          * node.
+          */
+         size_t leaf_count() const {
+            if (is_leaf())
+               return 1;
+
+            assert(left != nullptr);
+            assert(right != nullptr);
+
+            return local_left_leaf_cnt + right->leaf_count();
          }
 
          /**
@@ -251,7 +265,7 @@ namespace exotic_hashing {
             out << "[{";
             for (auto it = prefix.begin(); it < prefix.end(); it++)
                out << *it;
-            out << ", " << left_child_cnt << "}" << std::endl;
+            out << ", " << local_left_leaf_cnt << "}" << std::endl;
 
             if (left == nullptr) {
                for (size_t i = 0; i < indent + 1; i++)
@@ -283,7 +297,7 @@ namespace exotic_hashing {
 
         private:
          sdsl::bit_vector prefix;
-         size_t left_child_cnt = 0;
+         size_t local_left_leaf_cnt = 0;
 
          Node* left = nullptr;
          Node* right = nullptr;
