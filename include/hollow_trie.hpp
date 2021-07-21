@@ -77,7 +77,38 @@ namespace exotic_hashing {
          return sizeof(HollowTrie<Key, BitConverter>) + sizeof(Node) * nodes.size();
       };
 
-      // TODO: implement print_tex() operation
+      /**
+       * Prints a latex tikz standalone document representing this
+       * datastructuree.
+       */
+      template<class Stream>
+      void print_tex(Stream& out) const {
+         // Latex preamble
+         out << "\\documentclass[tikz]{standalone}\n"
+                "\\usepackage[utf8]{inputenc}\n"
+                "\\usepackage{forest}\n"
+                "\n"
+                "\n"
+                "\\begin{document}\n"
+                "\n"
+                " \\begin{forest}\n"
+                "  for tree={\n"
+                "   rectangle,\n"
+                "   black,\n"
+                "   draw,\n"
+                "   fill=blue!30,\n"
+                "  }"
+             << std::endl;
+
+         // Print actual trie
+         print_subtrie_tikz(out, 0, nodes.size() - 1);
+
+         // Latex closing tags
+         out << " \\end{forest}\n"
+                "\n"
+                "\\end{document}"
+             << std::endl;
+      }
 
      private:
       struct Node {
@@ -141,6 +172,51 @@ namespace exotic_hashing {
          l.splice(l.end(), convert(*subtrie.left));
          l.splice(l.end(), convert(*subtrie.right));
          return l;
+      }
+
+      /**
+       * Prints a latex tikz forest representation of the subtrie
+       * represented by this node
+       *
+       * @param out output stream to print to, e.g., std::cout
+       * @param node_index index of the root of the considered subtrie
+       * @param leftmost_right leftmost index of a right child encountered along the way.
+       *  Necessary to detect right leafs. TODO: verify this claim
+       * @param indent current indentation level. Defaults to 0 (root node)
+       */
+      template<class Stream>
+      void print_subtrie_tikz(Stream& out,
+                              const size_t node_index,
+                              const size_t leftmost_right,
+                              const size_t indent = 0) const {
+         for (size_t i = 0; i < indent; i++)
+            out << " ";
+
+         // Current node
+         const Node& n = nodes[node_index];
+         out << "[{" << n.bit_skip() << ", " << n.node_skip() << "}" << std::endl;
+
+         // Left child
+         if (n.node_skip() == 1) {
+            // ... is a leaf
+            for (size_t i = 0; i < indent + 1; i++)
+               out << " ";
+            out << "[,phantom]" << std::endl;
+         } else
+            print_subtrie_tikz(out, node_index + 1, node_index + n.node_skip(), indent + 1);
+
+         // Right child
+         if (node_index + n.node_skip() >= leftmost_right) {
+            // ... is a leaf
+            for (size_t i = 0; i < indent + 1; i++)
+               out << " ";
+            out << "[,phantom]" << std::endl;
+         } else
+            print_subtrie_tikz(out, node_index + n.node_skip(), leftmost_right, indent + 1);
+
+         for (size_t i = 0; i < indent; i++)
+            out << " ";
+         out << "]" << std::endl;
       }
 
       std::vector<Node> nodes;

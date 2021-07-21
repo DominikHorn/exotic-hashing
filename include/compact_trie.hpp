@@ -83,6 +83,8 @@ namespace exotic_hashing {
       /**
        * Prints a latex tikz standalone document representing this
        * datastructuree.
+       *
+       * @param out output stream to print to, e.g., std::cout
        */
       template<class Stream>
       void print_tex(Stream& out) const {
@@ -255,6 +257,7 @@ namespace exotic_hashing {
           * Prints a latex tikz forest representation of the subtrie
           * represented by this node
           *
+          * @param out output stream to print to, e.g., std::cout
           * @param indent current indentation level. Defaults to 0 (root node)
           */
          template<class Stream>

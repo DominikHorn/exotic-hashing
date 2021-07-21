@@ -134,12 +134,14 @@ int main(int argc, char** argv) {
       assert(compact_trie(dataset[i]) == i);
       assert(hollow_trie(dataset[i]) == i);
    }
-   return 0;
 
-   // TODO: temporary
    std::ofstream out;
    out.open("tmp/compact_trie.tex");
    compact_trie.print_tex(out);
+   out.close();
+
+   out.open("tmp/hollow_trie.tex");
+   hollow_trie.print_tex(out);
    out.close();
    return 0;
 
