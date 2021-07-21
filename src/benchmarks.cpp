@@ -108,21 +108,38 @@ auto __BM_chained = [](benchmark::State& state, const std::vector<Data> dataset,
 
 int main(int argc, char** argv) {
    using Data = std::uint64_t;
-   using CompactedTrieRank = exotic_hashing::CompactedTrieRank<Data, exotic_hashing::FixedBitConverter<Data>>;
+   using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
+   using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
 
    std::default_random_engine rng_gen;
 
    // TODO: temporary
    std::uniform_int_distribution<size_t> dist(0, 100);
-   CompactedTrieRank trie;
+   std::vector<Data> dataset;
    for (Data d = 0; d < 1000; d++)
       if (dist(rng_gen) < 10)
-         trie.insert(d);
-   std::cout << trie.byte_size() << std::endl;
+         dataset.push_back(d);
 
+   exotic_hashing::RankHash<Data> rank_hash(dataset);
+   CompactTrie compact_trie(dataset);
+   HollowTrie hollow_trie(compact_trie);
+
+   std::cout << "dataset: " << sizeof(dataset) + sizeof(Data) * dataset.size() << std::endl;
+   std::cout << "RankHash: " << rank_hash.byte_size() << std::endl;
+   std::cout << "CompactTrie: " << compact_trie.byte_size() << std::endl;
+   std::cout << "HollowTrie: " << hollow_trie.byte_size() << std::endl;
+
+   for (size_t i = 0; i < dataset.size(); i++) {
+      assert(rank_hash(dataset[i]) == i);
+      assert(compact_trie(dataset[i]) == i);
+      assert(hollow_trie(dataset[i]) == i);
+   }
+   return 0;
+
+   // TODO: temporary
    std::ofstream out;
-   out.open("tmp/trie.tex");
-   trie.print_tex(out);
+   out.open("tmp/compact_trie.tex");
+   compact_trie.print_tex(out);
    out.close();
    return 0;
 
@@ -146,7 +163,7 @@ int main(int argc, char** argv) {
       BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset, "uniform")
       BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "uniform")
       BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "uniform")
-      BM_SPACE_VS_PROBE(CompactedTrieRank, dataset, "uniform");
+      BM_SPACE_VS_PROBE(CompactTrie, dataset, "uniform");
 
       // sequential dataset
       {
@@ -158,7 +175,7 @@ int main(int argc, char** argv) {
       BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset, "seqential")
       BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "sequential")
       BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "sequential")
-      BM_SPACE_VS_PROBE(CompactedTrieRank, dataset, "sequential")
+      BM_SPACE_VS_PROBE(CompactTrie, dataset, "sequential")
    }
 
    benchmark::Initialize(&argc, argv);

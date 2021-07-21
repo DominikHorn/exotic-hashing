@@ -11,24 +11,27 @@
 
 namespace exotic_hashing {
    template<class Key, class BitConverter>
-   struct CompactedTrieRank {
-      CompactedTrieRank() {}
+   struct HollowTrie;
 
-      CompactedTrieRank(const std::vector<Key>& keyset) {
+   template<class Key, class BitConverter>
+   struct CompactTrie {
+      CompactTrie() {}
+
+      CompactTrie(const std::vector<Key>& keyset) {
          insert(keyset);
       }
 
-      ~CompactedTrieRank() {
+      ~CompactTrie() {
          if (root != nullptr)
             delete root;
       }
 
       static std::string name() {
-         return "CompactedTrieRank";
+         return "CompactTrie";
       }
 
       size_t byte_size() const {
-         return sizeof(CompactedTrieRank) + root->byte_size();
+         return sizeof(CompactTrie) + root->byte_size();
       };
 
       /**
@@ -76,9 +79,6 @@ namespace exotic_hashing {
          sdsl::bit_vector key_bits = converter(key);
          return root->rank(key_bits, 0, 0);
       }
-
-      // TODO: function for converting to hollow trie that
-      // acts as monotone hash function (index = amount of nodes left of exit node)
 
       /**
        * Prints a latex tikz standalone document representing this
@@ -238,8 +238,8 @@ namespace exotic_hashing {
          }
 
          /**
-          * Returns the amount of leaf nodes within the subtree rooted in this
-          * node.
+          * Returns the amount of leaf nodes within the subtrie rooted in this
+          * node
           */
          size_t leaf_count() const {
             if (is_leaf())
@@ -307,29 +307,13 @@ namespace exotic_hashing {
             // construction)
             return left == nullptr;
          }
+
+         friend HollowTrie<Key, BitConverter>;
       };
 
       Node* root = nullptr;
       BitConverter converter;
-   };
 
-   template<class T>
-   struct FixedBitConverter {
-      forceinline sdsl::bit_vector operator()(const T& data) const {
-         const size_t bit_size = sizeof(T) * 8;
-         sdsl::bit_vector result(bit_size, 0);
-         assert(result.size() == bit_size);
-         for (size_t i = 0; i < bit_size; i++)
-            result[i] = (data >> (bit_size - i - 1)) & 0x1;
-#ifndef NDEBUG
-         T reconstructed = 0;
-         for (size_t i = 0; i < result.size(); i++) {
-            const uint64_t bit = result[i];
-            reconstructed |= bit << (bit_size - i - 1);
-         }
-         assert(reconstructed == data);
-#endif
-         return result;
-      }
+      friend HollowTrie<Key, BitConverter>;
    };
 } // namespace exotic_hashing
