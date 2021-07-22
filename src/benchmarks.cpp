@@ -16,7 +16,7 @@
 #include "../include/convenience/tidy.hpp"
 
 template<class Hashfn, class Data>
-auto __BM_build = [](benchmark::State& state, const std::vector<Data> dataset, const std::string dataset_name) {
+void BM_build(benchmark::State& state, const std::vector<Data> dataset, const std::string& dataset_name) {
    for (auto _ : state) {
       const Hashfn hashfn(dataset);
       benchmark::DoNotOptimize(hashfn);
@@ -32,7 +32,7 @@ auto __BM_build = [](benchmark::State& state, const std::vector<Data> dataset, c
 };
 
 template<class Hashfn, class Data>
-auto __BM_throughput = [](benchmark::State& state, const std::vector<Data> dataset, const std::string dataset_name) {
+void BM_throughput(benchmark::State& state, const std::vector<Data> dataset, const std::string& dataset_name) {
    const Hashfn hashfn(dataset);
    for (auto _ : state) {
       for (const auto key : dataset) {
@@ -51,9 +51,9 @@ auto __BM_throughput = [](benchmark::State& state, const std::vector<Data> datas
 };
 
 template<class Hashfn, class Data>
-auto __BM_chained = [](benchmark::State& state, const std::vector<Data> dataset, const std::string dataset_name) {
+void BM_chained(benchmark::State& state, const std::vector<Data> dataset, const std::string& dataset_name) {
    struct Clamp {
-      Clamp(const size_t& N) : N(N) {}
+      explicit Clamp(const size_t& N) : N(N) {}
 
       static std::string name() {
          return "clamp";
@@ -86,7 +86,7 @@ auto __BM_chained = [](benchmark::State& state, const std::vector<Data> dataset,
       }
    }
 
-   // TODO: collect excess space consumption statistics
+   // TODO(dominik): collect excess space consumption statistics
    const auto lookup_stats = ht.lookup_statistics(*dataset);
    for (const auto stat : lookup_stats) {
       state.counters[stat.first] = std::stoi(stat.second);
@@ -100,20 +100,20 @@ auto __BM_chained = [](benchmark::State& state, const std::vector<Data> dataset,
    state.SetBytesProcessed(dataset.size() * sizeof(Data) * state.iterations());
 };
 
-#define BM_SPACE_VS_PROBE(Hashfn, dataset, dataset_name)                                                            \
-   benchmark::RegisterBenchmark("build", __BM_build<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name); \
-   benchmark::RegisterBenchmark("throughput", __BM_throughput<Hashfn, decltype(dataset)::value_type>, dataset,      \
-                                dataset_name);                                                                      \
-   //benchmark::RegisterBenchmark("chained", __BM_chained<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name);
+#define BM_SPACE_VS_PROBE(Hashfn, dataset, dataset_name)                                                          \
+   benchmark::RegisterBenchmark("build", BM_build<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name); \
+   benchmark::RegisterBenchmark("throughput", BM_throughput<Hashfn, decltype(dataset)::value_type>, dataset,      \
+                                dataset_name);                                                                    \
+   //benchmark::RegisterBenchmark("chained", BM_chained<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name);
 
 int main(int argc, char** argv) {
    using Data = std::uint64_t;
    using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
    using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
 
-   std::default_random_engine rng_gen;
+   std::default_random_engine rng_gen; // NOLINT
 
-   // TODO: temporary
+   // TODO(dominik): temporary
    std::uniform_int_distribution<size_t> dist(0, 100);
    std::vector<Data> dataset;
    for (Data d = 0; d < 1000; d++)
@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
    CompactTrie compact_trie(dataset);
    HollowTrie hollow_trie(compact_trie);
 
-   std::cout << "dataset: " << sizeof(dataset) + sizeof(Data) * dataset.size() << std::endl;
+   std::cout << "dataset: " << sizeof(decltype(dataset)) + sizeof(Data) * dataset.size() << std::endl;
    std::cout << "RankHash: " << rank_hash.byte_size() << std::endl;
    std::cout << "CompactTrie: " << compact_trie.byte_size() << std::endl;
    std::cout << "HollowTrie: " << hollow_trie.byte_size() << std::endl;
