@@ -1,0 +1,16 @@
+{
+  "configurations": {
+    "launch": {
+      "adapter": "CodeLLDB",
+      "configuration": {
+        "request": "launch",
+        "program": "cmake-build-debug/src/benchmarks",
+        "args": [],
+        "cwd": ".",
+        "environment": [],
+        "externalConsole": true,
+        "MIMode": "lldb"
+      }
+    }
+  }
+}
