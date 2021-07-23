@@ -109,6 +109,15 @@ void BM_chained(benchmark::State& state, std::vector<Data> dataset, const std::s
    //benchmark::RegisterBenchmark("chained", BM_chained<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name);
 
 int main(int argc, char** argv) {
+   // TODO(dominik): temporary
+   exotic_hashing::EliasGammaCoder<std::vector<bool>> egc;
+   for (std::uint64_t original = 1; original < 1000; original++) {
+      auto enc = egc.encode(original); // 0b10011010010
+      auto dec = egc.decode(enc); // 1234
+      assert(dec == original);
+   }
+   return 0;
+
    using Data = std::uint64_t;
    using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
    using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
