@@ -25,7 +25,7 @@ namespace exotic_hashing {
     */
    template<class Data>
    struct DoNothingHash {
-      DoNothingHash(const std::vector<Data>& d) {
+      explicit DoNothingHash(const std::vector<Data>& d) {
          UNUSED(d);
       }
 
@@ -44,9 +44,9 @@ namespace exotic_hashing {
 
    /**
     * Most basic minimal perfect hash function, i.e.,
-    * mapping keys to their rank within the keyset. 
+    * mapping keys to their rank within the keyset.
     *
-    * Meant as a space & speed baseline, i.e., slower than 
+    * Meant as a space & speed baseline, i.e., slower than
     * this is only justified if space is also smaller.
     *
     * Using more space than this function is not desirable.

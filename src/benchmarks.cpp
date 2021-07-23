@@ -50,8 +50,9 @@ void BM_throughput(benchmark::State& state, const std::vector<Data> dataset, con
    state.SetBytesProcessed(dataset.size() * sizeof(Data) * state.iterations());
 };
 
+   /*
 template<class Hashfn, class Data>
-void BM_chained(benchmark::State& state, const std::vector<Data> dataset, const std::string& dataset_name) {
+void BM_chained(benchmark::State& state, std::vector<Data> dataset, const std::string& dataset_name) {
    struct Clamp {
       explicit Clamp(const size_t& N) : N(N) {}
 
@@ -72,7 +73,7 @@ void BM_chained(benchmark::State& state, const std::vector<Data> dataset, const 
    };
 
    const Hashfn hashfn(dataset);
-   const size_t ht_size = dataset->size(); // load factor 1
+   const size_t ht_size = dataset.size(); // load factor 1
    hashtable::Chained<Data, std::uint64_t, 4, Hashfn, Clamp> ht(ht_size, hashfn);
 
    for (const auto key : dataset) {
@@ -99,6 +100,7 @@ void BM_chained(benchmark::State& state, const std::vector<Data> dataset, const 
    state.SetItemsProcessed(dataset.size() * state.iterations());
    state.SetBytesProcessed(dataset.size() * sizeof(Data) * state.iterations());
 };
+*/
 
 #define BM_SPACE_VS_PROBE(Hashfn, dataset, dataset_name)                                                          \
    benchmark::RegisterBenchmark("build", BM_build<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name); \
