@@ -2,11 +2,17 @@
   "configurations": {
     "launch": {
       "adapter": "CodeLLDB",
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "Y",
+          "cpp_catch": "Y"
+        }
+      },
       "configuration": {
         "request": "launch",
         "program": "cmake-build-debug/src/benchmarks",
-        "args": [],
-        "cwd": ".",
+        "args": ["*${ProgramArgs}"],
+        "cwd": "${workspaceRoot}",
         "environment": [],
         "externalConsole": true,
         "MIMode": "lldb"
