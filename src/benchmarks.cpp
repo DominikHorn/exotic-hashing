@@ -111,7 +111,11 @@ void BM_chained(benchmark::State& state, std::vector<Data> dataset, const std::s
 int main(int argc, char** argv) {
    // TODO(dominik): temporary
    exotic_hashing::EliasGammaCoder<std::vector<bool>> egc;
-   for (std::uint64_t original = 1; original < 1000; original++) {
+   std::vector<std::uint64_t> test_data{1,    2,    3,    4,         5,
+                                        8,    10,   16,   32,        64,
+                                        100,  128,  256,  512,       1000,
+                                        1024, 2048, 4096, 200000000, std::numeric_limits<std::uint64_t>::max()};
+   for (std::uint64_t original : test_data) {
       auto enc = egc.encode(original); // 0b10011010010
       auto dec = egc.decode(enc); // 1234
       assert(dec == original);

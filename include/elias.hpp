@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <vector>
 
+#include "include/convenience/builtins.hpp"
+
 namespace exotic_hashing {
    template<class T>
    size_t clz(const T& x) {
@@ -39,7 +41,7 @@ namespace exotic_hashing {
     */
    template<class BitStream = std::vector<bool>, class T = std::uint64_t>
    struct EliasGammaCoder {
-      T decode(const BitStream& stream) const {
+      forceinline T decode(const BitStream& stream) const {
          // decode N = floor(log2(x)) (unary)
          size_t N = 0;
          while (N < stream.size() && stream[N] == 0x0)
@@ -61,11 +63,14 @@ namespace exotic_hashing {
       /**
        * Elias gamma encodes
        */
-      BitStream encode(const T& x) const {
+      forceinline BitStream encode(const T& x) const {
          assert(x != 0);
 
          // N = floor(log2(x))
+         const size_t lz = clz(x);
          size_t N = (sizeof(T) * 8) - clz(x) - 1;
+         if (unlikely(lz == 0))
+            N = sizeof(T) * 8;
          assert(N == static_cast<size_t>(std::floor(std::log2(x))));
 
          // encode N in unary
