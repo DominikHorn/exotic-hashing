@@ -110,15 +110,35 @@ void BM_chained(benchmark::State& state, std::vector<Data> dataset, const std::s
 
 int main(int argc, char** argv) {
    // TODO(dominik): temporary
-   exotic_hashing::EliasGammaCoder<std::vector<bool>> egc;
    std::vector<std::uint64_t> test_data{1,    2,    3,    4,         5,
                                         8,    10,   16,   32,        64,
                                         100,  128,  256,  512,       1000,
                                         1024, 2048, 4096, 200000000, std::numeric_limits<std::uint64_t>::max()};
    for (std::uint64_t original : test_data) {
-      auto enc = egc.encode(original); // 0b10011010010
-      auto dec = egc.decode(enc); // 1234
-      assert(dec == original);
+      auto gamma_enc = exotic_hashing::EliasGammaCoder::encode(original);
+      auto delta_enc = exotic_hashing::EliasDeltaCoder::encode(original);
+
+      auto [gamma_dec, gamma_bits] = exotic_hashing::EliasGammaCoder::decode(gamma_enc);
+      auto [delta_dec, delta_bits] = exotic_hashing::EliasDeltaCoder::decode(delta_enc);
+
+      assert(gamma_dec == original);
+      assert(gamma_bits == gamma_enc.size());
+      assert(delta_dec == original);
+      assert(delta_bits == delta_enc.size());
+
+      // test stability with more bits
+      for (size_t i = 0; i < 10; i++) {
+         gamma_enc.push_back(i & 0x1);
+         delta_enc.push_back(i & 0x1);
+      }
+
+      auto [gamma_dec2, gamma_bits2] = exotic_hashing::EliasGammaCoder::decode(gamma_enc);
+      auto [delta_dec2, delta_bits2] = exotic_hashing::EliasDeltaCoder::decode(delta_enc);
+
+      assert(gamma_dec2 == original);
+      assert(gamma_bits2 == gamma_bits);
+      assert(delta_dec2 == original);
+      assert(delta_bits2 == delta_bits);
    }
    return 0;
 

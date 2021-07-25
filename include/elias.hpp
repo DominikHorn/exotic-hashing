@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <tuple>
 #include <vector>
 
 #include "include/convenience/builtins.hpp"
@@ -28,43 +29,21 @@ namespace exotic_hashing {
    }
 
    /**
-    * Elias Gamma Encoding and Decoding for positive
-    * integers including 0.
-    *
-    * @tparam BitStream bitstream container. Must support `push_back()` and
-    *   index access `[i]`. Defaults to std::vector<bool>
-    * @tparam T encoded integer datatype, e.g., uint64_t. Note that T must only
-    *   be able to represent your number, i.e., it is not necessary to downsize
-    *   before encoding. For example `encode(uint8_t x1)` and `encode(uint64_t
-    *   x2)` produce the same bitstream iff x1 == x2. defaults to uint64_t
-    *
+    * Elias Gamma Encoding and Decoding for positive integers (excluding 0).
     */
-   template<class BitStream = std::vector<bool>, class T = std::uint64_t>
    struct EliasGammaCoder {
-      forceinline T decode(const BitStream& stream) const {
-         // decode N = floor(log2(x)) (unary)
-         size_t N = 0;
-         while (N < stream.size() && stream[N] == 0x0)
-            N++;
-
-         if (N == 0)
-            return 1;
-
-         // number as 0x1 followed by the remaining bits
-         T res = 0x1;
-         for (size_t i = 0; i + N + 1 < stream.size(); i++) {
-            res <<= 1;
-            res |= stream[i + N + 1] & 0x1;
-         }
-
-         return res;
-      }
-
       /**
-       * Elias gamma encodes
+       * Elias gamma encodes a given positive integer into a bitsream
+       *
+       * @tparam BitStream bitstream container. Must support `push_back()`.
+       *   Defaults to std::vector<bool>
+       * @tparam T integer datatype, e.g., uint64_t. Note that `sizeof(T)` does
+       *   not influence the resulting bitstream, i.e., downcasting to a smaller
+       *   type is not necessary before encoding. Defaults to std::uint64_t
        */
-      forceinline BitStream encode(const T& x) const {
-         assert(x != 0);
+      template<class BitStream = std::vector<bool>, class T = std::uint64_t>
+      static forceinline BitStream encode(const T& x) {
+         assert(x > 0);
 
          // N = floor(log2(x))
          const size_t lz = clz(x);
@@ -84,6 +63,98 @@ namespace exotic_hashing {
             res.push_back((x >> i) & 0x1);
 
          return res;
+      }
+
+      /**
+       * Decodes an elias gamma encoded bitstream
+       *
+       * @tparam T encoded integer datatype, e.g., uint64_t. Note that T must
+       *   be large enough to represent your number. Defaults to uint64_t
+       * @tparam BitStream bitstream container. Must support index access via
+       *   `[i]`. Defaults to std::vector<bool>
+       *
+       * @return the decoded number as well as the amount of bits consumed
+       */
+      template<class T = std::uint64_t, class BitStream = std::vector<bool>>
+      static forceinline std::tuple<T, size_t> decode(const BitStream& stream) {
+         // decode N = floor(log2(x)) (unary)
+         size_t N = 0;
+         while (N < stream.size() && stream[N] == 0x0)
+            N++;
+
+         if (N == 0)
+            return std::make_tuple(1, 1);
+
+         // number as 0x1 followed by the remaining bits
+         T res = 0x1;
+         for (size_t i = 0; i < N && i + N + 1 < stream.size(); i++) {
+            res <<= 1;
+            res |= stream[i + N + 1] & 0x1;
+         }
+
+         return std::make_tuple(res, 2 * N + 1);
+      }
+   };
+
+   /**
+    * Elias Delta Encoding and Decoding for positive integers (excluding 0).
+    */
+   struct EliasDeltaCoder {
+      /**
+       * Elias delta encodes a given positive integer into a bitsream
+       *
+       * @tparam BitStream bitstream container. Must support `push_back()`.
+       *   Defaults to std::vector<bool>
+       * @tparam T integer datatype, e.g., uint64_t. Note that `sizeof(T)` does
+       *   not influence the resulting bitstream, i.e., downcasting to a smaller
+       *   type is not necessary before encoding. Defaults to std::uint64_t
+       */
+      template<class BitStream = std::vector<bool>, class T = std::uint64_t>
+      static forceinline BitStream encode(const T& x) {
+         assert(x > 0);
+
+         // N = floor(log2(x))
+         const size_t lz = clz(x);
+         size_t N = (sizeof(T) * 8) - clz(x) - 1;
+         if (unlikely(lz == 0))
+            N = sizeof(T) * 8;
+         assert(N == static_cast<size_t>(std::floor(std::log2(x))));
+
+         // encode N+1 with elias gamma encoding
+         BitStream res = EliasGammaCoder::encode(N + 1);
+
+         // append the N remaining binary digits of x to this representation
+         for (size_t i = N - 1; N > i && i >= 0; i--)
+            res.push_back((x >> i) & 0x1);
+
+         return res;
+      }
+
+      /**
+       * Decodes an elias delta encoded bitstream
+       *
+       * @tparam T encoded integer datatype, e.g., uint64_t. Note that T must
+       *   be large enough to represent your number. Defaults to uint64_t
+       * @tparam BitStream bitstream container. Must support index access via
+       *   `[i]`. Defaults to std::vector<bool>
+       */
+      template<class T = std::uint64_t, class BitStream = std::vector<bool>>
+      static forceinline std::tuple<T, size_t> decode(const BitStream& stream) {
+         // decode N (first bits encode N+1)
+         const auto [N_Inc, bits] = EliasGammaCoder::decode(stream);
+         const auto N = N_Inc - 1;
+
+         if (N == 0)
+            return std::make_tuple(1, bits);
+
+         // number as 0x1 followed by the remaining bits
+         T res = 0x1;
+         for (size_t i = 0; i < N && i + bits < stream.size(); i++) {
+            res <<= 1;
+            res |= stream[i + bits] & 0x1;
+         }
+
+         return std::make_tuple(res, bits + N);
       }
    };
 } // namespace exotic_hashing
