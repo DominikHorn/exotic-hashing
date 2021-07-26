@@ -113,6 +113,7 @@ int main(int argc, char** argv) {
    using Data = std::uint64_t;
    using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
    using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
+   using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
 
    std::random_device r;
    std::default_random_engine rng_gen(r());
@@ -139,6 +140,7 @@ int main(int argc, char** argv) {
       BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "uniform")
       BM_SPACE_VS_PROBE(CompactTrie, dataset, "uniform");
       BM_SPACE_VS_PROBE(SimpleHollowTrie, dataset, "uniform");
+      BM_SPACE_VS_PROBE(HollowTrie, dataset, "uniform");
 
       // sequential dataset
       {
@@ -152,6 +154,7 @@ int main(int argc, char** argv) {
       BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "sequential")
       BM_SPACE_VS_PROBE(CompactTrie, dataset, "sequential")
       BM_SPACE_VS_PROBE(SimpleHollowTrie, dataset, "sequential")
+      BM_SPACE_VS_PROBE(HollowTrie, dataset, "sequential");
    }
 
    benchmark::Initialize(&argc, argv);
