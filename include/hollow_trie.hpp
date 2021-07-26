@@ -16,19 +16,19 @@
 
 namespace exotic_hashing {
    template<class Key, class BitConverter>
-   struct HollowTrie {
+   struct SimpleHollowTrie {
       /**
        * Builds a new hollow trie from a dataset by constructing a compacted
        * trie and converting it to the space efficient hollow trie
        * representation
        */
-      HollowTrie(const std::vector<Key>& dataset) : HollowTrie(CompactTrie<Key, BitConverter>(dataset)) {}
+      SimpleHollowTrie(const std::vector<Key>& dataset) : SimpleHollowTrie(CompactTrie<Key, BitConverter>(dataset)) {}
 
       /**
        * Derives a hollow trie from a given compacted trie by converting it to
        * the space efficient hollow trie representation
        */
-      HollowTrie(const CompactTrie<Key, BitConverter>& compact_trie) {
+      SimpleHollowTrie(const CompactTrie<Key, BitConverter>& compact_trie) {
          // 1. Generate hollow trie representation (implemented as linked list
          // for representation construction algorithm efficiency)
          const auto encoding_list = convert(*compact_trie.root);
@@ -73,8 +73,12 @@ namespace exotic_hashing {
          return std::numeric_limits<size_t>::max();
       }
 
+      static std::string name() {
+         return "SimpleHollowTrie";
+      }
+
       size_t byte_size() const {
-         return sizeof(HollowTrie<Key, BitConverter>) + sizeof(Node) * nodes.size();
+         return sizeof(SimpleHollowTrie<Key, BitConverter>) + sizeof(Node) * nodes.size();
       };
 
       /**

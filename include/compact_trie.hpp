@@ -11,7 +11,7 @@
 
 namespace exotic_hashing {
    template<class Key, class BitConverter>
-   struct HollowTrie;
+   struct SimpleHollowTrie;
 
    template<class Key, class BitConverter>
    struct CompactTrie {
@@ -311,12 +311,12 @@ namespace exotic_hashing {
             return left == nullptr;
          }
 
-         friend HollowTrie<Key, BitConverter>;
+         friend SimpleHollowTrie<Key, BitConverter>;
       };
 
       Node* root = nullptr;
       BitConverter converter;
 
-      friend HollowTrie<Key, BitConverter>;
+      friend SimpleHollowTrie<Key, BitConverter>;
    };
 } // namespace exotic_hashing

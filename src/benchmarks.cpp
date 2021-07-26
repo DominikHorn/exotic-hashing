@@ -12,11 +12,12 @@
 #include <sdsl/suffix_arrays.hpp>
 #include <benchmark/benchmark.h>
 
+#include "../include/bitconverter.hpp"
 #include "../include/convenience/builtins.hpp"
 #include "../include/convenience/tidy.hpp"
 
 template<class Hashfn, class Data>
-void BM_build(benchmark::State& state, const std::vector<Data> dataset, const std::string& dataset_name) {
+void BM_build(benchmark::State& state, std::vector<Data> dataset, const std::string& dataset_name) {
    for (auto _ : state) {
       const Hashfn hashfn(dataset);
       benchmark::DoNotOptimize(hashfn);
@@ -109,6 +110,13 @@ void BM_chained(benchmark::State& state, std::vector<Data> dataset, const std::s
    //benchmark::RegisterBenchmark("chained", BM_chained<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name);
 
 int main(int argc, char** argv) {
+   using Data = std::uint64_t;
+   using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
+   using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
+
+   std::random_device r;
+   std::default_random_engine rng_gen(r());
+
    // Benchmark for different dataset sizes
    for (const size_t dataset_size : {100000, 1000000, 10000000 /*, 100000000, 200000000*/}) {
       std::vector<Data> dataset(dataset_size, 0);
@@ -130,6 +138,7 @@ int main(int argc, char** argv) {
       BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "uniform")
       BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "uniform")
       BM_SPACE_VS_PROBE(CompactTrie, dataset, "uniform");
+      BM_SPACE_VS_PROBE(SimpleHollowTrie, dataset, "uniform");
 
       // sequential dataset
       {
@@ -142,6 +151,7 @@ int main(int argc, char** argv) {
       BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "sequential")
       BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "sequential")
       BM_SPACE_VS_PROBE(CompactTrie, dataset, "sequential")
+      BM_SPACE_VS_PROBE(SimpleHollowTrie, dataset, "sequential")
    }
 
    benchmark::Initialize(&argc, argv);

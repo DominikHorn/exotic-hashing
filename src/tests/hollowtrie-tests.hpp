@@ -37,7 +37,7 @@ TEST(HollowTrie, IsMonotoneMinimalPerfect) {
       }
       assert(shuffled_dataset.size() == dataset.size());
 
-      exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>> hollow_trie(shuffled_dataset);
+      exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::FixedBitConverter<Data>> hollow_trie(shuffled_dataset);
 
       // // Debug code (visualization)
       // std::ofstream out;
