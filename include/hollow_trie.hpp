@@ -24,7 +24,7 @@ namespace exotic_hashing {
        */
       HollowTrie(const std::vector<Key>& dataset) : HollowTrie(CompactTrie<Key, BitConverter>(dataset)) {}
 
-      /** 
+      /**
        * Derives a hollow trie from a given compacted trie by converting it to
        * the space efficient hollow trie representation
        */
@@ -40,7 +40,7 @@ namespace exotic_hashing {
       forceinline size_t operator()(const Key& key) const {
          sdsl::bit_vector key_bits = converter(key);
 
-         size_t left_leaf_cnt = 0, key_bits_ind = 0, leftmost_right = nodes.size() - 1;
+         size_t left_leaf_cnt = 0, key_bits_ind = 0, leftmost_right = nodes.size();
          for (size_t i = 0; key_bits_ind < key_bits.size();) {
             const Node& n = nodes[i];
 
@@ -101,7 +101,7 @@ namespace exotic_hashing {
              << std::endl;
 
          // Print actual trie
-         print_subtrie_tikz(out, 0, nodes.size() - 1);
+         print_subtrie_tikz(out, 0, nodes.size());
 
          // Latex closing tags
          out << " \\end{forest}\n"
@@ -141,7 +141,7 @@ namespace exotic_hashing {
        * Converts a given CompactTrie subtrie to the HollowTrie stream format, derived
        * from ideas from the theory paper & Jacobson's 89 work (mentioned in theory paper)
        *
-       * parent encoding | left subtrie encoding | right subtrie encoding 
+       * parent encoding | left subtrie encoding | right subtrie encoding
        *
        * Due to this encoding, root node is at index = 0 and, for a node at index i, its left
        * child is always at index i+1 while its right child is always at index i+skip;

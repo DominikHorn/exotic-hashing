@@ -109,78 +109,7 @@ void BM_chained(benchmark::State& state, std::vector<Data> dataset, const std::s
    //benchmark::RegisterBenchmark("chained", BM_chained<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name);
 
 int main(int argc, char** argv) {
-   // TODO(dominik): temporary
-   std::vector<std::uint64_t> test_data{1,    2,    3,    4,         5,
-                                        8,    10,   16,   32,        64,
-                                        100,  128,  256,  512,       1000,
-                                        1024, 2048, 4096, 200000000, std::numeric_limits<std::uint64_t>::max()};
-   for (std::uint64_t original : test_data) {
-      auto gamma_enc = exotic_hashing::EliasGammaCoder::encode(original);
-      auto delta_enc = exotic_hashing::EliasDeltaCoder::encode(original);
-
-      auto [gamma_dec, gamma_bits] = exotic_hashing::EliasGammaCoder::decode(gamma_enc);
-      auto [delta_dec, delta_bits] = exotic_hashing::EliasDeltaCoder::decode(delta_enc);
-
-      assert(gamma_dec == original);
-      assert(gamma_bits == gamma_enc.size());
-      assert(delta_dec == original);
-      assert(delta_bits == delta_enc.size());
-
-      // test stability with more bits
-      for (size_t i = 0; i < 10; i++) {
-         gamma_enc.push_back(i & 0x1);
-         delta_enc.push_back(i & 0x1);
-      }
-
-      auto [gamma_dec2, gamma_bits2] = exotic_hashing::EliasGammaCoder::decode(gamma_enc);
-      auto [delta_dec2, delta_bits2] = exotic_hashing::EliasDeltaCoder::decode(delta_enc);
-
-      assert(gamma_dec2 == original);
-      assert(gamma_bits2 == gamma_bits);
-      assert(delta_dec2 == original);
-      assert(delta_bits2 == delta_bits);
-   }
-   return 0;
-
-   using Data = std::uint64_t;
-   using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
-   using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
-
-   std::default_random_engine rng_gen; // NOLINT
-
-   // TODO(dominik): temporary
-   std::uniform_int_distribution<size_t> dist(0, 100);
-   std::vector<Data> dataset;
-   for (Data d = 0; d < 1000; d++)
-      if (dist(rng_gen) < 10)
-         dataset.push_back(d);
-
-   exotic_hashing::RankHash<Data> rank_hash(dataset);
-   CompactTrie compact_trie(dataset);
-   HollowTrie hollow_trie(compact_trie);
-
-   std::cout << "dataset: " << sizeof(decltype(dataset)) + sizeof(Data) * dataset.size() << std::endl;
-   std::cout << "RankHash: " << rank_hash.byte_size() << std::endl;
-   std::cout << "CompactTrie: " << compact_trie.byte_size() << std::endl;
-   std::cout << "HollowTrie: " << hollow_trie.byte_size() << std::endl;
-
-   for (size_t i = 0; i < dataset.size(); i++) {
-      assert(rank_hash(dataset[i]) == i);
-      assert(compact_trie(dataset[i]) == i);
-      assert(hollow_trie(dataset[i]) == i);
-   }
-
-   std::ofstream out;
-   out.open("tmp/compact_trie.tex");
-   compact_trie.print_tex(out);
-   out.close();
-
-   out.open("tmp/hollow_trie.tex");
-   hollow_trie.print_tex(out);
-   out.close();
-   return 0;
-
-   // Test different dataset sizes
+   // Benchmark for different dataset sizes
    for (const size_t dataset_size : {100000, 1000000, 10000000 /*, 100000000, 200000000*/}) {
       std::vector<Data> dataset(dataset_size, 0);
 

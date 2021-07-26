@@ -1,6 +1,6 @@
 {
   "configurations": {
-    "launch": {
+    "benchmarks": {
       "adapter": "CodeLLDB",
       "breakpoints": {
         "exception": {
@@ -12,6 +12,24 @@
         "request": "launch",
         "program": "cmake-build-debug/src/benchmarks",
         "args": ["*${ProgramArgs}"],
+        "cwd": "${workspaceRoot}",
+        "environment": [],
+        "externalConsole": true,
+        "MIMode": "lldb"
+      }
+    },
+    "tests": {
+      "adapter": "CodeLLDB",
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "Y",
+          "cpp_catch": "Y"
+        }
+      },
+      "configuration": {
+        "request": "launch",
+        "program": "cmake-build-debug/src/tests",
+        "args": [],
         "cwd": "${workspaceRoot}",
         "environment": [],
         "externalConsole": true,
