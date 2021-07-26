@@ -73,13 +73,16 @@ namespace exotic_hashing {
        * @tparam BitStream bitstream container. Must support index access via
        *   `[i]`. Defaults to std::vector<bool>
        *
+       * @param stream the bitstream to decode
+       * @param start first index in bitstream to look at. Defaults to 0.
+       *
        * @return the decoded number as well as the amount of bits consumed
        */
       template<class T = std::uint64_t, class BitStream = std::vector<bool>>
-      static forceinline std::tuple<T, size_t> decode(const BitStream& stream) {
+      static forceinline std::tuple<T, size_t> decode(const BitStream& stream, const size_t start = 0) {
          // decode N = floor(log2(x)) (unary)
          size_t N = 0;
-         while (N < stream.size() && stream[N] == 0x0)
+         while (N + start < stream.size() && stream[N + start] == 0x0)
             N++;
 
          if (N == 0)
@@ -87,9 +90,9 @@ namespace exotic_hashing {
 
          // number as 0x1 followed by the remaining bits
          T res = 0x1;
-         for (size_t i = 0; i < N && i + N + 1 < stream.size(); i++) {
+         for (size_t i = 0; i < N && i + N + 1 + start < stream.size(); i++) {
             res <<= 1;
-            res |= stream[i + N + 1] & 0x1;
+            res |= stream[i + N + 1 + start] & 0x1;
          }
 
          return std::make_tuple(res, 2 * N + 1);
@@ -137,11 +140,15 @@ namespace exotic_hashing {
        *   be large enough to represent your number. Defaults to uint64_t
        * @tparam BitStream bitstream container. Must support index access via
        *   `[i]`. Defaults to std::vector<bool>
+       *
+       * @param stream the bitstream to decode
+       * @param start first index in bitstream to look at. Defaults to 0. Must be within bounds!
+       *
        */
       template<class T = std::uint64_t, class BitStream = std::vector<bool>>
-      static forceinline std::tuple<T, size_t> decode(const BitStream& stream) {
+      static forceinline std::tuple<T, size_t> decode(const BitStream& stream, const size_t start = 0) {
          // decode N (first bits encode N+1)
-         const auto [N_Inc, bits] = EliasGammaCoder::decode(stream);
+         const auto [N_Inc, bits] = EliasGammaCoder::decode(stream, start);
          const auto N = N_Inc - 1;
 
          if (N == 0)
@@ -149,9 +156,9 @@ namespace exotic_hashing {
 
          // number as 0x1 followed by the remaining bits
          T res = 0x1;
-         for (size_t i = 0; i < N && i + bits < stream.size(); i++) {
+         for (size_t i = 0; i < N && i + bits + start < stream.size(); i++) {
             res <<= 1;
-            res |= stream[i + bits] & 0x1;
+            res |= stream[i + bits + start] & 0x1;
          }
 
          return std::make_tuple(res, bits + N);

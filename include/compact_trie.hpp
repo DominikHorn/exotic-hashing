@@ -1,23 +1,31 @@
 #pragma once
 
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <limits>
 #include <optional>
-#include <sdsl/bit_vectors.hpp>
 
 #include "convenience/builtins.hpp"
 #include "convenience/tidy.hpp"
 
 namespace exotic_hashing {
-   template<class Key, class BitConverter>
+   template<class Key, class BitConverter, class BitStream>
    struct SimpleHollowTrie;
 
-   template<class Key, class BitConverter>
-   struct CompactTrie {
-      CompactTrie() {}
+   template<class Key, class BitConverter, class BitStream>
+   struct HollowTrie;
 
-      CompactTrie(const std::vector<Key>& keyset) {
+   template<class Key, class BitConverter, class BitStream = std::vector<bool>>
+   struct CompactTrie {
+      CompactTrie() = default;
+
+      CompactTrie(const CompactTrie<Key, BitConverter, BitStream>& other) : root(new Node(other.root)) {}
+      CompactTrie& operator=(const CompactTrie& node) = delete;
+      CompactTrie(const CompactTrie&& other) = delete;
+      CompactTrie& operator=(const CompactTrie&& node) = delete;
+
+      explicit CompactTrie(const std::vector<Key>& keyset) {
          insert(keyset);
       }
 
@@ -57,7 +65,7 @@ namespace exotic_hashing {
        * @param key
        */
       void insert(const Key& key) {
-         sdsl::bit_vector key_bits = converter(key);
+         BitStream key_bits = converter(key);
 
          if (unlikely(root == nullptr))
             root = new Node(key_bits, 0, key_bits.size());
@@ -76,7 +84,7 @@ namespace exotic_hashing {
          if (unlikely(root == nullptr))
             return 0;
 
-         sdsl::bit_vector key_bits = converter(key);
+         BitStream key_bits = converter(key);
          return root->rank(key_bits, 0, 0);
       }
 
@@ -117,13 +125,21 @@ namespace exotic_hashing {
 
      private:
       struct Node {
-         Node(const sdsl::bit_vector& key_bits, size_t start, size_t end, size_t local_left_leaf_cnt = 0)
+         Node(const BitStream& key_bits, size_t start, size_t end, size_t local_left_leaf_cnt = 0)
             : local_left_leaf_cnt(local_left_leaf_cnt) {
             const size_t prefix_len = end - start;
             prefix.resize(prefix_len);
             for (size_t i = 0; i < prefix_len; i++)
                prefix[i] = key_bits[i + start];
          }
+
+         /// Copy constructor
+         Node(const Node& other)
+            : prefix(other.prefix), local_left_leaf_cnt(other.local_left_leaft_cnt), left(new Node(other.left)),
+              right(new Node(other.right)) {}
+         Node& operator=(const Node& node) = delete;
+         Node(const Node&& other) = delete;
+         Node& operator=(const Node&& node) = delete;
 
          ~Node() {
             if (left != nullptr)
@@ -140,7 +156,7 @@ namespace exotic_hashing {
           * @param start: start of the key_bits suffix under consideration for this node
           * @param left_leaf_cnt: amount of leafs to the left of this node
           */
-         size_t rank(const sdsl::bit_vector& key_bits, size_t start, size_t left_leaf_cnt) const {
+         size_t rank(const BitStream& key_bits, size_t start, size_t left_leaf_cnt) const {
             const auto not_found_rank = std::numeric_limits<size_t>::max();
 
             // Option 1: At least one bit missmatches between prefix and remaining key. This node
@@ -188,7 +204,7 @@ namespace exotic_hashing {
           * @param key_bits: bit representation of the key's value
           * @param start: start of the key_bits suffix under consideration for this node
           */
-         Node* insert(const sdsl::bit_vector& key_bits, size_t start) {
+         Node* insert(const BitStream& key_bits, size_t start) {
             // Find first index where prefix missmatches key if any and split node
             for (size_t i = 0; i < prefix.size(); i++) {
                // Key we're trying to insert is a prefix of another key that was previously inserted
@@ -198,7 +214,7 @@ namespace exotic_hashing {
                   Node* parent = new Node(key_bits, start, start + i);
 
                   // Shorten this node's prefix
-                  sdsl::bit_vector new_prefix(prefix.size() - i, 0);
+                  BitStream new_prefix(prefix.size() - i, 0);
                   for (size_t j = i; j < prefix.size(); j++)
                      new_prefix[j - i] = prefix[j];
                   this->prefix = new_prefix;
@@ -290,7 +306,7 @@ namespace exotic_hashing {
          }
 
          size_t byte_size() const {
-            size_t size = sizeof(Node) + size_in_bytes(prefix);
+            size_t size = sizeof(Node) + sizeof(BitStream) + static_cast<size_t>(std::ceil(prefix.size() / 8.));
             if (left != nullptr)
                size += left->byte_size();
             if (right != nullptr)
@@ -299,7 +315,7 @@ namespace exotic_hashing {
          };
 
         private:
-         sdsl::bit_vector prefix;
+         BitStream prefix;
          size_t local_left_leaf_cnt = 0;
 
          Node* left = nullptr;
@@ -311,12 +327,14 @@ namespace exotic_hashing {
             return left == nullptr;
          }
 
-         friend SimpleHollowTrie<Key, BitConverter>;
+         friend HollowTrie<Key, BitConverter, BitStream>;
+         friend SimpleHollowTrie<Key, BitConverter, BitStream>;
       };
 
       Node* root = nullptr;
       BitConverter converter;
 
-      friend SimpleHollowTrie<Key, BitConverter>;
+      friend HollowTrie<Key, BitConverter, BitStream>;
+      friend SimpleHollowTrie<Key, BitConverter, BitStream>;
    };
 } // namespace exotic_hashing

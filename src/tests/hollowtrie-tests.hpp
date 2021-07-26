@@ -37,12 +37,14 @@ TEST(HollowTrie, IsMonotoneMinimalPerfect) {
       }
       assert(shuffled_dataset.size() == dataset.size());
 
-      exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::FixedBitConverter<Data>> hollow_trie(shuffled_dataset);
+      exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::FixedBitConverter<Data>> simple_hollow_trie(
+         shuffled_dataset);
+      exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>> hollow_trie(shuffled_dataset);
 
       // // Debug code (visualization)
       // std::ofstream out;
-      // out.open("tmp/hollow_trie_" + std::to_string(seed) + ".tex");
-      // hollow_trie.print_tex(out);
+      // out.open("tmp/simple_hollow_trie_" + std::to_string(seed) + ".tex");
+      // simple_hollow_trie.print_tex(out);
       // out.close();
       // exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>> compact_trie(shuffled_dataset);
       // out.open("tmp/compact_trie_" + std::to_string(seed) + ".tex");
@@ -50,7 +52,9 @@ TEST(HollowTrie, IsMonotoneMinimalPerfect) {
       // out.close();
 
       // Monotone minimal perfect is achieved iff trie exactly returns rank_D(d) for d \in D
-      for (size_t i = 0; i < dataset.size(); i++)
+      for (size_t i = 0; i < dataset.size(); i++) {
+         EXPECT_EQ(simple_hollow_trie(dataset[i]), i);
          EXPECT_EQ(hollow_trie(dataset[i]), i);
+      }
    }
 }

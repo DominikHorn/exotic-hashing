@@ -1,15 +1,16 @@
 #pragma once
 
-#include <sdsl/suffix_arrays.hpp>
+#include <cassert>
+#include <vector>
 
 #include "convenience/builtins.hpp"
 
 namespace exotic_hashing {
-   template<class T>
+   template<class T, class BitStream = std::vector<bool>>
    struct FixedBitConverter {
-      forceinline sdsl::bit_vector operator()(const T& data) const {
+      forceinline BitStream operator()(const T& data) const {
          const size_t bit_size = sizeof(T) * 8;
-         sdsl::bit_vector result(bit_size, 0);
+         BitStream result(bit_size, 0);
          assert(result.size() == bit_size);
          for (size_t i = 0; i < bit_size; i++)
             result[i] = (data >> (bit_size - i - 1)) & 0x1;
