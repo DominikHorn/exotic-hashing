@@ -413,38 +413,40 @@ namespace exotic_hashing {
        */
       template<class Stream>
       void print_subtrie_tikz(Stream& out,
-                              const size_t node_index,
+                              const size_t bit_index,
                               const size_t leftmost_right,
                               const size_t indent = 0) const {
-         // TODO: implement
-         //         for (size_t i = 0; i < indent; i++)
-         //            out << " ";
-         //
-         //         // Current node
-         //         const Node& n = nodes[node_index];
-         //         out << "[{" << n.bit_skip() << ", " << n.node_skip() << "}" << std::endl;
-         //
-         //         // Left child
-         //         if (n.node_skip() == 1) {
-         //            // ... is a leaf
-         //            for (size_t i = 0; i < indent + 1; i++)
-         //               out << " ";
-         //            out << "[,phantom]" << std::endl;
-         //         } else
-         //            print_subtrie_tikz(out, node_index + 1, node_index + n.node_skip(), indent + 1);
-         //
-         //         // Right child
-         //         if (node_index + n.node_skip() >= leftmost_right) {
-         //            // ... is a leaf
-         //            for (size_t i = 0; i < indent + 1; i++)
-         //               out << " ";
-         //            out << "[,phantom]" << std::endl;
-         //         } else
-         //            print_subtrie_tikz(out, node_index + n.node_skip(), leftmost_right, indent + 1);
-         //
-         //         for (size_t i = 0; i < indent; i++)
-         //            out << " ";
-         //         out << "]" << std::endl;
+         for (size_t i = 0; i < indent; i++)
+            out << " ";
+
+         // Current node
+         const auto n = read_node(representation, bit_index);
+         out << "[{" << n.discriminator_index << ", " << n.left_leaf_count << "}" << std::endl;
+
+         // Left child
+         if (n.left_leaf_count == 1) {
+            // ... is a leaf
+            for (size_t i = 0; i < indent + 1; i++)
+               out << " ";
+            out << "[,phantom]" << std::endl;
+         } else
+            print_subtrie_tikz(out,
+                               bit_index + n.bitstream_size,
+                               bit_index + n.bitstream_size + n.left_bitsize,
+                               indent + 1);
+
+         // Right child
+         if (bit_index + n.bitstream_size + n.left_bitsize >= leftmost_right) {
+            // ... is a leaf
+            for (size_t i = 0; i < indent + 1; i++)
+               out << " ";
+            out << "[,phantom]" << std::endl;
+         } else
+            print_subtrie_tikz(out, bit_index + n.bitstream_size + n.left_bitsize, leftmost_right, indent + 1);
+
+         for (size_t i = 0; i < indent; i++)
+            out << " ";
+         out << "]" << std::endl;
       }
 
       BitStream representation;

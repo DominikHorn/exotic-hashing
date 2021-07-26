@@ -14,8 +14,8 @@ TEST(HollowTrie, IsMonotoneMinimalPerfect) {
    using Data = std::uint64_t;
 
    // we do want predictable random results, hence the fixed seeds
-   size_t dataset_size = 1000;
-   for (const auto seed : {0, 1, 42, 1337}) {
+   size_t dataset_size = 50;
+   for (const auto seed : {0}) {
       std::default_random_engine rng_gen(seed);
 
       // generate dataset
@@ -41,15 +41,18 @@ TEST(HollowTrie, IsMonotoneMinimalPerfect) {
          shuffled_dataset);
       exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>> hollow_trie(shuffled_dataset);
 
-      // // Debug code (visualization)
-      // std::ofstream out;
-      // out.open("tmp/simple_hollow_trie_" + std::to_string(seed) + ".tex");
-      // simple_hollow_trie.print_tex(out);
-      // out.close();
-      // exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>> compact_trie(shuffled_dataset);
-      // out.open("tmp/compact_trie_" + std::to_string(seed) + ".tex");
-      // compact_trie.print_tex(out);
-      // out.close();
+      // Debug code (visualization)
+      std::ofstream out;
+      out.open("tmp/simple_hollow_trie_" + std::to_string(seed) + ".tex");
+      simple_hollow_trie.print_tex(out);
+      out.close();
+      out.open("tmp/hollow_trie_" + std::to_string(seed) + ".tex");
+      hollow_trie.print_tex(out);
+      out.close();
+      exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>> compact_trie(shuffled_dataset);
+      out.open("tmp/compact_trie_" + std::to_string(seed) + ".tex");
+      compact_trie.print_tex(out);
+      out.close();
 
       // Monotone minimal perfect is achieved iff trie exactly returns rank_D(d) for d \in D
       for (size_t i = 0; i < dataset.size(); i++) {
