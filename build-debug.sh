@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./build.sh tests DEBUG
+./build.sh eh_tests DEBUG

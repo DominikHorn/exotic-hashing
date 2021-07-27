@@ -10,7 +10,7 @@
       },
       "configuration": {
         "request": "launch",
-        "program": "cmake-build-debug/src/benchmarks",
+        "program": "cmake-build-debug/src/eh_benchmarks",
         "args": ["*${ProgramArgs}"],
         "cwd": "${workspaceRoot}",
         "environment": [],
@@ -28,7 +28,7 @@
       },
       "configuration": {
         "request": "launch",
-        "program": "cmake-build-debug/src/tests",
+        "program": "cmake-build-debug/src/eh_tests",
         "args": [],
         "cwd": "${workspaceRoot}",
         "environment": [],
