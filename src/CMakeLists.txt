@@ -26,5 +26,5 @@ gtest_discover_tests(tests)
 
 # ==== Benchmarks target ====
 add_subdirectory(hashtable)
-add_executable(benchmarks benchmarks.cpp)
-target_link_libraries(benchmarks PRIVATE exotic-hashing hashtable ${GOOGLEBENCHMARK_LIBRARY})
+add_executable(eh_benchmarks benchmarks.cpp)
+target_link_libraries(eh_benchmarks PRIVATE exotic-hashing hashtable ${GOOGLEBENCHMARK_LIBRARY})

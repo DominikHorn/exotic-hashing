@@ -4,3 +4,6 @@
 [submodule "include/recsplit/src/gcem"]
 	path = include/recsplit/src/gcem
 	url = https://github.com/kthohr/gcem
+[submodule "thirdparty/hashing"]
+	path = thirdparty/hashing
+	url = git@github.com:DominikHorn/hashing.git

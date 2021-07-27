@@ -6,7 +6,7 @@ set -e
 cd "$(dirname "$0")"
 
 # Parse arguments
-TARGET=${1:-"benchmarks"}
+TARGET=${1:-"eh_benchmarks"}
 BUILD_TYPE=${2:-"RELEASE"}
 BUILD_DIR="cmake-build-$(echo "${BUILD_TYPE}" | awk '{print tolower($0)}')/"
 
