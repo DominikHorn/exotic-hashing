@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <queue>
 #include <random>
 #include <stack>
 #include <string>
@@ -186,26 +187,6 @@ namespace exotic_hashing {
          const std::vector<Data>& dataset;
          const Hasher& hasher;
 
-         void peel(const Vertex& vertex, std::stack<size_t>& res) {
-            // Only vertices with degree 1 are peelable
-            if (vertex.degree() != 1)
-               return;
-
-            const auto edge = vertex.edges[0];
-            const auto [h0, h1, h2] = hasher(dataset[edge]);
-            vertices[h0].remove(edge);
-            vertices[h1].remove(edge);
-            vertices[h2].remove(edge);
-
-            // Keep track of edge removal order
-            res.push(edge);
-
-            // Peel recursively (if possible)
-            peel(vertices[h0], res);
-            peel(vertices[h1], res);
-            peel(vertices[h2], res);
-         }
-
         public:
          HyperGraph(const std::vector<Data>& dataset, const Hasher& hasher, const size_t& N)
             : vertices(N), dataset(dataset), hasher(hasher) {
@@ -230,9 +211,35 @@ namespace exotic_hashing {
          std::stack<size_t> peel() {
             std::stack<size_t> res;
 
-            // 1. Recursively peel all vertices if possible
-            for (const auto& vertex : vertices)
-               peel(vertex, res);
+            // 1. Recursively peel all vertices if possible (without recursion to avoid stack overflows)
+            for (size_t vertex_index = 0; vertex_index < vertices.size(); vertex_index++) {
+               std::queue<size_t> next_vertices;
+               next_vertices.push(vertex_index);
+
+               while (!next_vertices.empty()) {
+                  auto& vertex = vertices[next_vertices.front()];
+                  next_vertices.pop();
+
+                  // Only vertices with degree 1 are peelable
+                  if (vertex.degree() != 1)
+                     continue;
+
+                  // Peel last edge from this vertex
+                  const auto edge = vertex.edges[0];
+                  const auto [h0, h1, h2] = hasher(dataset[edge]);
+                  vertices[h0].remove(edge);
+                  vertices[h1].remove(edge);
+                  vertices[h2].remove(edge);
+
+                  // Keep track of edge removal order
+                  res.push(edge);
+
+                  // Attempt to peel adjacent vertices next
+                  next_vertices.push(h0);
+                  next_vertices.push(h1);
+                  next_vertices.push(h2);
+               }
+            }
 
             // 2. Check if there are any edges left, i.e., any vertex has degree > 0. If so, the
             //    acyclicity check has failed
