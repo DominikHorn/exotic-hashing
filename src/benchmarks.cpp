@@ -111,9 +111,13 @@ void BM_chained(benchmark::State& state, std::vector<Data> dataset, const std::s
 
 int main(int argc, char** argv) {
    using Data = std::uint64_t;
+   using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
+   using RankHash = exotic_hashing::RankHash<Data>;
+   using RecSplit = exotic_hashing::RecSplit<Data>;
    using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
    using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
    using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
+   using MWHC = exotic_hashing::MWHC<Data>;
 
    std::random_device r;
    std::default_random_engine rng_gen(r());
@@ -135,12 +139,13 @@ int main(int argc, char** argv) {
             seen.insert(rand_num);
          }
       }
-      BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset, "uniform")
-      BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "uniform")
-      BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "uniform")
+      BM_SPACE_VS_PROBE(DoNothingHash, dataset, "uniform")
+      BM_SPACE_VS_PROBE(RankHash, dataset, "uniform")
+      BM_SPACE_VS_PROBE(RecSplit, dataset, "uniform")
       BM_SPACE_VS_PROBE(CompactTrie, dataset, "uniform");
       BM_SPACE_VS_PROBE(SimpleHollowTrie, dataset, "uniform");
       BM_SPACE_VS_PROBE(HollowTrie, dataset, "uniform");
+      BM_SPACE_VS_PROBE(MWHC, dataset, "uniform");
 
       // sequential dataset
       {
@@ -149,12 +154,13 @@ int main(int argc, char** argv) {
             dataset[i] = i + start_offset;
          }
       }
-      BM_SPACE_VS_PROBE(exotic_hashing::DoNothingHash<Data>, dataset, "seqential")
-      BM_SPACE_VS_PROBE(exotic_hashing::RankHash<Data>, dataset, "sequential")
-      BM_SPACE_VS_PROBE(exotic_hashing::RecSplit<Data>, dataset, "sequential")
+      BM_SPACE_VS_PROBE(DoNothingHash, dataset, "seqential")
+      BM_SPACE_VS_PROBE(RankHash, dataset, "sequential")
+      BM_SPACE_VS_PROBE(RecSplit, dataset, "sequential")
       BM_SPACE_VS_PROBE(CompactTrie, dataset, "sequential")
       BM_SPACE_VS_PROBE(SimpleHollowTrie, dataset, "sequential")
       BM_SPACE_VS_PROBE(HollowTrie, dataset, "sequential");
+      BM_SPACE_VS_PROBE(MWHC, dataset, "sequential");
    }
 
    benchmark::Initialize(&argc, argv);
