@@ -12,7 +12,8 @@ include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/96f4ce02a3a78d63981c67acbd368945d11d7d70.zip
-)
+  )
+
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
@@ -23,8 +24,13 @@ target_link_libraries(eh_tests exotic-hashing gtest_main)
 include(GoogleTest)
 gtest_discover_tests(eh_tests)
 
-
 # ==== Benchmarks target ====
-add_subdirectory(hashtable)
 add_executable(eh_benchmarks benchmarks.cpp)
+
+FetchContent_Declare(
+  hashtable
+  GIT_REPOSITORY git@github.com:DominikHorn/hashtable.git
+  GIT_TAG main
+  )
+FetchContent_MakeAvailable(hashtable)
 target_link_libraries(eh_benchmarks PRIVATE exotic-hashing hashtable ${GOOGLEBENCHMARK_LIBRARY})

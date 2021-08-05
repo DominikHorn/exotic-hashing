@@ -252,7 +252,7 @@ namespace exotic_hashing {
       };
 
       Hasher hasher;
-      hashing::reduction::FastModulo<size_t> mod_N;
+      hashing::reduction::FastModulo<std::uint64_t> mod_N;
 
       // TODO(dominik): many entries will be 0 -> compression opportunities?
       std::vector<size_t> vertex_values;
