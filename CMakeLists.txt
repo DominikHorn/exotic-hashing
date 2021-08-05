@@ -19,7 +19,7 @@ include(FetchContent)
 FetchContent_Declare(
   hashing
   GIT_REPOSITORY git@github.com:DominikHorn/hashing.git
-  GIT_TAG main
+  GIT_TAG c30572f
   )
 
 FetchContent_MakeAvailable(hashing)
