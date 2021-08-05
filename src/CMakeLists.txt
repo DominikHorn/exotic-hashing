@@ -30,7 +30,7 @@ add_executable(eh_benchmarks benchmarks.cpp)
 FetchContent_Declare(
   hashtable
   GIT_REPOSITORY git@github.com:DominikHorn/hashtable.git
-  GIT_TAG 709381b
+  GIT_TAG 98c9509
   )
 FetchContent_MakeAvailable(hashtable)
 target_link_libraries(eh_benchmarks PRIVATE exotic-hashing hashtable ${GOOGLEBENCHMARK_LIBRARY})
