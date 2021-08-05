@@ -27,5 +27,9 @@ endif()
 target_sources(${PROJECT_NAME} INTERFACE exotic_hashing.hpp include/)
 
 # Benchmark code
-include(${PROJECT_SOURCE_DIR}/thirdparty/googlebenchmark.cmake)
-add_subdirectory(src)
+get_directory_property(hasParent PARENT_DIRECTORY)
+if (NOT hasParent)
+  include(thirdparty/googlebenchmark.cmake)
+
+  add_subdirectory(src)
+endif()
