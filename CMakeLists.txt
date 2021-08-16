@@ -14,17 +14,10 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 
 # ==== Dependencies ====
 include(${PROJECT_SOURCE_DIR}/thirdparty/sdsl-lite.cmake)
-include(FetchContent)
+include(${PROJECT_SOURCE_DIR}/thirdparty/fst.cmake)
+include(${PROJECT_SOURCE_DIR}/thirdparty/hashing.cmake)
 
-FetchContent_Declare(
-  hashing
-  GIT_REPOSITORY git@github.com:DominikHorn/hashing.git
-  GIT_TAG c30572f
-  )
-
-FetchContent_MakeAvailable(hashing)
-
-target_link_libraries(${PROJECT_NAME} INTERFACE ${SDSL_LIBRARY} hashing)
+target_link_libraries(${PROJECT_NAME} INTERFACE ${SDSL_LIBRARY} ${HASHING_LIBRARY} ${FST_LIBRARY})
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-fconstexpr-steps=999999999 CONSTEXPR_RECURSION_DEPTH_CONFIGURABLE)
