@@ -48,7 +48,7 @@ namespace exotic_hashing {
          std::sort(converted_keys.begin(), converted_keys.end());
 
          // construct fst. Note that values is never used during construction, hence it is simply left empty
-         _fst = std::make_unique<fst::FST>(converted_keys, std::vector<uint64_t>());
+         _fst = std::make_unique<fst::FST>(converted_keys);
       }
 
       forceinline size_t operator()(const Key& key) const {
