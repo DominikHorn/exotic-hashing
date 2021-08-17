@@ -36,10 +36,4 @@ gtest_discover_tests(eh_tests)
 # ==== Benchmarks target ====
 add_executable(eh_benchmarks benchmarks.cpp)
 
-FetchContent_Declare(
-  hashtable
-  GIT_REPOSITORY git@github.com:DominikHorn/hashtable.git
-  GIT_TAG 98c9509
-  )
-FetchContent_MakeAvailable(hashtable)
-target_link_libraries(eh_benchmarks PRIVATE exotic-hashing hashtable ${GOOGLEBENCHMARK_LIBRARY})
+target_link_libraries(eh_benchmarks PRIVATE exotic-hashing ${GOOGLEBENCHMARK_LIBRARY})

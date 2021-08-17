@@ -8,7 +8,6 @@
 #include <vector>
 
 #include <exotic_hashing.hpp>
-#include <hashtable.hpp>
 #include <sdsl/suffix_arrays.hpp>
 #include <benchmark/benchmark.h>
 
@@ -50,58 +49,6 @@ void BM_throughput(benchmark::State& state, const std::vector<Data> dataset, con
    state.SetItemsProcessed(dataset.size() * state.iterations());
    state.SetBytesProcessed(dataset.size() * sizeof(Data) * state.iterations());
 };
-
-   /*
-template<class Hashfn, class Data>
-void BM_chained(benchmark::State& state, std::vector<Data> dataset, const std::string& dataset_name) {
-   struct Clamp {
-      explicit Clamp(const size_t& N) : N(N) {}
-
-      static std::string name() {
-         return "clamp";
-      }
-
-      constexpr forceinline size_t operator()(const Data& hash) const {
-         if (unlikely(hash < 0))
-            return 0;
-         if (unlikely(hash >= N))
-            return N - 1;
-         return hash;
-      }
-
-     private:
-      const size_t N;
-   };
-
-   const Hashfn hashfn(dataset);
-   const size_t ht_size = dataset.size(); // load factor 1
-   hashtable::Chained<Data, std::uint64_t, 4, Hashfn, Clamp> ht(ht_size, hashfn);
-
-   for (const auto key : dataset) {
-      ht.insert(key, key - 1);
-   }
-
-   for (auto _ : state) {
-      for (const auto& key : dataset) {
-         const auto payload = ht.lookup(key);
-         benchmark::DoNotOptimize(payload);
-      }
-   }
-
-   // TODO(dominik): collect excess space consumption statistics
-   const auto lookup_stats = ht.lookup_statistics(*dataset);
-   for (const auto stat : lookup_stats) {
-      state.counters[stat.first] = std::stoi(stat.second);
-   }
-   state.counters["hashtable_slots"] = ht_size;
-   state.counters["hashfn_bytes"] = hashfn.byte_size();
-   state.counters["num_elements"] = dataset.size();
-
-   state.SetLabel(Hashfn::name() + "@" + dataset_name);
-   state.SetItemsProcessed(dataset.size() * state.iterations());
-   state.SetBytesProcessed(dataset.size() * sizeof(Data) * state.iterations());
-};
-*/
 
 #define BM_SPACE_VS_PROBE(Hashfn, dataset, dataset_name)                                                          \
    benchmark::RegisterBenchmark("build", BM_build<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name); \
