@@ -1,14 +1,16 @@
 #pragma once
 
-#include "include/convenience/builtins.hpp"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
-#include <fst-src/include/fst.hpp>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
+
+#include <fst.hpp>
+
+#include "include/convenience/builtins.hpp"
 
 namespace exotic_hashing {
    /**
