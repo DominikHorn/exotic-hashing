@@ -364,48 +364,48 @@ namespace sux {
    }
 
    /** Count the number of 1-bits in a word.
- * @param word binary word.
- *
- */
-   inline int nu(uint64_t word) {
-      return __builtin_popcountll(word);
+    * @param word binary word.
+    *
+    */
+   inline size_t nu(uint64_t word) {
+      return static_cast<size_t>(__builtin_popcountll(word));
    }
 
    /** Return a number rounded to the desired power of two multiple.
- * @param number value to round up.
- * @param multiple power of two to which you want to round `number`.
- *
- */
+    * @param number value to round up.
+    * @param multiple power of two to which you want to round `number`.
+    *
+    */
    inline uint64_t mround(uint64_t number, uint64_t multiple) {
       return ((number - 1) | (multiple - 1)) + 1;
    }
 
    /** Grandest grandparent parent of a node in the update tree.
- * @param j index of a node.
- * @param n size of the Fenwick tree.
- *
- */
+    * @param j index of a node.
+    * @param n size of the Fenwick tree.
+    *
+    */
    inline size_t updroot(size_t j, size_t n) {
       return n & (SIZE_MAX << lambda((j ^ n) | mask_rho(j)));
    }
 
    /** Returns the index of the k-th 1-bit in the 64-bit word x.
- * @param x 64-bit word.
- * @param k 0-based rank (`k = 0` returns the position of the first 1-bit).
- *
- * Uses the broadword selection algorithm by Vigna [1], improved by Gog and Petri [2] and Vigna [3].
- * Facebook's Folly implementation [4].
- *
- * [1] Sebastiano Vigna. Broadword Implementation of Rank/Select Queries. WEA, 2008
- *
- * [2] Simon Gog, Matthias Petri. Optimized succinct data structures for massive data. Softw. Pract.
- * Exper., 2014
- *
- * [3] Sebastiano Vigna. MG4J 5.2.1. http://mg4j.di.unimi.it/
- *
- * [4] Facebook Folly library: https://github.com/facebook/folly
- *
- */
+    * @param x 64-bit word.
+    * @param k 0-based rank (`k = 0` returns the position of the first 1-bit).
+    *
+    * Uses the broadword selection algorithm by Vigna [1], improved by Gog and Petri [2] and Vigna [3].
+    * Facebook's Folly implementation [4].
+    *
+    * [1] Sebastiano Vigna. Broadword Implementation of Rank/Select Queries. WEA, 2008
+    *
+    * [2] Simon Gog, Matthias Petri. Optimized succinct data structures for massive data. Softw. Pract.
+    * Exper., 2014
+    *
+    * [3] Sebastiano Vigna. MG4J 5.2.1. http://mg4j.di.unimi.it/
+    *
+    * [4] Facebook Folly library: https://github.com/facebook/folly
+    *
+    */
    inline uint64_t select64(uint64_t x, uint64_t k) {
 #ifndef __haswell__
       constexpr uint64_t kOnesStep4 = 0x1111111111111111ULL;
