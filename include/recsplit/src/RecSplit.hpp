@@ -295,7 +295,7 @@ namespace sux::function {
    static constexpr uint64_t split_golomb_b(const int m) {
       array<int, MAX_FANOUT> k{0};
 
-      size_t fanout = 0, part = 0, unit = 0;
+      size_t fanout = 0, unit = 0;
       SplittingStrategy<LEAF_SIZE>::split_params(m, fanout, unit);
 
       k[fanout - 1] = m;
