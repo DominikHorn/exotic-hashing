@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
 #include <exotic_hashing.hpp>
 
@@ -10,8 +11,8 @@ TEST(MWHC, IsOrderPreservingMinimalPerfect) {
    using Data = std::uint64_t;
 
    // we do want predictable random results, hence the fixed seeds
-   size_t dataset_size = 10000;
-   for (const auto seed : {0, 1, 42, 1337}) {
+   size_t dataset_size = 1000;
+   for (const auto seed : {0, 1, 13, 42, 1337}) {
       std::default_random_engine rng_gen(seed);
 
       // generate dataset
@@ -21,19 +22,16 @@ TEST(MWHC, IsOrderPreservingMinimalPerfect) {
          if (dist(rng_gen) < 10)
             dataset.push_back(d);
 
-      // random order (to test order preserving)
-      {
-         std::uniform_int_distribution<size_t> dist(0, std::numeric_limits<size_t>::max());
-
-         for (size_t i = dataset.size() - 1; i > 0; i--)
-            std::swap(dataset[i], dataset[dist(rng_gen) % (i + 1)]);
-      }
-      assert(dataset.size() == dataset_size);
+      // increase dataset size for next iteration
       dataset_size += dataset_size - 1;
 
+      // random order (to test order preserving)
+      std::shuffle(dataset.begin(), dataset.end(), rng_gen);
+
+      // build mwhc on dataset
       exotic_hashing::MWHC<Data> mwhc(dataset);
 
-      // Order preserving minimal perfect test
+      // order preserving minimal perfect test
       for (size_t i = 0; i < dataset.size(); i++)
          EXPECT_EQ(mwhc(dataset[i]), i);
    }

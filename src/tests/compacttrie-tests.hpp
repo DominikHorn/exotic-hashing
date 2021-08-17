@@ -15,7 +15,7 @@ TEST(CompactTrie, IsMonotoneMinimalPerfect) {
 
    // we do want predictable random results, hence the fixed seeds
    size_t dataset_size = 1000;
-   for (const auto seed : {0, 1, 42, 1337}) {
+   for (const auto seed : {0, 1, 13, 42, 1337}) {
       std::default_random_engine rng_gen(seed);
 
       // generate dataset
@@ -25,18 +25,14 @@ TEST(CompactTrie, IsMonotoneMinimalPerfect) {
          if (dist(rng_gen) < 10)
             dataset.push_back(d);
 
+      // increase dataset size for next iteration
       dataset_size += dataset_size - 1;
 
       // random insert order (algorithm must catch this!)
       std::vector<Data> shuffled_dataset = dataset;
-      {
-         std::uniform_int_distribution<size_t> dist(0, std::numeric_limits<size_t>::max());
+      std::shuffle(shuffled_dataset.begin(), shuffled_dataset.end(), rng_gen);
 
-         for (size_t i = shuffled_dataset.size() - 1; i > 0; i--)
-            std::swap(shuffled_dataset[i], shuffled_dataset[dist(rng_gen) % (i + 1)]);
-      }
-      assert(shuffled_dataset.size() == dataset.size());
-
+      // build compact trie on shuffled dataset
       exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>> compact_trie(shuffled_dataset);
 
       // // Debug code (visualization)

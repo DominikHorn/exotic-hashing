@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
 #include <exotic_hashing.hpp>
 #include <random>
@@ -13,7 +14,7 @@ TEST(RankHash, IsMonotoneMinimalPerfect) {
 
    // we do want predictable random results, hence the fixed seeds
    size_t dataset_size = 1000;
-   for (const auto seed : {0, 1, 42, 1337}) {
+   for (const auto seed : {0, 1, 13, 42, 1337}) {
       std::default_random_engine rng_gen(seed);
 
       // generate dataset
@@ -23,21 +24,17 @@ TEST(RankHash, IsMonotoneMinimalPerfect) {
          if (dist(rng_gen) < 10)
             dataset.push_back(d);
 
+      // increase dataset size for next iteration
       dataset_size += dataset_size - 1;
 
       // random insert order (algorithm must catch this!)
       std::vector<Data> shuffled_dataset = dataset;
-      {
-         std::uniform_int_distribution<size_t> dist(0, std::numeric_limits<size_t>::max());
+      std::shuffle(shuffled_dataset.begin(), shuffled_dataset.end(), rng_gen);
 
-         for (size_t i = shuffled_dataset.size() - 1; i > 0; i--)
-            std::swap(shuffled_dataset[i], shuffled_dataset[dist(rng_gen) % (i + 1)]);
-      }
-      assert(shuffled_dataset.size() == dataset.size());
-
+      // build rank hash
       exotic_hashing::RankHash<Data> rank_hash(shuffled_dataset);
 
-      // Monotone minimal perfect is achieved iff trie exactly returns rank_D(d) for d \in D
+      // monotone minimal perfect is achieved iff trie exactly returns rank_D(d) for d \in D
       for (size_t i = 0; i < dataset.size(); i++)
          EXPECT_EQ(rank_hash(dataset[i]), i);
    }
