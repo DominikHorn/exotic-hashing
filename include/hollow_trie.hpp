@@ -90,6 +90,17 @@ namespace exotic_hashing {
       /**
        * Prints a latex tikz standalone document representing this
        * datastructuree.
+       *
+       * Example usage:
+       *
+         ```c++
+         std::ofstream out;
+         out.open("compact_trie_" + std::to_string(seed) + ".tex");
+         compact_trie.print_tex(out);
+         out.close();
+         ```
+       *
+       * @param out output stream to print to, e.g., std::cout
        */
       template<class Stream>
       void print_tex(Stream& out) const {
