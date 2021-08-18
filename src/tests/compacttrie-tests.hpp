@@ -6,7 +6,26 @@
 
 #include "common.hpp"
 
-TEST(CompactTrie, IsMonotoneMinimalPerfect) {
-   tests::common::run_is_monotone_minimal_perfect<
-      std::uint64_t, exotic_hashing::CompactTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>>();
+TEST(CompactTrie, IsPerfect) {
+   tests::common::run_test<std::uint64_t,
+                           exotic_hashing::CompactTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
+                           tests::common::TestIsPerfect>();
+}
+
+TEST(CompactTrie, IsMinimal) {
+   tests::common::run_test<std::uint64_t,
+                           exotic_hashing::CompactTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
+                           tests::common::TestIsMinimal>();
+}
+
+TEST(CompactTrie, IsMonotone) {
+   tests::common::run_test<std::uint64_t,
+                           exotic_hashing::CompactTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
+                           tests::common::TestIsMonotone>();
+}
+
+TEST(CompactTrie, IsMMPHF) {
+   tests::common::run_test<std::uint64_t,
+                           exotic_hashing::CompactTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
+                           tests::common::TestIsMMPHF>();
 }
