@@ -122,12 +122,17 @@ namespace exotic_hashing {
          hasher = mwhc.hasher;
          mod_N = mwhc.mod_N;
 
+         // helper to decide whether or not a value is set
+         const auto is_set = [&](const auto& val) { return val != 0 && val != mod_N.N; };
+
          // copy & compress vertex values. Bit compression seems to be most efficient
          // since vertex_values are more or less uniform random (flat entropy)
          sdsl::int_vector<> vec(mwhc.vertex_values.size(), 0);
          assert(vec.size() == mwhc.vertex_values.size());
-         for (size_t i = 0; i < vec.size(); i++)
-            vec[i] = mwhc.vertex_values[i];
+         for (size_t i = 0; i < vec.size(); i++) {
+            const auto val = mwhc.vertex_values[i];
+            vec[i] = is_set(val) * val;
+         }
          sdsl::util::bit_compress(vec);
 
          vertex_values = vec;
