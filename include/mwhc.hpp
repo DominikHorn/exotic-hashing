@@ -89,7 +89,8 @@ namespace exotic_hashing {
       }
 
       size_t byte_size() const {
-         return sizeof(decltype(vertex_values)) + sizeof(size_t) + vertex_values.size();
+         return sizeof(hasher) + sizeof(mod_N) + sizeof(decltype(vertex_values)) +
+            sizeof(size_t) * vertex_values.size();
       }
 
      private:
