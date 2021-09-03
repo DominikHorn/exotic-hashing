@@ -31,17 +31,19 @@ namespace exotic_hashing {
       explicit CompactedMWHC(const std::vector<Data>& dataset)
          : hasher(MWHC<Data>::vertices_count(dataset.size())), mod_N(MWHC<Data>::vertices_count(dataset.size())) {
          const MWHC<Data> mwhc(dataset);
-         const auto unset_vertex_value = mwhc.unset_vertex_value();
 
          // copy unchanged fields
          hasher = mwhc.hasher;
          mod_N = mwhc.mod_N;
 
+         // helper to decide whether or not a value is set
+         const auto is_set = [&](const auto& val) { return val != 0 && val != mod_N.N; };
+
          // build bitvector on top of vertex values (to eliminate zeroes)
          const auto n = mwhc.vertex_values.size();
          sdsl::bit_vector bv(n);
          for (size_t i = 0; i < n; i++)
-            bv[i] = mwhc.vertex_values[i] != unset_vertex_value;
+            bv[i] = is_set(mwhc.vertex_values[i]);
          bit_vec = decltype(bit_vec)(bv);
 
          // initialize rank struct to speedup lookup
@@ -50,13 +52,14 @@ namespace exotic_hashing {
          // copy vertex values into compacted layout
          size_t set_n = 0;
          for (const auto& val : mwhc.vertex_values)
-            set_n += val != unset_vertex_value;
+            set_n += is_set(val);
 
          sdsl::int_vector<> vec(set_n, 0);
          for (size_t i = 0; i < n; i++) {
             const auto val = mwhc.vertex_values[i];
 
-            if (val != unset_vertex_value) {
+            // TODO: we can probably remove this if (will cause additional writes but eliminates branch)
+            if (is_set(val)) {
                assert(bit_vec_rank(i) >= 0);
                assert(bit_vec_rank(i) < vec.size());
 
@@ -65,7 +68,7 @@ namespace exotic_hashing {
          }
 
          for (size_t i = 0; i < n; i++) {
-            if (mwhc.vertex_values[i] == unset_vertex_value)
+            if (!is_set(mwhc.vertex_values[i]))
                continue;
             assert(mwhc.vertex_values[i] == vec[bit_vec_rank(i)]);
          }
@@ -78,15 +81,16 @@ namespace exotic_hashing {
       forceinline size_t operator()(const Data& key) const {
          const auto [h0, h1, h2] = hasher(key);
 
-         const auto i0 = bit_vec_rank(h0);
-         const auto i1 = bit_vec_rank(h1);
-         const auto i2 = bit_vec_rank(h2);
+         // 0 and mod_N.N (i.e. unset values) are compressed by a 0 bit in bit_vec
+         const auto v0 = bit_vec[h0] * vertex_values[bit_vec_rank(h0)];
+         const auto v1 = bit_vec[h1] * vertex_values[bit_vec_rank(h1)];
+         const auto v2 = bit_vec[h2] * vertex_values[bit_vec_rank(h2)];
 
-         size_t hash = vertex_values[i0];
+         size_t hash = v0;
          if (likely(h1 != h0))
-            hash += vertex_values[i1];
+            hash += v1;
          if (likely(h2 != h1 && h2 != h0))
-            hash += vertex_values[i2];
+            hash += v2;
          return mod_N(hash);
       }
 
@@ -159,7 +163,7 @@ namespace exotic_hashing {
          : hasher(vertices_count(dataset.size())), mod_N(vertices_count(dataset.size())) {
          // 'unassigned vertex value' is marked using the value of N since N mod N = 0
          vertex_values.resize(mod_N.N);
-         std::fill(vertex_values.begin(), vertex_values.end(), unset_vertex_value());
+         std::fill(vertex_values.begin(), vertex_values.end(), vertex_values.size());
 
          std::stack<size_t> edge_order;
          while (edge_order.empty()) {
@@ -230,11 +234,6 @@ namespace exotic_hashing {
      private:
       static forceinline size_t vertices_count(const size_t& dataset_size, const long double& overalloc = 1.23) {
          return std::ceil(overalloc * dataset_size);
-      }
-
-      forceinline size_t unset_vertex_value() const {
-         assert(vertex_values.size() == mod_N.N);
-         return vertex_values.size();
       }
 
       class Hasher {
