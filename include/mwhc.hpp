@@ -57,14 +57,12 @@ namespace exotic_hashing {
          sdsl::int_vector<> vec(set_n, 0);
          for (size_t i = 0; i < n; i++) {
             const auto val = mwhc.vertex_values[i];
+            const auto rank = bit_vec_rank(i);
 
-            // TODO: we can probably remove this if (will cause additional writes but eliminates branch)
-            if (is_set(val)) {
-               assert(bit_vec_rank(i) >= 0);
-               assert(bit_vec_rank(i) < vec.size());
+            assert(rank >= 0);
+            assert(rank < vec.size());
 
-               vec[bit_vec_rank(i)] = val;
-            }
+            vec[rank] = val;
          }
 
          for (size_t i = 0; i < n; i++) {
