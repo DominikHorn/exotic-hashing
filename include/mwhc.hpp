@@ -1,10 +1,13 @@
 #pragma once
 
 #include <algorithm>
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <queue>
 #include <random>
+#include <sdsl/io.hpp>
+#include <sdsl/vectors.hpp>
 #include <stack>
 #include <string>
 #include <tuple>
@@ -19,6 +22,54 @@
 #include "include/reduction.hpp"
 
 namespace exotic_hashing {
+   template<class Data>
+   struct MWHC;
+
+   template<class Data>
+   struct CompressedMWHC {
+      explicit CompressedMWHC(const std::vector<Data>& dataset)
+         : hasher(MWHC<Data>::vertices_count(dataset.size())), mod_N(MWHC<Data>::vertices_count(dataset.size())) {
+         const MWHC<Data> mwhc(dataset);
+
+         // copy unchanged fields
+         hasher = mwhc.hasher;
+         mod_N = mwhc.mod_N;
+
+         // copy & compress vertex values. Bit compression seems to be most efficient
+         // since vertex_values are more or less uniform random (flat entropy)
+         sdsl::int_vector<> vec(mwhc.vertex_values.size(), 0);
+         assert(vec.size() == mwhc.vertex_values.size());
+         for (size_t i = 0; i < vec.size(); i++)
+            vec[i] = mwhc.vertex_values[i];
+         sdsl::util::bit_compress(vec);
+
+         vertex_values = vec;
+      }
+
+      forceinline size_t operator()(const Data& key) const {
+         const auto [h0, h1, h2] = hasher(key);
+         size_t hash = vertex_values[h0];
+         if (likely(h1 != h0))
+            hash += vertex_values[h1];
+         if (likely(h2 != h1 && h2 != h0))
+            hash += vertex_values[h2];
+         return mod_N(hash);
+      }
+
+      static std::string name() {
+         return "CompressedMWHC";
+      }
+
+      size_t byte_size() const {
+         return sizeof(hasher) + sizeof(mod_N) + sdsl::size_in_bytes(vertex_values);
+      }
+
+     private:
+      typename MWHC<Data>::Hasher hasher;
+      hashing::reduction::FastModulo<std::uint64_t> mod_N;
+      sdsl::int_vector<> vertex_values;
+   };
+
    template<class Data>
    struct MWHC {
       explicit MWHC(const std::vector<Data>& dataset)
@@ -94,7 +145,7 @@ namespace exotic_hashing {
       }
 
      private:
-      forceinline size_t vertices_count(const size_t& dataset_size, const long double& overalloc = 1.23) const {
+      static forceinline size_t vertices_count(const size_t& dataset_size, const long double& overalloc = 1.23) {
          return std::ceil(overalloc * dataset_size);
       }
 
@@ -257,5 +308,7 @@ namespace exotic_hashing {
 
       // TODO(dominik): many entries will be 0 -> compression opportunities?
       std::vector<size_t> vertex_values;
+
+      friend CompressedMWHC<Data>;
    };
 } // namespace exotic_hashing
