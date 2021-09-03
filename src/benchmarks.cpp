@@ -65,6 +65,7 @@ int main(int argc, char** argv) {
    using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
    using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
    using MWHC = exotic_hashing::MWHC<Data>;
+   using CompressedMWHC = exotic_hashing::CompressedMWHC<Data>;
 
    std::random_device r;
    std::default_random_engine rng_gen(r());
@@ -93,6 +94,7 @@ int main(int argc, char** argv) {
       BM_SPACE_VS_PROBE(SimpleHollowTrie, dataset, "uniform");
       BM_SPACE_VS_PROBE(HollowTrie, dataset, "uniform");
       BM_SPACE_VS_PROBE(MWHC, dataset, "uniform");
+      BM_SPACE_VS_PROBE(CompressedMWHC, dataset, "uniform");
 
       // sequential dataset
       {
@@ -108,6 +110,7 @@ int main(int argc, char** argv) {
       BM_SPACE_VS_PROBE(SimpleHollowTrie, dataset, "sequential")
       BM_SPACE_VS_PROBE(HollowTrie, dataset, "sequential");
       BM_SPACE_VS_PROBE(MWHC, dataset, "sequential");
+      BM_SPACE_VS_PROBE(CompressedMWHC, dataset, "sequential");
    }
 
    benchmark::Initialize(&argc, argv);
