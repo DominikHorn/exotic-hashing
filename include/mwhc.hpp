@@ -7,6 +7,7 @@
 #include <queue>
 #include <random>
 #include <sdsl/io.hpp>
+#include <sdsl/rrr_vector.hpp>
 #include <sdsl/vectors.hpp>
 #include <stack>
 #include <string>
@@ -24,6 +25,77 @@
 namespace exotic_hashing {
    template<class Data>
    struct MWHC;
+
+   template<class Data>
+   struct CompactedMWHC {
+      explicit CompactedMWHC(const std::vector<Data>& dataset)
+         : hasher(MWHC<Data>::vertices_count(dataset.size())), mod_N(MWHC<Data>::vertices_count(dataset.size())) {
+         const MWHC<Data> mwhc(dataset);
+
+         // copy unchanged fields
+         hasher = mwhc.hasher;
+         mod_N = mwhc.mod_N;
+
+         // build bitvector on top of vertex values (to eliminate zeroes)
+         const auto n = mwhc.vertex_values.size();
+         sdsl::bit_vector bv(n);
+         for (size_t i = 0; i < n; i++)
+            bv[i] = mwhc.vertex_values[i] > 0;
+         bit_vec = decltype(bit_vec)(bv);
+
+         // initialize rank struct to speedup lookup
+         sdsl::util::init_support(bit_vec_rank, &bit_vec);
+
+         // copy vertex values into compacted layout
+         size_t nonzero_n = 0;
+         for (const auto& val : mwhc.vertex_values)
+            nonzero_n += (val > 0) * 1;
+
+         std::cout << "n=" << n << ", nonzero_n=" << nonzero_n << std::endl;
+         sdsl::int_vector<> vec(nonzero_n, 0);
+         for (size_t i = 0; i < nonzero_n; i++) {
+            const auto val = mwhc.vertex_values[i];
+
+            if (val > 0) {
+               assert(bit_vec_rank(i) >= 0);
+               assert(bit_vec_rank(i) < vec.size());
+
+               vec[bit_vec_rank(i)] = val;
+            }
+         }
+
+         // compress compacted vertex values to eak out even more space
+         sdsl::util::bit_compress(vec);
+         vertex_values = vec;
+      }
+
+      forceinline size_t operator()(const Data& key) const {
+         const auto [h0, h1, h2] = hasher(key);
+         size_t hash = vertex_values[bit_vec_rank(h0)];
+         if (likely(h1 != h0))
+            hash += vertex_values[bit_vec_rank(h1)];
+         if (likely(h2 != h1 && h2 != h0))
+            hash += vertex_values[bit_vec_rank(h2)];
+         return mod_N(hash);
+      }
+
+      static std::string name() {
+         return "CompactedMWHC";
+      }
+
+      size_t byte_size() const {
+         return sizeof(hasher) + sizeof(mod_N) + sdsl::size_in_bytes(bit_vec) + sdsl::size_in_bytes(bit_vec_rank) +
+            sdsl::size_in_bytes(vertex_values);
+      }
+
+     private:
+      typename MWHC<Data>::Hasher hasher;
+      hashing::reduction::FastModulo<std::uint64_t> mod_N;
+
+      sdsl::rrr_vector<> bit_vec;
+      decltype(bit_vec)::rank_1_type bit_vec_rank;
+      sdsl::int_vector<> vertex_values;
+   };
 
    template<class Data>
    struct CompressedMWHC {
@@ -310,5 +382,6 @@ namespace exotic_hashing {
       std::vector<size_t> vertex_values;
 
       friend CompressedMWHC<Data>;
+      friend CompactedMWHC<Data>;
    };
 } // namespace exotic_hashing
