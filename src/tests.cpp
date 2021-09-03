@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "tests/compacttrie-tests.hpp"
+#include "tests/compressedmwhc-tests.hpp"
 #include "tests/elias-tests.hpp"
 #include "tests/fst-tests.hpp"
 #include "tests/hollowtrie-tests.hpp"
