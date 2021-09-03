@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Setup script 
+# Setup script
 source .env
 set -e
 cd "$(dirname "$0")"
