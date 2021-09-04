@@ -15,108 +15,130 @@
 #include "../include/convenience/builtins.hpp"
 #include "../include/convenience/tidy.hpp"
 
-template<class Hashfn, class Data>
-void BM_build(benchmark::State& state, std::vector<Data> dataset, const std::string& dataset_name) {
+#include "support/datasets.hpp"
+
+using Data = std::uint64_t;
+const std::vector<std::int64_t> dataset_sizes{100, 10000, 1000000 /*, 100000000, 200000000*/};
+const std::vector<std::int64_t> datasets{dataset::ID::SEQUENTIAL, /*dataset::ID::UNIFORM, dataset::ID::FB,
+                                        dataset::ID::OSM, dataset::ID::WIKI*/};
+
+template<class Hashfn>
+static void PresortedBuildTime(benchmark::State& state) {
+   const auto dataset_size = state.range(0);
+   const auto did = static_cast<dataset::ID>(state.range(1));
+   auto dataset = dataset::load_cached(did, dataset_size);
+
+   if (dataset.empty()) {
+      // otherwise google benchmark produces an error ;(
+      for (auto _ : state) {}
+      return;
+   }
+
+   // assume dataset loading will sort the data for use
+   assert(std::is_sorted(dataset.begin(), dataset.end()));
+
    for (auto _ : state) {
-      const Hashfn hashfn(dataset);
+      const auto hashfn = Hashfn(dataset);
       benchmark::DoNotOptimize(hashfn);
    }
 
+   // set counters (don't do this in inner loop to avoid tainting results)
    const Hashfn hashfn(dataset);
    state.counters["hashfn_bytes"] = hashfn.byte_size();
-   state.counters["num_elements"] = dataset.size();
-
-   state.SetLabel(Hashfn::name() + "@" + dataset_name);
-   state.SetItemsProcessed(dataset.size() * state.iterations());
-   state.SetBytesProcessed(dataset.size() * sizeof(Data) * state.iterations());
+   state.counters["dataset_elem_count"] = dataset.size();
+   state.counters["dataset_bytes"] = (sizeof(decltype(dataset)::value_type) * dataset.size());
+   state.SetLabel(dataset::name(did));
 };
 
-template<class Hashfn, class Data>
-void BM_throughput(benchmark::State& state, const std::vector<Data> dataset, const std::string& dataset_name) {
-   const Hashfn hashfn(dataset);
+template<class Hashfn>
+static void UnorderedBuildTime(benchmark::State& state) {
+   const auto dataset_size = state.range(0);
+   const auto did = static_cast<dataset::ID>(state.range(1));
+   auto dataset = dataset::load_cached(did, dataset_size);
+
+   if (dataset.empty()) {
+      // otherwise google benchmark produces an error ;(
+      for (auto _ : state) {}
+      return;
+   }
+
+   std::random_device rd;
+   std::default_random_engine rng(rd());
+   auto shuffled_dataset = dataset;
+   std::shuffle(shuffled_dataset.begin(), shuffled_dataset.end(), rng);
+
    for (auto _ : state) {
-      for (const auto key : dataset) {
-         const auto hash = hashfn(key);
-         benchmark::DoNotOptimize(hash);
-      }
+      const auto hashfn = Hashfn(shuffled_dataset);
+      benchmark::DoNotOptimize(hashfn);
    }
 
-   // Avoid overhead in loop -> measure again
+   // set counters (don't do this in inner loop to avoid tainting results)
+   const Hashfn hashfn(dataset);
    state.counters["hashfn_bytes"] = hashfn.byte_size();
-   state.counters["num_elements"] = dataset.size();
-
-   state.SetLabel(Hashfn::name() + "@" + dataset_name);
-   state.SetItemsProcessed(dataset.size() * state.iterations());
-   state.SetBytesProcessed(dataset.size() * sizeof(Data) * state.iterations());
+   state.counters["dataset_elem_count"] = dataset.size();
+   state.counters["dataset_bytes"] = (sizeof(decltype(dataset)::value_type) * dataset.size());
+   state.SetLabel(dataset::name(did));
 };
 
-#define BM_SPACE_VS_PROBE(Hashfn, dataset, dataset_name)                                                          \
-   benchmark::RegisterBenchmark("build", BM_build<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name); \
-   benchmark::RegisterBenchmark("throughput", BM_throughput<Hashfn, decltype(dataset)::value_type>, dataset,      \
-                                dataset_name);                                                                    \
-   //benchmark::RegisterBenchmark("chained", BM_chained<Hashfn, decltype(dataset)::value_type>, dataset, dataset_name);
+template<class Hashfn>
+static void LookupTime(benchmark::State& state) {
+   const auto dataset_size = state.range(0);
+   const auto did = static_cast<dataset::ID>(state.range(1));
+   auto dataset = dataset::load_cached(did, dataset_size);
 
-int main(int argc, char** argv) {
-   using Data = std::uint64_t;
-   using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
-   using RankHash = exotic_hashing::RankHash<Data>;
-   using RecSplit = exotic_hashing::RecSplit<Data>;
-   using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
-   using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
-   using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
-   using MWHC = exotic_hashing::MWHC<Data>;
-   using CompressedMWHC = exotic_hashing::CompressedMWHC<Data>;
-   using CompactedMWHC = exotic_hashing::CompactedMWHC<Data>;
-
-   std::random_device r;
-   std::default_random_engine rng_gen(r());
-
-   // Benchmark for different dataset sizes
-   for (const size_t dataset_size : {100000, 1000000, 10000000 /*, 100000000, 200000000*/}) {
-      std::vector<Data> dataset(dataset_size, 0);
-
-      // uniform random numbers dataset
-      {
-         std::unordered_set<Data> seen;
-         std::uniform_int_distribution<Data> dist(0, static_cast<size_t>(0x1) << 50);
-         for (size_t i = 0; i < dataset_size; i++) {
-            const Data rand_num = dist(rng_gen);
-            if (seen.contains(rand_num))
-               continue;
-
-            dataset[i] = rand_num;
-            seen.insert(rand_num);
-         }
-      }
-      BM_SPACE_VS_PROBE(DoNothingHash, dataset, "uniform")
-      BM_SPACE_VS_PROBE(RankHash, dataset, "uniform")
-      BM_SPACE_VS_PROBE(RecSplit, dataset, "uniform")
-      BM_SPACE_VS_PROBE(CompactTrie, dataset, "uniform");
-      BM_SPACE_VS_PROBE(SimpleHollowTrie, dataset, "uniform");
-      BM_SPACE_VS_PROBE(HollowTrie, dataset, "uniform");
-      BM_SPACE_VS_PROBE(MWHC, dataset, "uniform");
-      BM_SPACE_VS_PROBE(CompressedMWHC, dataset, "uniform");
-      BM_SPACE_VS_PROBE(CompactedMWHC, dataset, "uniform");
-
-      // sequential dataset
-      {
-         const size_t start_offset = 10000;
-         for (size_t i = 0; i < dataset_size; i++) {
-            dataset[i] = i + start_offset;
-         }
-      }
-      BM_SPACE_VS_PROBE(DoNothingHash, dataset, "seqential")
-      BM_SPACE_VS_PROBE(RankHash, dataset, "sequential")
-      BM_SPACE_VS_PROBE(RecSplit, dataset, "sequential")
-      BM_SPACE_VS_PROBE(CompactTrie, dataset, "sequential")
-      BM_SPACE_VS_PROBE(SimpleHollowTrie, dataset, "sequential")
-      BM_SPACE_VS_PROBE(HollowTrie, dataset, "sequential");
-      BM_SPACE_VS_PROBE(MWHC, dataset, "sequential");
-      BM_SPACE_VS_PROBE(CompressedMWHC, dataset, "sequential");
-      BM_SPACE_VS_PROBE(CompactedMWHC, dataset, "sequential");
+   if (dataset.empty()) {
+      // otherwise google benchmark produces an error ;(
+      for (auto _ : state) {}
+      return;
    }
 
-   benchmark::Initialize(&argc, argv);
-   benchmark::RunSpecifiedBenchmarks();
-   benchmark::Shutdown();
-}
+   // assume dataset loading will sort the data for use
+   assert(std::is_sorted(dataset.begin(), dataset.end()));
+
+   // probe in random order to limit caching effects
+   std::random_device rd;
+   std::default_random_engine rng(rd());
+   auto shuffled_dataset = dataset;
+   std::shuffle(shuffled_dataset.begin(), shuffled_dataset.end(), rng);
+
+   // build hashfn
+   const auto hashfn = Hashfn(dataset);
+
+   size_t i = 0;
+   for (auto _ : state) {
+      // get next lookup element
+      while (unlikely(i >= shuffled_dataset.size()))
+         i -= shuffled_dataset.size();
+      const auto element = shuffled_dataset[i++];
+
+      // hash element
+      const auto hash = hashfn(element);
+      benchmark::DoNotOptimize(hash);
+   }
+
+   // set counters (don't do this in inner loop to avoid tainting results)
+   state.counters["hashfn_bytes"] = hashfn.byte_size();
+   state.counters["dataset_elem_count"] = dataset.size();
+   state.counters["dataset_bytes"] = (sizeof(decltype(dataset)::value_type) * dataset.size());
+   state.SetLabel(dataset::name(did));
+};
+
+#define BM(Hashfn)                                                                         \
+   BENCHMARK_TEMPLATE(PresortedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
+   BENCHMARK_TEMPLATE(UnorderedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
+   BENCHMARK_TEMPLATE(LookupTime, Hashfn)->ArgsProduct({dataset_sizes, datasets});
+
+BM(exotic_hashing::DoNothingHash<Data>);
+BM(exotic_hashing::RankHash<Data>);
+BM(exotic_hashing::RecSplit<Data>);
+using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
+BM(CompactTrie);
+using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
+BM(SimpleHollowTrie);
+using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
+BM(HollowTrie);
+BM(exotic_hashing::MWHC<Data>);
+BM(exotic_hashing::CompressedMWHC<Data>);
+BM(exotic_hashing::CompactedMWHC<Data>);
+
+BENCHMARK_MAIN();
