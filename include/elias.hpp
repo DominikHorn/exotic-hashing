@@ -43,6 +43,7 @@ namespace exotic_hashing {
        */
       template<class BitStream = std::vector<bool>, class T = std::uint64_t>
       static forceinline BitStream encode(const T& x) {
+         // TODO(dominik): optimize!
          assert(x > 0);
 
          // N = floor(log2(x))
@@ -79,21 +80,26 @@ namespace exotic_hashing {
        * @return the decoded number as well as the amount of bits consumed
        */
       template<class T = std::uint64_t, class BitStream = std::vector<bool>>
+      // TODO(dominik): change return value (just T) and change start directly via reference
       static forceinline std::tuple<T, size_t> decode(const BitStream& stream, const size_t start = 0) {
          // decode N = floor(log2(x)) (unary)
          size_t N = 0;
+         // TODO(dominik): count leading zeroes operation on bitstream
          while (N + start < stream.size() && stream[N + start] == 0x0)
             N++;
 
          if (N == 0)
             return std::make_tuple(1, 1);
 
-         // number as 0x1 followed by the remaining bits
-         T res = 0x1;
+         // TODO(dominik): extract subrange (shift + set remaining upper to 0)
+         T tail = 0x0;
          for (size_t i = 0; i < N && i + N + 1 + start < stream.size(); i++) {
-            res <<= 1;
-            res |= stream[i + N + 1 + start] & 0x1;
+            tail <<= 1;
+            tail |= stream[i + N + 1 + start] & 0x1;
          }
+
+         // number as 0x1 followed by the remaining bits
+         T res = (0x1 << N) | tail;
 
          return std::make_tuple(res, 2 * N + 1);
       }
@@ -114,6 +120,7 @@ namespace exotic_hashing {
        */
       template<class BitStream = std::vector<bool>, class T = std::uint64_t>
       static forceinline BitStream encode(const T& x) {
+         // TODO(dominik): optimize
          assert(x > 0);
 
          // N = floor(log2(x))
@@ -146,6 +153,7 @@ namespace exotic_hashing {
        *
        */
       template<class T = std::uint64_t, class BitStream = std::vector<bool>>
+      // TODO(dominik): change return value (just T) and change start directly via reference
       static forceinline std::tuple<T, size_t> decode(const BitStream& stream, const size_t start = 0) {
          // decode N (first bits encode N+1)
          const auto [N_Inc, bits] = EliasGammaCoder::decode(stream, start);
