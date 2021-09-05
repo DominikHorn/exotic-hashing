@@ -45,6 +45,7 @@ static void PresortedBuildTime(benchmark::State& state) {
    // set counters (don't do this in inner loop to avoid tainting results)
    const Hashfn hashfn(dataset);
    state.counters["hashfn_bytes"] = hashfn.byte_size();
+   state.counters["hashfn_bits_per_key"] = 8. * hashfn.byte_size() / dataset.size();
    state.counters["dataset_elem_count"] = dataset.size();
    state.counters["dataset_bytes"] = (sizeof(decltype(dataset)::value_type) * dataset.size());
    state.SetLabel(dataset::name(did));
@@ -75,6 +76,7 @@ static void UnorderedBuildTime(benchmark::State& state) {
    // set counters (don't do this in inner loop to avoid tainting results)
    const Hashfn hashfn(dataset);
    state.counters["hashfn_bytes"] = hashfn.byte_size();
+   state.counters["hashfn_bits_per_key"] = 8. * hashfn.byte_size() / dataset.size();
    state.counters["dataset_elem_count"] = dataset.size();
    state.counters["dataset_bytes"] = (sizeof(decltype(dataset)::value_type) * dataset.size());
    state.SetLabel(dataset::name(did));
@@ -118,6 +120,7 @@ static void LookupTime(benchmark::State& state) {
 
    // set counters (don't do this in inner loop to avoid tainting results)
    state.counters["hashfn_bytes"] = hashfn.byte_size();
+   state.counters["hashfn_bits_per_key"] = 8. * hashfn.byte_size() / dataset.size();
    state.counters["dataset_elem_count"] = dataset.size();
    state.counters["dataset_bytes"] = (sizeof(decltype(dataset)::value_type) * dataset.size());
    state.SetLabel(dataset::name(did));
