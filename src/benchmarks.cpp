@@ -131,17 +131,23 @@ static void LookupTime(benchmark::State& state) {
    BENCHMARK_TEMPLATE(UnorderedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
    BENCHMARK_TEMPLATE(LookupTime, Hashfn)->ArgsProduct({dataset_sizes, datasets});
 
-BM(exotic_hashing::DoNothingHash<Data>);
-BM(exotic_hashing::RankHash<Data>);
-BM(exotic_hashing::RecSplit<Data>);
+using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
+BM(DoNothingHash);
+using RankHash = exotic_hashing::RankHash<Data>;
+BM(RankHash);
+using RecSplit = exotic_hashing::RecSplit<Data>;
+BM(RecSplit);
 using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
 BM(CompactTrie);
 using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
 BM(SimpleHollowTrie);
 using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::FixedBitConverter<Data>>;
 BM(HollowTrie);
-BM(exotic_hashing::MWHC<Data>);
-BM(exotic_hashing::CompressedMWHC<Data>);
-BM(exotic_hashing::CompactedMWHC<Data>);
+using MWHC = exotic_hashing::MWHC<Data>;
+BM(MWHC);
+using CompressedMWHC = exotic_hashing::CompressedMWHC<Data>;
+BM(CompressedMWHC);
+using CompactedMWHC = exotic_hashing::CompactedMWHC<Data>;
+BM(CompactedMWHC);
 
 BENCHMARK_MAIN();
