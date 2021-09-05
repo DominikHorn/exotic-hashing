@@ -28,7 +28,7 @@ namespace exotic_hashing {
       }
 
       size_t byte_size() const {
-         return sizeof(this) + this->_totalBitSize / 8;
+         return this->_totalBitSize / 8;
       };
 
      private:
