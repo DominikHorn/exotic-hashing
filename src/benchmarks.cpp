@@ -48,7 +48,7 @@ static void PresortedBuildTime(benchmark::State& state) {
    state.counters["hashfn_bits_per_key"] = 8. * hashfn.byte_size() / dataset.size();
    state.counters["dataset_elem_count"] = dataset.size();
    state.counters["dataset_bytes"] = (sizeof(decltype(dataset)::value_type) * dataset.size());
-   state.SetLabel(dataset::name(did));
+   state.SetLabel(Hashfn::name() + ":" + dataset::name(did));
 };
 
 template<class Hashfn>
@@ -79,7 +79,7 @@ static void UnorderedBuildTime(benchmark::State& state) {
    state.counters["hashfn_bits_per_key"] = 8. * hashfn.byte_size() / dataset.size();
    state.counters["dataset_elem_count"] = dataset.size();
    state.counters["dataset_bytes"] = (sizeof(decltype(dataset)::value_type) * dataset.size());
-   state.SetLabel(dataset::name(did));
+   state.SetLabel(Hashfn::name() + ":" + dataset::name(did));
 };
 
 template<class Hashfn>
@@ -123,7 +123,7 @@ static void LookupTime(benchmark::State& state) {
    state.counters["hashfn_bits_per_key"] = 8. * hashfn.byte_size() / dataset.size();
    state.counters["dataset_elem_count"] = dataset.size();
    state.counters["dataset_bytes"] = (sizeof(decltype(dataset)::value_type) * dataset.size());
-   state.SetLabel(dataset::name(did));
+   state.SetLabel(Hashfn::name() + ":" + dataset::name(did));
 };
 
 #define BM(Hashfn)                                                                         \
