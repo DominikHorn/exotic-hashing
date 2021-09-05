@@ -11,9 +11,6 @@
 #include "convenience/builtins.hpp"
 #include "convenience/tidy.hpp"
 
-// import (therefore effectively export) recsplit code
-#include "recsplit/recsplit.hpp"
-
 namespace exotic_hashing {
    /**
     * Most basic perfect hash function, i.e.,

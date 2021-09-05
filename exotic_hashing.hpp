@@ -7,3 +7,4 @@
 #include "include/hollow_trie.hpp"
 #include "include/mwhc.hpp"
 #include "include/naive_baseline.hpp"
+#include "include/recsplit/recsplit.hpp"
