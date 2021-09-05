@@ -1,6 +1,7 @@
 #pragma once
 
 #include "include/bitconverter.hpp"
+#include "include/bitvector.hpp"
 #include "include/compact_trie.hpp"
 #include "include/elias.hpp"
 #include "include/fast_succinct_trie.hpp"
