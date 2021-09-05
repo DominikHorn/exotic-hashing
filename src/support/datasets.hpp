@@ -103,7 +103,7 @@ namespace dataset {
       WIKI = 5
    };
 
-   static std::string name(ID id) {
+   inline std::string name(ID id) {
       switch (id) {
          case ID::SEQUENTIAL:
             return "seq";
@@ -121,7 +121,7 @@ namespace dataset {
    };
 
    template<class Data = std::uint64_t>
-   static std::vector<Data> load_cached(ID id, size_t dataset_size) {
+   std::vector<Data> load_cached(ID id, size_t dataset_size) {
       static std::random_device rd;
       static std::default_random_engine rng(rd());
 
