@@ -92,7 +92,7 @@ TEST(Bitvector, CountZeroes) {
 
    std::random_device rd;
    std::default_random_engine rng(rd());
-   std::uniform_int_distribution<size_t> dist(0, 200);
+   std::uniform_int_distribution<size_t> dist(0, 32);
 
    for (const auto size : {8U, 63U, 64U, 65U, 125U, 128U, 200U, 256U, 10000U}) {
       std::vector<bool> vec(size, false);
