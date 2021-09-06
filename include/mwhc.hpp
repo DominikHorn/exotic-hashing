@@ -49,8 +49,10 @@ namespace exotic_hashing {
          // initialize rank struct to speedup lookup
          sdsl::util::init_support(bit_vec_rank, &bit_vec);
 
-         // copy vertex values into compacted layout
-         size_t set_n = 0;
+         // copy vertex values into compacted layout.
+         // add one trailing number to prevent trailing
+         // unset values' rank from exceeding array ranges
+         size_t set_n = 1;
          for (const auto& val : mwhc.vertex_values)
             set_n += is_set(val);
 
