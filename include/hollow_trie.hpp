@@ -246,7 +246,7 @@ namespace exotic_hashing {
    template<class Key, class BitConverter, class BitStream = std::vector<bool>>
    struct HollowTrie {
      private:
-      using IntEncoder = EliasDeltaCoder;
+      using IntEncoder = support::EliasDeltaCoder;
 
      public:
       /**

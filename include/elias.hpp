@@ -7,27 +7,11 @@
 #include <tuple>
 #include <vector>
 
+#include "include/bitvector.hpp"
 #include "include/convenience/builtins.hpp"
+#include "include/support.hpp"
 
-namespace exotic_hashing {
-   template<class T>
-   size_t clz(const T& x) {
-      if (unlikely(x == 0))
-         return sizeof(T) * 8;
-
-      switch (sizeof(T)) {
-         case sizeof(unsigned int):
-            return __builtin_clz(x);
-         case sizeof(unsigned long long):
-            return __builtin_clzll(x);
-         default:
-            size_t i = 0;
-            while (((x >> (sizeof(T) * 8 - i - 1)) & 0x1) == 0x0)
-               i++;
-            return i;
-      }
-   }
-
+namespace exotic_hashing::support {
    /**
     * Elias Gamma Encoding and Decoding for positive integers (excluding 0).
     */
@@ -172,4 +156,4 @@ namespace exotic_hashing {
          return std::make_tuple(res, bits + N);
       }
    };
-} // namespace exotic_hashing
+} // namespace exotic_hashing::support
