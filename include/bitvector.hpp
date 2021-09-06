@@ -24,7 +24,7 @@ namespace exotic_hashing::support {
             return *this;
          }
 
-         explicit operator bool() const {
+         operator bool() const {
             return (unit >> n) & 1U;
          }
       };
@@ -105,7 +105,7 @@ namespace exotic_hashing::support {
       /**
        * counts zeroes starting at index until the first 1 is encountered
        */
-      forceinline size_t count_zeroes(size_t index = 0) {
+      forceinline size_t count_zeroes(size_t index = 0) const {
          assert(index < bitcnt);
 
          const auto u_ind = unit_index(index);

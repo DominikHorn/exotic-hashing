@@ -4,7 +4,6 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
-#include <tuple>
 #include <vector>
 
 #include "include/bitvector.hpp"
@@ -25,27 +24,26 @@ namespace exotic_hashing::support {
        *   not influence the resulting bitstream, i.e., downcasting to a smaller
        *   type is not necessary before encoding. Defaults to std::uint64_t
        */
-      template<class BitStream = std::vector<bool>, class T = std::uint64_t>
+      template<class BitStream = Bitvector<>, class T = std::uint64_t>
       static forceinline BitStream encode(const T& x) {
-         // TODO(dominik): optimize!
          assert(x > 0);
+
+         // special case x == 1, i.e., N == 0
+         if (x == 1)
+            return BitStream(1, true);
 
          // N = floor(log2(x))
          const size_t lz = clz(x);
-         size_t N = (sizeof(T) * 8) - clz(x) - 1;
-         if (unlikely(lz == 0))
-            N = sizeof(T) * 8;
+         const size_t N = unlikely(lz == 0) ? sizeof(T) * 8 : (sizeof(T) * 8) - lz - 1;
          assert(N == static_cast<size_t>(std::floor(std::log2(x))));
 
          // encode N in unary
-         BitStream res;
-         for (size_t i = 0; i < N; i++)
-            res.push_back(0);
-         res.push_back(1);
+         BitStream res(2 * N + 1, false);
+         res[N] = true;
 
          // append the N-1 remaining binary digits of x
          for (size_t i = N - 1; N > i && i >= 0; i--)
-            res.push_back((x >> i) & 0x1);
+            res[N + N - i] = (x >> i) & 0x1;
 
          return res;
       }
@@ -63,17 +61,12 @@ namespace exotic_hashing::support {
        *
        * @return the decoded number as well as the amount of bits consumed
        */
-      template<class T = std::uint64_t, class BitStream = std::vector<bool>>
-      // TODO(dominik): change return value (just T) and change start directly via reference
-      static forceinline std::tuple<T, size_t> decode(const BitStream& stream, const size_t start = 0) {
+      template<class T = std::uint64_t, class BitStream = Bitvector<>>
+      static forceinline std::pair<T, size_t> decode(const BitStream& stream, const size_t start = 0) {
          // decode N = floor(log2(x)) (unary)
-         size_t N = 0;
-         // TODO(dominik): count leading zeroes operation on bitstream
-         while (N + start < stream.size() && stream[N + start] == 0x0)
-            N++;
-
+         const size_t N = stream.count_zeroes(start);
          if (N == 0)
-            return std::make_tuple(1, 1);
+            return {1, 1U};
 
          // TODO(dominik): extract subrange (shift + set remaining upper to 0)
          T tail = 0x0;
@@ -85,7 +78,7 @@ namespace exotic_hashing::support {
          // number as 0x1 followed by the remaining bits
          T res = (0x1 << N) | tail;
 
-         return std::make_tuple(res, 2 * N + 1);
+         return {res, 2 * N + 1};
       }
    };
 
@@ -138,13 +131,13 @@ namespace exotic_hashing::support {
        */
       template<class T = std::uint64_t, class BitStream = std::vector<bool>>
       // TODO(dominik): change return value (just T) and change start directly via reference
-      static forceinline std::tuple<T, size_t> decode(const BitStream& stream, const size_t start = 0) {
+      static forceinline std::pair<T, size_t> decode(const BitStream& stream, const size_t start = 0) {
          // decode N (first bits encode N+1)
          const auto [N_Inc, bits] = EliasGammaCoder::decode(stream, start);
          const auto N = N_Inc - 1;
 
          if (N == 0)
-            return std::make_tuple(1, bits);
+            return {1, bits};
 
          // number as 0x1 followed by the remaining bits
          T res = 0x1;
@@ -153,7 +146,7 @@ namespace exotic_hashing::support {
             res |= stream[i + bits + start] & 0x1;
          }
 
-         return std::make_tuple(res, bits + N);
+         return {res, bits + N};
       }
    };
 } // namespace exotic_hashing::support
