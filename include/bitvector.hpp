@@ -131,6 +131,36 @@ namespace exotic_hashing::support {
          return cnt;
       }
 
+      /**
+       * extracts a block of bits [start, stop). Note that, in addition to
+       * being in bounds, stop_index must be greater or equal to start_index
+       * and stop_index - start_index must at most be sizeof(Storage)*8
+       */
+      forceinline Storage extract_block(size_t start_index, size_t stop_index) const {
+         assert(start_index >= 0);
+         assert(stop_index > start_index);
+         assert(stop_index < bitcnt);
+
+         const auto size = stop_index - start_index;
+         assert(size <= sizeof(Storage) * 8);
+
+         const auto start_u_ind = unit_index(start_index);
+         const auto start_l_ind = unit_local_index(start_index);
+         const auto stop_u_ind = unit_index(stop_index);
+
+         // all in the same block, take shortcut
+         if (start_u_ind == stop_u_ind)
+            return (storage[start_u_ind] >> start_l_ind) & ((0x1ULL << size) - 1);
+
+         const auto stop_l_ind = unit_local_index(stop_index);
+
+         const Storage upper_mask = (0x1ULL << stop_l_ind) - 1;
+         const Storage upper = storage[stop_u_ind] & upper_mask;
+         const Storage lower = storage[start_u_ind] >> start_l_ind;
+
+         return (upper << (unit_bits() - start_l_ind)) | lower;
+      }
+
      private:
       std::vector<Storage> storage;
       size_t bitcnt = 0;
@@ -146,7 +176,7 @@ namespace exotic_hashing::support {
 
       forceinline size_t unit_local_index(const size_t& index) const {
          assert(index < bitcnt);
-         return index & ((0x1 << ctz(unit_bits())) - 1);
+         return index & ((0x1ULL << ctz(unit_bits())) - 1);
       }
    };
 } // namespace exotic_hashing::support
