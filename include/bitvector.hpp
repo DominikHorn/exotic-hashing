@@ -169,7 +169,7 @@ namespace exotic_hashing::support {
       forceinline Storage extract(size_t start_index, size_t stop_index) const {
          assert(start_index >= 0);
          assert(stop_index > start_index);
-         assert(stop_index < bitcnt);
+         assert(stop_index <= bitcnt);
 
          const auto size = stop_index - start_index;
          assert(size <= sizeof(Storage) * 8);

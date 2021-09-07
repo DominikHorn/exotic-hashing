@@ -34,16 +34,15 @@ namespace exotic_hashing::support {
 
          // N = floor(log2(x))
          const size_t lz = clz(x);
-         const size_t N = unlikely(lz == 0) ? sizeof(T) * 8 : (sizeof(T) * 8) - lz - 1;
+         const size_t N = unlikely(lz == 0) ? sizeof(T) * 8 : (sizeof(T) * 8 - lz - 1);
          assert(N == static_cast<size_t>(std::floor(std::log2(x))));
 
-         // encode N in unary
-         BitStream res(2 * N + 1, false);
+         // 1. encode N in unary
+         BitStream res(N + 1, false);
          res[N] = true;
 
-         // append the N-1 remaining binary digits of x
-         for (size_t i = N - 1; N > i && i >= 0; i--)
-            res[N + N - i] = (x >> i) & 0x1;
+         // 2. append the N-1 remaining binary digits of x
+         res.append(x, N);
 
          return res;
       }
@@ -68,17 +67,17 @@ namespace exotic_hashing::support {
          if (N == 0)
             return {1, 1U};
 
-         // TODO(dominik): extract subrange (shift + set remaining upper to 0)
-         T tail = 0x0;
-         for (size_t i = 0; i < N && i + N + 1 + start < stream.size(); i++) {
-            tail <<= 1;
-            tail |= stream[i + N + 1 + start] & 0x1;
-         }
+         // compute bitstream encoded size from N
+         const auto total_length = 2 * N + 1;
 
-         // number as 0x1 followed by the remaining bits. Guard against invalid shift exponent
+         // x is 0x1 followed by the remaining bits.
+         // terniary guards against invalid shift exponent
          const auto upper = N >= sizeof(T) * 8 ? 0x0 : (0x1 << N);
 
-         return {upper | tail, 2 * N + 1};
+         // decode remaining N bits
+         const T tail = stream.extract(start + N + 1, start + total_length);
+
+         return {upper | tail, total_length};
       }
    };
 
