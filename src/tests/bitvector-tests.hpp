@@ -149,7 +149,7 @@ TEST(Bitvector, CountZeroes) {
    }
 }
 
-TEST(Bitvector, ExtractBlock) {
+TEST(Bitvector, Extract) {
    using namespace exotic_hashing::support;
 
    std::random_device rd;
@@ -164,7 +164,7 @@ TEST(Bitvector, ExtractBlock) {
 
       for (size_t i = 0; i < size; i++) {
          for (size_t j = 1; j <= sizeof(std::uint64_t) * 8 && i + j < size; j++) {
-            auto block = bv.extract_block(i, i + j);
+            auto block = bv.extract(i, i + j);
             for (size_t k = i; k < i + j; k++) {
                EXPECT_EQ((block >> (k - i)) & 0x1, vec[k]);
             }

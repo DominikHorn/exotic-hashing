@@ -164,7 +164,7 @@ namespace exotic_hashing::support {
        * being in bounds, stop_index must be greater or equal to start_index
        * and stop_index - start_index must at most be sizeof(Storage)*8
        */
-      forceinline Storage extract_block(size_t start_index, size_t stop_index) const {
+      forceinline Storage extract(size_t start_index, size_t stop_index) const {
          assert(start_index >= 0);
          assert(stop_index > start_index);
          assert(stop_index < bitcnt);
