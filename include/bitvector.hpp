@@ -202,12 +202,10 @@ namespace exotic_hashing::support {
       }
 
       forceinline size_t unit_index(const size_t& index) const {
-         assert(index < bitcnt);
          return index >> ctz(unit_bits());
       }
 
       forceinline size_t unit_local_index(const size_t& index) const {
-         assert(index < bitcnt);
          return index & ((0x1ULL << ctz(unit_bits())) - 1);
       }
    };
