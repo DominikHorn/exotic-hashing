@@ -71,7 +71,7 @@ namespace exotic_hashing::support {
          const auto total_length = 2 * N + 1;
 
          // x is 0x1 followed by the remaining bits.
-         // terniary guards against invalid shift exponent
+         // ternary guards against invalid shift exponent
          const auto upper = N >= sizeof(T) * 8 ? 0x0 : (0x1 << N);
 
          // decode remaining N bits
