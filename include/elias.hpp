@@ -19,7 +19,7 @@ namespace exotic_hashing::support {
        * Elias gamma encodes a given positive integer into a bitsream
        *
        * @tparam BitStream bitstream container. Must support `push_back()`.
-       *   Defaults to std::vector<bool>
+       *   Defaults to support::Bitvector
        * @tparam T integer datatype, e.g., uint64_t. Note that `sizeof(T)` does
        *   not influence the resulting bitstream, i.e., downcasting to a smaller
        *   type is not necessary before encoding. Defaults to std::uint64_t
@@ -53,7 +53,7 @@ namespace exotic_hashing::support {
        * @tparam T encoded integer datatype, e.g., uint64_t. Note that T must
        *   be large enough to represent your number. Defaults to uint64_t
        * @tparam BitStream bitstream container. Must support index access via
-       *   `[i]`. Defaults to std::vector<bool>
+       *   `[i]`. Defaults to Bitvector<>
        *
        * @param stream the bitstream to decode
        * @param start first index in bitstream to look at. Defaults to 0.
@@ -87,7 +87,7 @@ namespace exotic_hashing::support {
        * Elias delta encodes a given positive integer into a bitsream
        *
        * @tparam BitStream bitstream container. Must support `push_back()`.
-       *   Defaults to std::vector<bool>
+       *   Defaults to Bitvector<>
        * @tparam T integer datatype, e.g., uint64_t. Note that `sizeof(T)` does
        *   not influence the resulting bitstream, i.e., downcasting to a smaller
        *   type is not necessary before encoding. Defaults to std::uint64_t
@@ -118,7 +118,7 @@ namespace exotic_hashing::support {
        * @tparam T encoded integer datatype, e.g., uint64_t. Note that T must
        *   be large enough to represent your number. Defaults to uint64_t
        * @tparam BitStream bitstream container. Must support index access via
-       *   `[i]`. Defaults to std::vector<bool>
+       *   `[i]`. Defaults to Bitvector<>
        *
        * @param stream the bitstream to decode
        * @param start first index in bitstream to look at. Defaults to 0. Must be within bounds!

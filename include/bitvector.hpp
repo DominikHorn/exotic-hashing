@@ -18,9 +18,18 @@ namespace exotic_hashing::support {
         public:
          Bitref(Storage& unit, const size_t n) : unit(unit), n(n) {}
 
-         Bitref& operator=(bool const& rhs) {
+         Bitref& operator=(const bool& rhs) {
             Storage new_bit = !!rhs;
             unit ^= (-new_bit ^ unit) & (1UL << n);
+            return *this;
+         }
+
+         Bitref& operator=(const Bitref& rhs) {
+            if (&rhs != this) {
+               Storage new_bit = !!rhs;
+               unit ^= (-new_bit ^ unit) & (1UL << n);
+            }
+
             return *this;
          }
 
@@ -130,6 +139,15 @@ namespace exotic_hashing::support {
 
          // don't forget to increase bitcnt
          bitcnt += cnt;
+      }
+
+      /**
+       * appends all bits from other bitstream to this bitstream
+       */
+      forceinline void append(const Bitvector& other) {
+         // TODO(dominik): optimize this operation
+         for (size_t i = 0; i < other.size(); i++)
+            append(other[i]);
       }
 
       /**

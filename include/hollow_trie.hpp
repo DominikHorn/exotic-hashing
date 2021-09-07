@@ -14,13 +14,14 @@
 #include "compact_trie.hpp"
 #include "convenience/builtins.hpp"
 #include "convenience/tidy.hpp"
+#include "include/bitvector.hpp"
 #include "include/elias.hpp"
 
 namespace exotic_hashing {
    /**
     * Simple, i.e., space wasting Hollow Trie implementation.
     */
-   template<class Key, class BitConverter, class BitStream = std::vector<bool>>
+   template<class Key, class BitConverter, class BitStream = support::Bitvector<>>
    struct SimpleHollowTrie {
       /**
        * Builds a new hollow trie from a dataset by constructing a compacted
@@ -243,7 +244,7 @@ namespace exotic_hashing {
       BitConverter converter;
    };
 
-   template<class Key, class BitConverter, class BitStream = std::vector<bool>>
+   template<class Key, class BitConverter, class BitStream = support::Bitvector<>>
    struct HollowTrie {
      private:
       using IntEncoder = support::EliasDeltaCoder;
@@ -357,14 +358,9 @@ namespace exotic_hashing {
        */
       BitStream convert(const typename CompactTrie<Key, BitConverter>::Node& subtrie) const {
          if (subtrie.is_leaf())
-            return {};
+            return BitStream();
 
          BitStream rep;
-         const auto append_to_rep = [&](const BitStream& other) {
-            // TODO(dominik): implement faster append somehow (?)
-            for (auto bit : other)
-               rep.push_back(bit);
-         };
 
          // Since inner_node_count = leaf_count - 1 for compact tries, this
          // call elegantly computes inner_node_count + 1, i.e., the required
@@ -375,16 +371,16 @@ namespace exotic_hashing {
          // Encode 'parent | left subtrie | right subtrie'.
 
          // parent parameters
-         append_to_rep(IntEncoder::encode(subtrie.prefix.size()));
-         append_to_rep(IntEncoder::encode(left_bitrep.size() + 1));
+         rep.append(IntEncoder::encode(subtrie.prefix.size()));
+         rep.append(IntEncoder::encode(left_bitrep.size() + 1));
 
-         // TODO: leaf_count() is an O(log(N)) operation where N is the max
+         // TODO(dominik): leaf_count() is an O(log(N)) operation where N is the max
          // length of any Key's bitstream.  By also storing right_leaf_count in
          // CompactTrie::Node, we could make this constant time
-         append_to_rep(IntEncoder::encode(subtrie.left->leaf_count()));
+         rep.append(IntEncoder::encode(subtrie.left->leaf_count()));
 
-         append_to_rep(left_bitrep);
-         append_to_rep(right_bitrep);
+         rep.append(left_bitrep);
+         rep.append(right_bitrep);
 
          return rep;
       }
