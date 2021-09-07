@@ -186,7 +186,11 @@ namespace exotic_hashing::support {
          const Storage upper = storage[stop_u_ind] & upper_mask;
          const Storage lower = storage[start_u_ind] >> start_l_ind;
 
-         return (upper << (unit_bits() - start_l_ind)) | lower;
+         const auto shift = unit_bits() - start_l_ind;
+         if (shift >= sizeof(Storage) * 8)
+            return lower;
+
+         return (upper << shift) | lower;
       }
 
      private:

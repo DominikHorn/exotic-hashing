@@ -75,10 +75,10 @@ namespace exotic_hashing::support {
             tail |= stream[i + N + 1 + start] & 0x1;
          }
 
-         // number as 0x1 followed by the remaining bits
-         T res = (0x1 << N) | tail;
+         // number as 0x1 followed by the remaining bits. Guard against invalid shift exponent
+         const auto upper = N >= sizeof(T) * 8 ? 0x0 : (0x1 << N);
 
-         return {res, 2 * N + 1};
+         return {upper | tail, 2 * N + 1};
       }
    };
 
