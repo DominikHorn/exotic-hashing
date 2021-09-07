@@ -6,8 +6,9 @@
 #include <limits>
 #include <optional>
 
-#include "convenience/builtins.hpp"
-#include "convenience/tidy.hpp"
+#include "include/bitvector.hpp"
+#include "include/convenience/builtins.hpp"
+#include "include/convenience/tidy.hpp"
 
 namespace exotic_hashing {
    template<class Key, class BitConverter, class BitStream>
@@ -16,7 +17,7 @@ namespace exotic_hashing {
    template<class Key, class BitConverter, class BitStream>
    struct HollowTrie;
 
-   template<class Key, class BitConverter, class BitStream = std::vector<bool>>
+   template<class Key, class BitConverter, class BitStream = support::Bitvector<>>
    struct CompactTrie {
       CompactTrie() = default;
 
@@ -137,9 +138,7 @@ namespace exotic_hashing {
          Node(const BitStream& key_bits, size_t start, size_t end, size_t local_left_leaf_cnt = 0)
             : local_left_leaf_cnt(local_left_leaf_cnt) {
             const size_t prefix_len = end - start;
-            prefix.resize(prefix_len);
-            for (size_t i = 0; i < prefix_len; i++)
-               prefix[i] = key_bits[i + start];
+            prefix = BitStream(prefix_len, [&](const size_t& i) { return key_bits[i + start]; });
          }
 
          /// Copy constructor
@@ -223,7 +222,7 @@ namespace exotic_hashing {
                   Node* parent = new Node(key_bits, start, start + i);
 
                   // Shorten this node's prefix
-                  BitStream new_prefix(prefix.size() - i, 0);
+                  BitStream new_prefix(prefix.size() - i, false);
                   for (size_t j = i; j < prefix.size(); j++)
                      new_prefix[j - i] = prefix[j];
                   this->prefix = new_prefix;

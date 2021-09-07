@@ -11,52 +11,68 @@
 // ==== Simple Hollow Trie ====
 
 TEST(SimpleHollowTrie, IsPerfect) {
-   tests::common::run_test<
-      std::uint64_t, exotic_hashing::SimpleHollowTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
-      tests::common::TestIsPerfect>();
+   using namespace exotic_hashing;
+   using namespace exotic_hashing::support;
+
+   tests::common::run_test<std::uint64_t, SimpleHollowTrie<std::uint64_t, FixedBitConverter<std::uint64_t>>,
+                           tests::common::TestIsPerfect>();
 }
 
 TEST(SimpleHollowTrie, IsMinimal) {
-   tests::common::run_test<
-      std::uint64_t, exotic_hashing::SimpleHollowTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
-      tests::common::TestIsMinimal>();
+   using namespace exotic_hashing;
+   using namespace exotic_hashing::support;
+
+   tests::common::run_test<std::uint64_t, SimpleHollowTrie<std::uint64_t, FixedBitConverter<std::uint64_t>>,
+                           tests::common::TestIsMinimal>();
 }
 
 TEST(SimpleHollowTrie, IsMonotone) {
-   tests::common::run_test<
-      std::uint64_t, exotic_hashing::SimpleHollowTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
-      tests::common::TestIsMonotone>();
+   using namespace exotic_hashing;
+   using namespace exotic_hashing::support;
+
+   tests::common::run_test<std::uint64_t, SimpleHollowTrie<std::uint64_t, FixedBitConverter<std::uint64_t>>,
+                           tests::common::TestIsMonotone>();
 }
 
 TEST(SimpleHollowTrie, IsMMPHF) {
-   tests::common::run_test<
-      std::uint64_t, exotic_hashing::SimpleHollowTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
-      tests::common::TestIsMMPHF>();
+   using namespace exotic_hashing;
+   using namespace exotic_hashing::support;
+
+   tests::common::run_test<std::uint64_t, SimpleHollowTrie<std::uint64_t, FixedBitConverter<std::uint64_t>>,
+                           tests::common::TestIsMMPHF>();
 }
 
 // ==== Hollow Trie ====
 
 TEST(HollowTrie, IsPerfect) {
-   tests::common::run_test<std::uint64_t,
-                           exotic_hashing::HollowTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
+   using namespace exotic_hashing;
+   using namespace exotic_hashing::support;
+
+   tests::common::run_test<std::uint64_t, HollowTrie<std::uint64_t, FixedBitConverter<std::uint64_t>>,
                            tests::common::TestIsPerfect>();
 }
 
 TEST(HollowTrie, IsMinimal) {
-   tests::common::run_test<std::uint64_t,
-                           exotic_hashing::HollowTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
+   using namespace exotic_hashing;
+   using namespace exotic_hashing::support;
+
+   tests::common::run_test<std::uint64_t, HollowTrie<std::uint64_t, FixedBitConverter<std::uint64_t>>,
                            tests::common::TestIsMinimal>();
 }
 
 TEST(HollowTrie, IsMonotone) {
-   tests::common::run_test<std::uint64_t,
-                           exotic_hashing::HollowTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
+   using namespace exotic_hashing;
+   using namespace exotic_hashing::support;
+
+   tests::common::run_test<std::uint64_t, HollowTrie<std::uint64_t, FixedBitConverter<std::uint64_t>>,
                            tests::common::TestIsMonotone>();
 }
 
 TEST(HollowTrie, IsMMPHF) {
-   tests::common::run_test<std::uint64_t,
-                           exotic_hashing::HollowTrie<std::uint64_t, exotic_hashing::FixedBitConverter<std::uint64_t>>,
+   using namespace exotic_hashing;
+   using namespace exotic_hashing::support;
+
+   tests::common::run_test<std::uint64_t, HollowTrie<std::uint64_t, FixedBitConverter<std::uint64_t>>,
                            tests::common::TestIsMMPHF>();
 }
 
