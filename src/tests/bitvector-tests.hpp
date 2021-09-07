@@ -99,7 +99,7 @@ TEST(Bitvector, AppendMultiple) {
       for (size_t i = 0; i < size; i++)
          vec[i] = dist(rng) & 0x1;
 
-      for (size_t cnt = 1; cnt < size && cnt < sizeof(std::uint64_t) * 8; cnt++) {
+      for (size_t cnt = 1; cnt < size && cnt <= sizeof(std::uint64_t) * 8; cnt++) {
          std::uint64_t data = 0x0;
          for (size_t i = 0; i < cnt; i++) {
             data <<= 1;
