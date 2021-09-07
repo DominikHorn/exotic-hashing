@@ -118,7 +118,39 @@ TEST(Bitvector, AppendMultiple) {
             EXPECT_EQ(empty_bv[i], vec[i]);
             EXPECT_EQ(bv[i + size * 3], vec[i]);
          }
+
+         for (size_t i = 0; i < size * 3; i++)
+            EXPECT_EQ(bv[i], false);
       }
+   }
+}
+
+TEST(Bitvector, AppendOtherBitvector) {
+   using namespace exotic_hashing::support;
+
+   std::random_device rd;
+   std::default_random_engine rng(rd());
+   std::uniform_int_distribution<size_t> dist(0, std::numeric_limits<size_t>::max());
+
+   for (const auto size : {8U, 63U, 64U, 65U, 125U, 128U, 200U, 256U, 100000U}) {
+      Bitvector empty_bv;
+      Bitvector bv(size * 3, false);
+
+      Bitvector<> other(size, [&](const size_t& i) { return dist(rng) & 0x1; });
+
+      empty_bv.append(other);
+      bv.append(other);
+
+      EXPECT_EQ(empty_bv.size(), other.size());
+      EXPECT_EQ(bv.size(), other.size() + size * 3);
+
+      for (size_t i = 0; i < empty_bv.size(); i++) {
+         EXPECT_EQ(empty_bv[i], other[i]);
+         EXPECT_EQ(bv[i + size * 3], other[i]);
+      }
+
+      for (size_t i = 0; i < size * 3; i++)
+         EXPECT_EQ(bv[i], false);
    }
 }
 
