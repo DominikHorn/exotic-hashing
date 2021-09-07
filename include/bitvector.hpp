@@ -109,7 +109,7 @@ namespace exotic_hashing::support {
       forceinline void append(const Storage& val, const size_t cnt, const size_t start = 0) {
          assert(cnt > 0);
 
-         const auto mask = cnt >= sizeof(Storage) * 8 ? 0x0 : (0x1ULL << cnt) - 1;
+         const auto mask = cnt >= sizeof(Storage) * 8 ? ~(0x0) : (0x1ULL << cnt) - 1;
          const Storage data = (val >> start) & mask;
 
          const auto u_ind = unit_index(bitcnt);
