@@ -66,7 +66,7 @@ TEST(Bitvector, FromVectorBool) {
    }
 }
 
-TEST(Bitvector, Append) {
+TEST(Bitvector, AppendSingle) {
    using namespace exotic_hashing::support;
 
    std::random_device rd;
@@ -83,7 +83,42 @@ TEST(Bitvector, Append) {
 
       EXPECT_EQ(bv.size(), vec.size());
       for (size_t i = 0; i < bv.size(); i++)
-         EXPECT_EQ(vec[i], (bool) bv[i]);
+         EXPECT_EQ(vec[i], bv[i]);
+   }
+}
+
+TEST(Bitvector, AppendMultiple) {
+   using namespace exotic_hashing::support;
+
+   std::random_device rd;
+   std::default_random_engine rng(rd());
+   std::uniform_int_distribution<size_t> dist(0, std::numeric_limits<size_t>::max());
+
+   for (const auto size : {8U, 63U, 64U, 65U, 125U, 128U, 200U, 256U, 100000U}) {
+      std::vector<bool> vec(size, false);
+      for (size_t i = 0; i < size; i++)
+         vec[i] = dist(rng) & 0x1;
+
+      for (size_t cnt = 1; cnt < size && cnt < sizeof(std::uint64_t) * 8; cnt++) {
+         std::uint64_t data = 0x0;
+         for (size_t i = 0; i < cnt; i++) {
+            data <<= 1;
+            data |= vec[cnt - i - 1] & 0x1;
+         }
+
+         Bitvector empty_bv;
+         Bitvector bv(size * 3, false);
+
+         empty_bv.append(data, cnt);
+         bv.append(data, cnt);
+
+         EXPECT_EQ(empty_bv.size(), cnt);
+         EXPECT_EQ(bv.size(), cnt + size * 3);
+         for (size_t i = 0; i < empty_bv.size(); i++) {
+            EXPECT_EQ(empty_bv[i], vec[i]);
+            EXPECT_EQ(bv[i + size * 3], vec[i]);
+         }
+      }
    }
 }
 

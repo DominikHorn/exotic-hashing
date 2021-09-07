@@ -103,6 +103,34 @@ namespace exotic_hashing::support {
       }
 
       /**
+       * appends cnt bytes from val to this vector. Note that cnt must
+       * be greater than 0
+       */
+      forceinline void append(const Storage& val, const size_t cnt, const size_t start = 0) {
+         assert(cnt > 0);
+
+         const auto mask = cnt >= sizeof(Storage) * 8 ? 0x0 : (0x1ULL << cnt) - 1;
+         const Storage data = (val >> start) & mask;
+
+         const auto u_ind = unit_index(bitcnt);
+         const auto l_ind = unit_local_index(bitcnt);
+
+         // catch, e.g., empty bitvector case
+         if (u_ind >= storage.size())
+            storage.push_back(data);
+         else
+            storage[u_ind] |= data << l_ind;
+
+         // catch overflow into next (non existent) storage unit
+         const auto lower_bitcnt = unit_bits() - l_ind;
+         if (cnt > lower_bitcnt)
+            storage.push_back(data >> lower_bitcnt);
+
+         // don't forget to increase bitcnt
+         bitcnt += cnt;
+      }
+
+      /**
        * counts zeroes starting at index until the first 1 is encountered
        */
       forceinline size_t count_zeroes(size_t index = 0) const {
