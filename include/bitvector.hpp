@@ -24,7 +24,9 @@ namespace exotic_hashing::support {
             return *this;
          }
 
-         operator bool() const {
+         // this is a very rare case where implicit bool conversion is perfectly fine
+         // since Bitref essentially represents a bool!
+         operator bool() const { // NOLINT
             return (unit >> n) & 1U;
          }
       };
