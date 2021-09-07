@@ -136,7 +136,7 @@ TEST(Bitvector, AppendOtherBitvector) {
       Bitvector empty_bv;
       Bitvector bv(size * 3, false);
 
-      Bitvector<> other(size, [&](const size_t& i) { return dist(rng) & 0x1; });
+      Bitvector<> other(size, [&](const size_t& /*index*/) { return dist(rng) & 0x1; });
 
       empty_bv.append(other);
       bv.append(other);
