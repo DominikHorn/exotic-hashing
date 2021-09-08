@@ -61,21 +61,25 @@ namespace exotic_hashing::support {
        * @return the decoded number as well as the amount of bits consumed
        */
       template<class T = std::uint64_t, class BitStream = Bitvector<>>
-      static forceinline std::pair<T, size_t> decode(const BitStream& stream, const size_t start = 0) {
+      static forceinline T decode(const BitStream& stream, size_t& start) {
          // decode N = floor(log2(x)) (unary)
          const size_t N = stream.count_zeroes(start);
-         if (N == 0)
-            return {1, 1U};
 
-         // compute bitstream encoded size from N
-         const auto total_length = 2 * N + 1;
+         // move bitptr
+         start += N + 1;
+
+         if (N == 0)
+            return 1;
 
          // decode remaining N bits
-         const T tail = stream.extract(start + N + 1, start + total_length);
+         const T tail = stream.extract(start, start + N);
+
+         // move bitptr
+         start += N;
 
          // x is 0x1 followed by the remaining bits.
          // ternary guards against invalid shift exponent
-         return {(N >= sizeof(T) * 8 ? 0x0 : (0x1 << N)) | tail, total_length};
+         return (N >= sizeof(T) * 8 ? 0x0 : (0x1 << N)) | tail;
       }
    };
 
@@ -94,7 +98,6 @@ namespace exotic_hashing::support {
        */
       template<class BitStream = Bitvector<>, class T = std::uint64_t>
       static forceinline BitStream encode(const T& x) {
-         // TODO(dominik): optimize
          assert(x > 0);
 
          // N = floor(log2(x))
@@ -125,19 +128,20 @@ namespace exotic_hashing::support {
        *
        */
       template<class T = std::uint64_t, class BitStream = Bitvector<>>
-      static forceinline std::pair<T, size_t> decode(const BitStream& stream, const size_t start = 0) {
+      static forceinline T decode(const BitStream& stream, size_t& start) {
          // decode N (first bits encode N+1)
-         const auto [N_Inc, bits] = EliasGammaCoder::decode(stream, start);
-         const auto N = N_Inc - 1;
+         const auto N = EliasGammaCoder::decode(stream, start) - 1;
 
+         // special case encoding
          if (N == 0)
-            return {1, bits};
+            return 1;
 
          // number as 0x1 followed by the remaining bits
          // decode remaining N bits
-         const T tail = stream.extract(start + bits, start + bits + N);
+         const T tail = stream.extract(start, start + N);
+         start += N;
 
-         return {(N >= sizeof(T) * 8 ? 0x0 : (0x1 << N)) | tail, bits + N};
+         return (N >= sizeof(T) * 8 ? 0x0 : (0x1 << N)) | tail;
       }
    };
 } // namespace exotic_hashing::support

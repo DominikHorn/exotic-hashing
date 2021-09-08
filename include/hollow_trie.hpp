@@ -264,13 +264,12 @@ namespace exotic_hashing {
       explicit HollowTrie(const CompactTrie<Key, BitConverter>& compact_trie)
          : representation(convert(*compact_trie.root)) {}
 
-      forceinline size_t operator()(const Key& key) const {
+      size_t operator()(const Key& key) const {
          BitStream key_bits = converter(key);
 
          size_t left_leaf_cnt = 0, key_bits_ind = 0, leftmost_right = representation.size();
          for (size_t bit_ind = 0; key_bits_ind < key_bits.size();) {
             const auto node = read_node(representation, bit_ind);
-            bit_ind += node.bitstream_size;
             key_bits_ind += node.discriminator_index;
 
             // Right (if) or Left (else) traversal
@@ -389,7 +388,6 @@ namespace exotic_hashing {
          const size_t discriminator_index;
          const size_t left_bitsize;
          const size_t left_leaf_count;
-         const size_t bitstream_size;
       };
 
       /**
@@ -397,15 +395,14 @@ namespace exotic_hashing {
        *
        * @return node parameters as well as amount of bits read from stream, packed into Node struct
        */
-      forceinline Node read_node(const BitStream& stream, const size_t start) const {
-         auto [discriminator_ind, bitcnt1] = IntEncoder::decode(stream, start);
-         const auto [left_bitsize, bitcnt2] = IntEncoder::decode(stream, start + bitcnt1);
-         const auto [left_leaf_count, bitcnt3] = IntEncoder::decode(stream, start + bitcnt1 + bitcnt2);
+      Node read_node(const BitStream& stream, size_t& bit_index) const {
+         const auto discriminator_ind = IntEncoder::decode(stream, bit_index);
+         const auto left_bitsize = IntEncoder::decode(stream, bit_index);
+         const auto left_leaf_count = IntEncoder::decode(stream, bit_index);
 
          return {.discriminator_index = discriminator_ind,
                  .left_bitsize = left_bitsize - 1,
-                 .left_leaf_count = left_leaf_count,
-                 .bitstream_size = bitcnt1 + bitcnt2 + bitcnt3};
+                 .left_leaf_count = left_leaf_count};
       }
 
       /**

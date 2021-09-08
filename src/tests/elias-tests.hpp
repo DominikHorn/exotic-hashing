@@ -15,10 +15,12 @@ TEST(EliasCoding, GammaIdempotency) {
 
    for (std::uint64_t original : test_data) {
       auto enc = EliasGammaCoder::encode(original);
-      auto [dec, bits] = EliasGammaCoder::decode(enc);
+
+      size_t bit_index = 0;
+      auto dec = EliasGammaCoder::decode(enc, bit_index);
 
       EXPECT_EQ(dec, original);
-      EXPECT_EQ(bits, enc.size());
+      EXPECT_EQ(bit_index, enc.size());
    }
 }
 
@@ -34,30 +36,33 @@ TEST(EliasCoding, GammaEmbedded) {
 
    for (std::uint64_t original : test_data) {
       auto enc = EliasGammaCoder::encode(original);
-      auto [dec, bits] = EliasGammaCoder::decode(enc);
+      size_t bit_index = 0;
+      auto dec = EliasGammaCoder::decode(enc, bit_index);
 
       EXPECT_EQ(dec, original);
-      EXPECT_EQ(bits, enc.size());
+      EXPECT_EQ(bit_index, enc.size());
 
       for (size_t i = 0; i < 10; i++)
          enc.append(i & 0x1);
 
-      auto [dec2, bits2] = EliasGammaCoder::decode(enc);
+      size_t bit_index2 = 0;
+      auto dec2 = EliasGammaCoder::decode(enc, bit_index2);
 
       EXPECT_EQ(dec2, original);
-      EXPECT_EQ(bits2, bits);
+      EXPECT_EQ(bit_index2, bit_index);
 
       Bitvector rep;
-      const size_t start = 7;
-      for (size_t i = 0; i < start; i++)
+      const size_t prefix_size = 7;
+      for (size_t i = 0; i < prefix_size; i++)
          rep.append(i & 0x1);
       for (size_t i = 0; i < enc.size(); i++)
          rep.append(enc[i]);
 
-      auto [dec3, bits3] = EliasGammaCoder::decode(rep, start);
+      size_t bit_index3 = prefix_size;
+      auto dec3 = EliasGammaCoder::decode(rep, bit_index3);
 
       EXPECT_EQ(dec3, original);
-      EXPECT_EQ(bits3, bits);
+      EXPECT_EQ(bit_index3, bit_index + prefix_size);
    }
 }
 
@@ -72,10 +77,11 @@ TEST(EliasCoding, DeltaIdempotency) {
 
    for (std::uint64_t original : test_data) {
       auto enc = EliasDeltaCoder::encode(original);
-      auto [dec, bits] = EliasDeltaCoder::decode(enc);
+      size_t bit_index = 0;
+      auto dec = EliasDeltaCoder::decode(enc, bit_index);
 
       EXPECT_EQ(dec, original);
-      EXPECT_EQ(bits, enc.size());
+      EXPECT_EQ(bit_index, enc.size());
    }
 }
 
@@ -91,30 +97,33 @@ TEST(EliasCoding, DeltaEmbedded) {
 
    for (std::uint64_t original : test_data) {
       auto enc = EliasDeltaCoder::encode(original);
-      auto [dec, bits] = EliasDeltaCoder::decode(enc);
+      size_t bit_index = 0;
+      auto dec = EliasDeltaCoder::decode(enc, bit_index);
 
       EXPECT_EQ(dec, original);
-      EXPECT_EQ(bits, enc.size());
+      EXPECT_EQ(bit_index, enc.size());
 
       for (size_t i = 0; i < 10; i++)
          enc.append(i & 0x1);
 
-      auto [dec2, bits2] = EliasDeltaCoder::decode(enc);
+      size_t bit_index2 = 0;
+      auto dec2 = EliasDeltaCoder::decode(enc, bit_index2);
 
       EXPECT_EQ(dec2, original);
-      EXPECT_EQ(bits2, bits);
+      EXPECT_EQ(bit_index2, bit_index);
 
       Bitvector rep;
-      const size_t start = 7;
-      for (size_t i = 0; i < start; i++)
+      const size_t prefix_size = 7;
+      for (size_t i = 0; i < prefix_size; i++)
          rep.append(i & 0x1);
       for (size_t i = 0; i < enc.size(); i++)
          rep.append(enc[i]);
 
-      auto [dec3, bits3] = EliasDeltaCoder::decode(rep, start);
+      size_t bit_index3 = prefix_size;
+      auto dec3 = EliasDeltaCoder::decode(rep, bit_index3);
 
       EXPECT_EQ(dec3, original);
-      EXPECT_EQ(bits3, bits);
+      EXPECT_EQ(bit_index3, bit_index + prefix_size);
    }
 }
 
