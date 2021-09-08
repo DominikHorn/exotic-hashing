@@ -8,6 +8,21 @@
 
 namespace exotic_hashing::support {
    template<class T>
+   forceinline constexpr size_t ffs(const T& x) {
+      switch (sizeof(T)) {
+         case sizeof(std::uint64_t):
+            return __builtin_ffsll(x);
+         case sizeof(std::uint32_t):
+            return __builtin_ffs(x);
+         default:
+            size_t i = 0;
+            while (~((x >> i) & 0x1))
+               i++;
+            return i;
+      }
+   }
+
+   template<class T>
    forceinline constexpr size_t ctz(const T& x) {
       switch (sizeof(T)) {
          case sizeof(std::uint32_t):
