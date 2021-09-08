@@ -18,9 +18,9 @@
 #include "support/datasets.hpp"
 
 using Data = std::uint64_t;
-const std::vector<std::int64_t> dataset_sizes{100, 10000, 1000000, 100000000};
+const std::vector<std::int64_t> dataset_sizes{100, 10000, 1000000, 10000000};
 const std::vector<std::int64_t> datasets{dataset::ID::SEQUENTIAL, dataset::ID::UNIFORM, dataset::ID::FB,
-                                         dataset::ID::OSM, dataset::ID::WIKI};
+                                         /*dataset::ID::OSM, dataset::ID::WIKI*/};
 
 template<class Hashfn>
 static void PresortedBuildTime(benchmark::State& state) {
