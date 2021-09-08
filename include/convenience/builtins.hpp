@@ -16,7 +16,7 @@
    #define packit __attribute__((packed))
    #define prefetchit(address, mode, locality) __builtin_prefetch(address, mode, locality)
 
-   #define full_mem_barrier __sync_synchronize()
+   #define full_memory_barrier __sync_synchronize
 #else
    #error "Your compiler is currently not supported"
 #endif

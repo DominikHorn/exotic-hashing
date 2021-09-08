@@ -118,6 +118,9 @@ static void LookupTime(benchmark::State& state) {
       // hash element
       const auto hash = hashfn(element);
       benchmark::DoNotOptimize(hash);
+
+      // prevent interleaved execution
+      full_memory_barrier();
    }
 
    // set counters (don't do this in inner loop to avoid tainting results)
