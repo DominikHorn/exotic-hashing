@@ -136,10 +136,8 @@ namespace exotic_hashing {
      private:
       struct Node {
          Node(const BitStream& key_bits, size_t start, size_t end, size_t local_left_leaf_cnt = 0)
-            : local_left_leaf_cnt(local_left_leaf_cnt) {
-            const size_t prefix_len = end - start;
-            prefix = BitStream(prefix_len, [&](const size_t& i) { return key_bits[i + start]; });
-         }
+            : prefix(BitStream(end - start, [&](const size_t& i) { return key_bits[i + start]; })),
+              local_left_leaf_cnt(local_left_leaf_cnt) {}
 
          /// Copy constructor
          Node(const Node& other)
