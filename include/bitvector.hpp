@@ -105,8 +105,14 @@ namespace exotic_hashing::support {
       /**
        * convenience initialize with specific size & all values set to a single value
        */
-      explicit Bitvector(const size_t& bitcnt = 0, const bool& value = false)
+      explicit Bitvector(const size_t& bitcnt, const bool& value)
          : Bitvector(bitcnt, [&](const size_t /*index*/) { return value; }) {}
+
+      /**
+       * zero parameter constructor
+       */
+      explicit Bitvector() : Bitvector(0, false) {}
+
       /**
        * provides read access to i-th bit
        */
