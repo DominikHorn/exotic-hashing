@@ -149,5 +149,7 @@ using CompressedMWHC = exotic_hashing::CompressedMWHC<Data>;
 BM(CompressedMWHC);
 using CompactedMWHC = exotic_hashing::CompactedMWHC<Data>;
 BM(CompactedMWHC);
+using FST = exotic_hashing::FastSuccinctTrie<Data>;
+BM(FST);
 
 BENCHMARK_MAIN();
