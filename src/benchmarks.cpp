@@ -44,6 +44,7 @@ static void PresortedBuildTime(benchmark::State& state) {
 
    // set counters (don't do this in inner loop to avoid tainting results)
    const Hashfn hashfn(dataset);
+   state.SetItemsProcessed(static_cast<int64_t>(dataset.size()));
    state.counters["hashfn_bytes"] = hashfn.byte_size();
    state.counters["hashfn_bits_per_key"] = 8. * hashfn.byte_size() / dataset.size();
    state.counters["dataset_elem_count"] = dataset.size();
@@ -75,6 +76,7 @@ static void UnorderedBuildTime(benchmark::State& state) {
 
    // set counters (don't do this in inner loop to avoid tainting results)
    const Hashfn hashfn(dataset);
+   state.SetItemsProcessed(static_cast<int64_t>(shuffled_dataset.size()));
    state.counters["hashfn_bytes"] = hashfn.byte_size();
    state.counters["hashfn_bits_per_key"] = 8. * hashfn.byte_size() / dataset.size();
    state.counters["dataset_elem_count"] = dataset.size();
