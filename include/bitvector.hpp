@@ -52,6 +52,7 @@ namespace exotic_hashing::support {
       Bitvector(const size_t& bitcnt, const Generator gen) : bitcnt(bitcnt) {
          const auto unit_cnt = (bitcnt + unit_bits() - 1) / unit_bits();
          storage.resize(unit_cnt);
+         storage_size = unit_cnt;
 
          // attempt to minimize bit access overhead by 'bulk loading' storage
          for (size_t u_ind = 0; u_ind < unit_cnt; u_ind++) {
@@ -91,6 +92,7 @@ namespace exotic_hashing::support {
             val |= (data >> i) & 0x1;
          }
          storage.push_back(val);
+         storage_size++;
 #endif
       }
 
@@ -133,8 +135,10 @@ namespace exotic_hashing::support {
          const size_t index = bitcnt++;
 
          const auto u_ind = unit_index(index);
-         if (u_ind >= storage.size())
+         if (u_ind >= storage_size) {
             storage.push_back(0x0);
+            storage_size++;
+         }
 
          this->operator[](index) = val;
       }
@@ -153,15 +157,18 @@ namespace exotic_hashing::support {
          const auto l_ind = unit_local_index(bitcnt);
 
          // catch, e.g., empty bitvector case
-         if (u_ind >= storage.size())
+         if (u_ind >= storage_size) {
             storage.push_back(data);
-         else
+            storage_size++;
+         } else
             storage[u_ind] |= data << l_ind;
 
          // catch overflow into next (non existent) storage unit
          const auto lower_bitcnt = unit_bits() - l_ind;
-         if (cnt > lower_bitcnt)
+         if (cnt > lower_bitcnt) {
             storage.push_back(data >> lower_bitcnt);
+            storage_size++;
+         }
 
          // don't forget to increase bitcnt
          bitcnt += cnt;
@@ -182,27 +189,21 @@ namespace exotic_hashing::support {
       forceinline size_t count_zeroes(size_t index = 0) const {
          assert(index < bitcnt);
 
-         const auto u_ind = unit_index(index);
-         const auto l_ind = unit_local_index(index);
+         auto l_ind = unit_local_index(index);
+         size_t first_set = 0;
+         for (auto u_ind = unit_index(index); u_ind < storage_size; u_ind++) {
+            const auto val = storage[u_ind] >> l_ind;
+            if (val > 0) // search is done iff there is at least one set bit
+               return first_set + ctz(val);
+            else
+               first_set += unit_bits() - l_ind;
 
-         const auto val = (storage[u_ind] >> l_ind);
+            // next block has to be scanned starting at l_ind 0
+            l_ind = 0;
+         }
 
-         size_t cnt = 0;
-         // ctz is undefined for val == 0
-         if (val == 0) {
-            // last storage unit
-            if (u_ind + 1 >= storage.size())
-               return bitcnt - (unit_bits() * u_ind + l_ind);
-
-            cnt = unit_bits() - l_ind;
-         } else
-            cnt = ctz(val);
-
-         // special case: zero string wraps to next storage unit
-         if (cnt + l_ind >= unit_bits() && cnt + l_ind < bitcnt)
-            return cnt + count_zeroes(cnt + index);
-
-         return cnt;
+         // account for last block potentially not being full size
+         return first_set - (unit_bits() * storage_size - bitcnt);
       }
 
       /**
@@ -242,16 +243,17 @@ namespace exotic_hashing::support {
      private:
       std::vector<Storage> storage;
       size_t bitcnt = 0;
+      size_t storage_size = 0;
 
-      static forceinline size_t unit_bits() {
+      forceinline constexpr size_t unit_bits() const {
          return sizeof(Storage) * 8;
       }
 
-      forceinline size_t unit_index(const size_t& index) const {
+      forceinline constexpr size_t unit_index(const size_t& index) const {
          return index >> ctz(unit_bits());
       }
 
-      forceinline size_t unit_local_index(const size_t& index) const {
+      forceinline constexpr size_t unit_local_index(const size_t& index) const {
          return index & ((0x1ULL << ctz(unit_bits())) - 1);
       }
    };

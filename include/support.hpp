@@ -2,17 +2,18 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <x86intrin.h>
 
 #include "include/convenience/builtins.hpp"
 
 namespace exotic_hashing::support {
    template<class T>
-   forceinline size_t ctz(const T& x) {
+   forceinline constexpr size_t ctz(const T& x) {
       switch (sizeof(T)) {
          case sizeof(std::uint32_t):
-            return __builtin_ctz(x);
+            return __tzcnt_u32(x);
          case sizeof(std::uint64_t):
-            return __builtin_ctzll(x);
+            return __tzcnt_u64(x);
          default:
             size_t i = 0;
             while (~((x >> i) & 0x1))
@@ -22,7 +23,7 @@ namespace exotic_hashing::support {
    }
 
    template<class T>
-   forceinline size_t clz(const T& x) {
+   forceinline constexpr size_t clz(const T& x) {
       if (x == 0)
          return sizeof(T) * 8;
 
