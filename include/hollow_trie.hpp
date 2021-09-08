@@ -370,7 +370,7 @@ namespace exotic_hashing {
          // Encode 'parent | left subtrie | right subtrie'.
 
          // parent parameters
-         rep.append(IntEncoder::encode(subtrie.prefix.size()));
+         rep.append(IntEncoder::encode(subtrie.prefix.size() + 1));
          rep.append(IntEncoder::encode(left_bitrep.size() + 1));
 
          // TODO(dominik): leaf_count() is an O(log(N)) operation where N is the max
@@ -400,7 +400,7 @@ namespace exotic_hashing {
          const auto left_bitsize = IntEncoder::decode(stream, bit_index);
          const auto left_leaf_count = IntEncoder::decode(stream, bit_index);
 
-         return {.discriminator_index = discriminator_ind,
+         return {.discriminator_index = discriminator_ind - 1,
                  .left_bitsize = left_bitsize - 1,
                  .left_leaf_count = left_leaf_count};
       }
