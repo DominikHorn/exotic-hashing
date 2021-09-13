@@ -424,7 +424,8 @@ namespace exotic_hashing {
             out << " ";
 
          // Current node
-         const auto n = read_node(representation, bit_index);
+         size_t after_ind = bit_index;
+         const auto n = read_node(representation, after_ind);
          out << "[{" << n.discriminator_index << ", " << n.left_leaf_count << "}" << std::endl;
 
          // Left child
@@ -434,19 +435,16 @@ namespace exotic_hashing {
                out << " ";
             out << "[,phantom]" << std::endl;
          } else
-            print_subtrie_tikz(out,
-                               bit_index + n.bitstream_size,
-                               bit_index + n.bitstream_size + n.left_bitsize,
-                               indent + 1);
+            print_subtrie_tikz(out, after_ind, after_ind + n.left_bitsize, indent + 1);
 
          // Right child
-         if (bit_index + n.bitstream_size + n.left_bitsize >= leftmost_right) {
+         if (after_ind + n.left_bitsize >= leftmost_right) {
             // ... is a leaf
             for (size_t i = 0; i < indent + 1; i++)
                out << " ";
             out << "[,phantom]" << std::endl;
          } else
-            print_subtrie_tikz(out, bit_index + n.bitstream_size + n.left_bitsize, leftmost_right, indent + 1);
+            print_subtrie_tikz(out, after_ind + n.left_bitsize, leftmost_right, indent + 1);
 
          for (size_t i = 0; i < indent; i++)
             out << " ";
