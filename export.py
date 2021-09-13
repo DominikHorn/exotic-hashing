@@ -142,7 +142,6 @@ with open(file) as data_file:
             title="Build time per Key",
             color_discrete_sequence=color_sequence
             )
-        fig.update_yaxes(range=[-200, 11500])
         commit(fig, name)
         fig.update_yaxes(matches=None, range=[-50, 4650], row=1)
         fig.update_yaxes(matches=None, range=[-50, 2350], row=2)
