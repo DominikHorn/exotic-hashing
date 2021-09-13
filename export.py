@@ -167,7 +167,6 @@ with open(file) as data_file:
         img_base_path = f'https://github.com/DominikHorn/exotic-hashing/raw/{commit_sha}/results'
         readme.write(cleandoc(f"""
         ## Lookup time
-        Lookup time in terms of nanoseconds per key:
         ![lookup time]({img_base_path}/lookup_time.png)
 
         Zoomed in on the top contendors:
@@ -176,18 +175,16 @@ with open(file) as data_file:
         Lookup throughput, i.e., amount of keys per second:
         ![lookup throughput]({img_base_path}/lookup_throughput.png)
 
-        Zoomed in on the top contendors:
+        Zoomed in:
         ![zoomed lookup throughput]({img_base_path}/zoomed_lookup_throughput.png)
 
         ## Bits per key
-        The following charts indicate how many bits per key each function occupies:
         ![bits per key]({img_base_path}/bits_per_key.png)
 
         Zoomed in on the top contendors:
         ![zoomed bits per key]({img_base_path}/zoomed_bits_per_key.png)
 
         ## Build time
-        Time to build the datastructure in nanoseconds per key:
         ![build time]({img_base_path}/build_time.png)
 
         Zoomed in on the top contendors:
