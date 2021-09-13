@@ -1,0 +1,1 @@
+![bits per key](https://github.com/DominikHorn/exotic-hashing/raw/fcd65cbb677fc701a560cd2e4dff7af2dba4fab8/results/bits_per_key.png)
