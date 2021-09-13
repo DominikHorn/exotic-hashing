@@ -61,8 +61,8 @@ with open(file) as data_file:
         exp = int(round(l, 0))
         return f'${rem} \cdot 10^{{{exp}}}$'
     lt_df["elem_magnitude"] = lt_df.apply(lambda x : magnitude(x["dataset_elem_count"]), axis=1)
-    #TODO
-    #bt_df["cpu_time_per_key"] = bt_df.apply(lambda x : x["cpu_time"] / x["dataset_elem_count"], axis=1)
+    bt_df["cpu_time_per_key"] = bt_df.apply(lambda x : x["cpu_time"] / x["dataset_elem_count"], axis=1)
+    bt_df["sorted"] = bt_df.apply(lambda x : x["name"].lower().startswith("presorted"), axis=1)
 
     # ensure export output folder exists
     results_path = "results" if len(sys.argv) < 3 else sys.argv[2]
@@ -128,7 +128,28 @@ with open(file) as data_file:
         fig.update_yaxes(range=[-5, 170])
         commit(fig, f'zoomed_{name}')
 
-    save_as_csv()
-    plot_lookup_times()
-    plot_hashfn_bits_per_key()
-    plot_lookup_throughput()
+    def plot_build_time():
+        name = "build_time"
+        fig = px.line(
+            bt_df,
+            x="dataset_elem_count",
+            y="cpu_time_per_key",
+            color="hashfn",
+            facet_col="dataset",
+            facet_row="sorted",
+            log_x=True,
+            markers=True,
+            title="Build time per Key",
+            color_discrete_sequence=color_sequence
+            )
+        fig.update_yaxes(range=[-200, 11500])
+        commit(fig, name)
+        fig.update_yaxes(matches=None, range=[-50, 4550], row=1)
+        fig.update_yaxes(matches=None, range=[-50, 2350], row=2)
+        commit(fig, f'zoomed_{name}')
+
+    #save_as_csv()
+    #plot_lookup_times()
+    #plot_hashfn_bits_per_key()
+    #plot_lookup_throughput()
+    plot_build_time()
