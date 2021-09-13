@@ -140,6 +140,8 @@ using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
 BM(DoNothingHash);
 using RankHash = exotic_hashing::RankHash<Data>;
 BM(RankHash);
+using MapOMPHF = exotic_hashing::MapOMPHF<Data>;
+BM(MapOMPHF);
 using RecSplit = exotic_hashing::RecSplit<Data>;
 BM(RecSplit);
 using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
