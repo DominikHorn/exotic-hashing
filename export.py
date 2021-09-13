@@ -2,7 +2,9 @@ import json
 import math
 import pandas as pd
 import sys
+import git
 from pathlib import Path
+from inspect import cleandoc
 
 from plotly.subplots import make_subplots
 import plotly.express as px
@@ -152,3 +154,46 @@ with open(file) as data_file:
     plot_hashfn_bits_per_key()
     plot_lookup_throughput()
     plot_build_time()
+
+    # commit result files (to have new commit sha for png files)
+    repo = git.Repo(".")
+    repo.git.reset('HEAD')
+    added = repo.index.add(results_path)
+    if len(added) > 0:
+        repo.index.commit('export benchmark result plots and csv')
+    commit_sha = repo.head.commit.hexsha
+
+    with open(f'{results_path}/readme.md', 'w') as readme:
+        img_base_path = f'https://github.com/DominikHorn/exotic-hashing/raw/{commit_sha}/results'
+        readme.write(cleandoc(f"""
+        ## Lookup time
+        Lookup time in terms of nanoseconds per key:
+        ![lookup time]({img_base_path}/lookup_time.png)
+
+        Zoomed in on the top contendors:
+        ![zoomed lookup time]({img_base_path}/zoomed_lookup_time.png)
+
+        Lookup throughput, i.e., amount of keys per second:
+        ![lookup throughput]({img_base_path}/lookup_throughput.png)
+
+        Zoomed in on the top contendors:
+        ![zoomed lookup throughput]({img_base_path}/zoomed_lookup_throughput.png)
+
+        ## Bits per key
+        The following charts indicate how many bits per key each function occupies:
+        ![bits per key]({img_base_path}/bits_per_key.png)
+
+        Zoomed in on the top contendors:
+        ![zoomed bits per key]({img_base_path}/zoomed_bits_per_key.png)
+
+        ## Build time
+        Time to build the datastructure in nanoseconds per key:
+        ![build time]({img_base_path}/build_time.png)
+
+        Zoomed in on the top contendors:
+        ![zoomed build time]({img_base_path}/zoomed_build_time.png)
+        """))
+
+    added = repo.index.add(results_path)
+    if len(added) > 0:
+        repo.index.commit('export benchmark result readme')
