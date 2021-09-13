@@ -10,8 +10,18 @@ from plotly.subplots import make_subplots
 import plotly.express as px
 import plotly.graph_objects as go
 
+# plot colors
 pal = px.colors.qualitative.Plotly
 color_sequence = ["#BBB", "#777", "#111", pal[9], pal[4], pal[6], pal[1], pal[0], "#58a2c4", pal[5], pal[2], pal[7], pal[8], pal[3]]
+
+# plot labels
+plot_labels = dict(
+    cpu_time_per_key='ns per key',
+    dataset_elem_count='dataset size',
+    elem_magnitude='dataset size',
+    hashfn_bits_per_key='bits per key',
+    throughput='keys per second')
+
 
 file = "benchmark_results.json" if len(sys.argv) < 2 else sys.argv[1]
 with open(file) as data_file:
@@ -63,6 +73,7 @@ with open(file) as data_file:
         exp = int(round(l, 0))
         return f'${rem} \cdot 10^{{{exp}}}$'
     lt_df["elem_magnitude"] = lt_df.apply(lambda x : magnitude(x["dataset_elem_count"]), axis=1)
+    lt_df["cpu_time_per_key"] = lt_df['cpu_time']
     bt_df["cpu_time_per_key"] = bt_df.apply(lambda x : x["cpu_time"] / x["dataset_elem_count"], axis=1)
     bt_df["sorted"] = bt_df.apply(lambda x : x["name"].lower().startswith("presorted"), axis=1)
 
@@ -83,12 +94,13 @@ with open(file) as data_file:
         fig = px.line(
             lt_df,
             x="dataset_elem_count",
-            y="cpu_time",
+            y="cpu_time_per_key",
             color="hashfn",
             facet_col="dataset",
             markers=True,
             log_x=True,
             title="Lookup Time",
+            labels=plot_labels,
             color_discrete_sequence=color_sequence
             )
         commit(fig, name)
@@ -106,6 +118,7 @@ with open(file) as data_file:
             barmode="group",
             facet_col="dataset",
             title="Lookup Throughput",
+            labels=plot_labels,
             color_discrete_sequence=color_sequence
             )
         fig.update_xaxes(type='category')
@@ -124,6 +137,7 @@ with open(file) as data_file:
             log_x=True,
             markers=True,
             title="Bits per Key",
+            labels=plot_labels,
             color_discrete_sequence=color_sequence
             )
         commit(fig, name)
@@ -142,6 +156,7 @@ with open(file) as data_file:
             log_x=True,
             markers=True,
             title="Build time per Key",
+            labels=plot_labels,
             color_discrete_sequence=color_sequence
             )
         commit(fig, name)
