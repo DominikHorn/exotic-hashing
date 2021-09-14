@@ -56,8 +56,7 @@ namespace exotic_hashing {
          // vector is minimal, i.e., does not waste any additional space
          for (size_t i = 1, j = 2; j < dataset.size(); i++, j += 2)
             dataset[i] = dataset[j];
-         size_t middle = dataset.size() / 2;
-         middle += dataset.size() & 0x1;
+         const size_t middle = (dataset.size() / 2) + (dataset.size() & 0x1);
          dataset.erase(dataset.begin() + middle, dataset.end());
          dataset.resize(dataset.size());
       }
