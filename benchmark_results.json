@@ -3597,26 +3597,6 @@
       "label": "SimpleHollowTrie:seq"
     },
     {
-      "name": "PresortedBuildTime<SimpleHollowTrie>/1000000/0",
-      "family_index": 12,
-      "per_family_instance_index": 2,
-      "run_name": "PresortedBuildTime<SimpleHollowTrie>/1000000/0",
-      "run_type": "iteration",
-      "repetitions": 1,
-      "repetition_index": 0,
-      "threads": 1,
-      "iterations": 1,
-      "real_time": 8.0910958722233772e+08,
-      "cpu_time": 8.0793047599581766e+08,
-      "time_unit": "ns",
-      "dataset_bytes": 8.0000000000000000e+06,
-      "dataset_elem_count": 1.0000000000000000e+06,
-      "hashfn_bits_per_key": 6.4000191999999998e+01,
-      "hashfn_bytes": 8.0000240000000000e+06,
-      "items_per_second": 1.2377302623316026e+06,
-      "label": "SimpleHollowTrie:seq"
-    },
-    {
       "name": "PresortedBuildTime<SimpleHollowTrie>/10000000/0",
       "family_index": 12,
       "per_family_instance_index": 3,
