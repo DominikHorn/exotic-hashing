@@ -53,7 +53,18 @@ namespace exotic_hashing {
        * @param keyset
        */
       void insert(const std::vector<Key>& keyset) {
-         for (const auto key : keyset)
+         // std::sort will not perform significant work
+         // if keyset is already sorted. In all other cases,
+         // presorting pays huge dividends during construction!
+         // (~2000ns per key improvement on 10^8 keys).
+         //
+         // overall O(n log n) asymptotic complexity does not change when sorting
+         auto keys = keyset;
+         std::sort(keys.begin(), keys.end());
+
+         // TODO(dominik): implement better 'bulk insert' algorithm exploiting the fact that
+         //  keys are sorted
+         for (const auto key : keys)
             insert(key);
       }
 
