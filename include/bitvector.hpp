@@ -246,6 +246,20 @@ namespace exotic_hashing::support {
          return (upper << shift) | lower;
       }
 
+      /**
+       * Checks whether this bitvector matches the given prefix, beginning at start.
+       * Test succeeds when all prefix bits or self bits are consumed (whichever one comes first).
+       *
+       * @param prefix
+       * @param start optional offset for self to start checking from. Defaults to 0
+       */
+      forceinline bool matches(const Bitvector<Storage>& prefix, const size_t& start = 0) const {
+         for (size_t i = 0; i + start < size() && i < prefix.size(); i++)
+            if (operator[](i + start) != prefix[i])
+               return false;
+         return true;
+      }
+
      private:
       std::vector<Storage> storage;
       size_t bitcnt = 0;

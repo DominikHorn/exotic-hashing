@@ -188,9 +188,8 @@ namespace exotic_hashing {
                return not_found_rank;
 
             // If prefix does not match the key is not in this trie
-            for (size_t i = 0; i + start < key_bits.size() && i < prefix.size(); i++)
-               if (key_bits[i + start] != prefix[i])
-                  return not_found_rank;
+            if (!key_bits.matches(prefix, start))
+               return not_found_rank;
 
             // If this node is a leaf node...
             if (this->is_leaf()) {
