@@ -219,13 +219,14 @@ TEST(Bitvector, Matches) {
          vec[i] = dist(rng) & 0x1;
       Bitvector bv(vec);
 
-      for (size_t prefix_size = 0; prefix_size <= 66; prefix_size++) {
+      for (size_t prefix_size = 0; prefix_size <= 137; prefix_size++) {
          const auto upper = bv.size() > 0 ? bv.size() - 1 : 0;
          std::uniform_int_distribution<size_t> dist(0, upper);
          size_t prefix_start = dist(rng);
          Bitvector prefix(prefix_size, false);
          for (size_t i = 0; i < prefix_size; i++)
             prefix[i] = i + prefix_start < vec.size() ? vec[i + prefix_start] & 0x1 : dist(rng) & 0x1;
+
          EXPECT_TRUE(bv.matches(prefix, prefix_start));
 
          if (prefix_size > 0) {

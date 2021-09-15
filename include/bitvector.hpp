@@ -254,9 +254,29 @@ namespace exotic_hashing::support {
        * @param start optional offset for self to start checking from. Defaults to 0
        */
       forceinline bool matches(const Bitvector<Storage>& prefix, const size_t& start = 0) const {
-         for (size_t i = 0; i + start < size() && i < prefix.size(); i++)
-            if (operator[](i + start) != prefix[i])
+         const size_t u_size = unit_bits();
+         const size_t u_cnt = storage.size();
+         const size_t b_cnt = size();
+         const size_t pu_cnt = prefix.storage.size();
+         const size_t l_ind = unit_local_index(start);
+         for (size_t p_ind = 0, u_ind = unit_index(start); p_ind < pu_cnt && u_ind < u_cnt; p_ind++, u_ind++) {
+            size_t ind = u_ind * u_size + l_ind;
+            if (ind >= b_cnt)
+               break;
+
+            const size_t remaining_bits = std::min(std::min(u_size, prefix.size() - p_ind * u_size), b_cnt - ind);
+            const auto rem_mask = (remaining_bits < u_size ? 0x1ULL << remaining_bits : 0x0) - 1;
+
+            const auto p_bits = prefix.storage[p_ind] & rem_mask;
+
+            const Storage upper_bits =
+               (l_ind > 0 && u_ind + 1 < u_cnt) ? (storage[u_ind + 1] << (u_size - l_ind)) : 0x0;
+            const Storage bits = (upper_bits | (storage[u_ind] >> l_ind)) & rem_mask;
+
+            if (bits != p_bits)
                return false;
+         }
+
          return true;
       }
 
