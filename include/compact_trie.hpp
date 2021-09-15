@@ -17,7 +17,7 @@ namespace exotic_hashing {
    template<class Key, class BitConverter, class BitStream>
    struct HollowTrie;
 
-   template<class Key, class BitConverter, class BitStream = support::Bitvector<>>
+   template<class Key, class BitConverter, class BitStream = support::FixedBitvector<>>
    struct CompactTrie {
       CompactTrie() = default;
 

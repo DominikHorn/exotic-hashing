@@ -29,13 +29,13 @@ namespace exotic_hashing {
        * representation
        */
       explicit SimpleHollowTrie(const std::vector<Key>& dataset)
-         : SimpleHollowTrie(CompactTrie<Key, BitConverter>(dataset)) {}
+         : SimpleHollowTrie(CompactTrie<Key, BitConverter, BitStream>(dataset)) {}
 
       /**
        * Derives a hollow trie from a given compacted trie by converting it to
        * the space efficient hollow trie representation
        */
-      explicit SimpleHollowTrie(const CompactTrie<Key, BitConverter>& compact_trie) {
+      explicit SimpleHollowTrie(const CompactTrie<Key, BitConverter, BitStream>& compact_trie) {
          // 1. Generate hollow trie representation (implemented as linked list
          // for representation construction algorithm efficiency)
          const auto encoding_list = convert(*compact_trie.root);
@@ -174,7 +174,7 @@ namespace exotic_hashing {
        * of edges along each path are expected to be left child accesses, this
        * should improve real world performance noticeably.
        */
-      std::list<Node> convert(const typename CompactTrie<Key, BitConverter>::Node& subtrie) const {
+      std::list<Node> convert(const typename CompactTrie<Key, BitConverter, BitStream>::Node& subtrie) const {
          if (subtrie.is_leaf())
             return {};
 
@@ -255,13 +255,14 @@ namespace exotic_hashing {
        * trie and converting it to the space efficient hollow trie
        * representation
        */
-      explicit HollowTrie(const std::vector<Key>& dataset) : HollowTrie(CompactTrie<Key, BitConverter>(dataset)) {}
+      explicit HollowTrie(const std::vector<Key>& dataset)
+         : HollowTrie(CompactTrie<Key, BitConverter, BitStream>(dataset)) {}
 
       /**
        * Derives a hollow trie from a given compacted trie by converting it to
        * the space efficient hollow trie representation
        */
-      explicit HollowTrie(const CompactTrie<Key, BitConverter>& compact_trie)
+      explicit HollowTrie(const CompactTrie<Key, BitConverter, BitStream>& compact_trie)
          : representation(convert(*compact_trie.root)) {}
 
       size_t operator()(const Key& key) const {
@@ -355,7 +356,7 @@ namespace exotic_hashing {
        * of edges along each path are expected to be left child accesses, this
        * should improve real world performance noticeably.
        */
-      BitStream convert(const typename CompactTrie<Key, BitConverter>::Node& subtrie) const {
+      BitStream convert(const typename CompactTrie<Key, BitConverter, BitStream>::Node& subtrie) const {
          if (subtrie.is_leaf())
             return BitStream();
 

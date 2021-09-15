@@ -7,7 +7,7 @@
 #include "include/bitvector.hpp"
 
 namespace exotic_hashing::support {
-   template<class T, class BitStream = Bitvector<>>
+   template<class T, class BitStream = FixedBitvector<>>
    struct FixedBitConverter {
       forceinline BitStream operator()(const T& data) const {
          BitStream bs(data);
