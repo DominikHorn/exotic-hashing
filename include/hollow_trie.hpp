@@ -21,7 +21,7 @@ namespace exotic_hashing {
    /**
     * Simple, i.e., space wasting Hollow Trie implementation.
     */
-   template<class Key, class BitConverter, class BitStream = support::Bitvector<>>
+   template<class Key, class BitConverter, class BitStream = support::FixedBitvector<>>
    struct SimpleHollowTrie {
       /**
        * Builds a new hollow trie from a dataset by constructing a compacted

@@ -10,8 +10,8 @@
 
 // ==== Simple Hollow Trie ====
 
-using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<
-   std::uint64_t, exotic_hashing::support::FixedBitConverter<std::uint64_t, exotic_hashing::support::Bitvector<>>>;
+using SimpleHollowTrie =
+   exotic_hashing::SimpleHollowTrie<std::uint64_t, exotic_hashing::support::FixedBitConverter<std::uint64_t>>;
 
 TEST(SimpleHollowTrie, IsPerfect) {
    tests::common::run_test<std::uint64_t, SimpleHollowTrie, tests::common::TestIsPerfect>();
