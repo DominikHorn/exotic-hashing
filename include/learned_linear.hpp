@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <sdsl/bit_vector_il.hpp>
 #include <sdsl/int_vector.hpp>
+#include <sdsl/io.hpp>
 #include <sdsl/util.hpp>
 #include <string>
 
@@ -55,6 +56,10 @@ namespace exotic_hashing {
          const size_t res = rank(ind);
 
          return res;
+      }
+
+      forceinline size_t byte_size() const {
+         return sdsl::size_in_bytes(bitvec) + sdsl::size_in_bytes(rank) + sizeof(decltype(neg_intercept));
       }
 
       static std::string name() {
