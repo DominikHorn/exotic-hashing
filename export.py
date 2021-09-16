@@ -57,6 +57,8 @@ with open(file) as data_file:
             return 9
         if x == "compactedmwhc":
             return 10
+        if x == "learnedlinear":
+            return 11
         return 0
     df["order"] = df.apply(lambda x : order(x["hashfn"]), axis=1)
     df = df.sort_values(by=["order", "dataset_elem_count"])
@@ -97,6 +99,7 @@ with open(file) as data_file:
             y="cpu_time_per_key",
             color="hashfn",
             facet_col="dataset",
+            facet_col_wrap=3,
             markers=True,
             log_x=True,
             title="Lookup Time",
@@ -117,6 +120,7 @@ with open(file) as data_file:
             color="hashfn",
             barmode="group",
             facet_col="dataset",
+            facet_col_wrap=3,
             title="Lookup Throughput",
             labels=plot_labels,
             color_discrete_sequence=color_sequence
@@ -134,6 +138,7 @@ with open(file) as data_file:
             y="hashfn_bits_per_key",
             color="hashfn",
             facet_col="dataset",
+            facet_col_wrap=3,
             log_x=True,
             markers=True,
             title="Bits per Key",
