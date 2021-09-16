@@ -18,9 +18,9 @@
 #include "support/datasets.hpp"
 
 using Data = std::uint64_t;
-const std::vector<std::int64_t> dataset_sizes{100, 10000, 1000000, 10000000};
+const std::vector<std::int64_t> dataset_sizes{100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
 const std::vector<std::int64_t> datasets{dataset::ID::SEQUENTIAL, dataset::ID::UNIFORM, dataset::ID::FB,
-                                         /*dataset::ID::OSM, dataset::ID::WIKI*/};
+                                         dataset::ID::OSM /*, dataset::ID::WIKI*/};
 
 template<class Hashfn>
 static void PresortedBuildTime(benchmark::State& state) {
@@ -148,7 +148,9 @@ using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::support::F
 BM(CompactTrie);
 using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
 BM(SimpleHollowTrie);
-using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
+using HollowTrie =
+   exotic_hashing::HollowTrie<Data,
+                              exotic_hashing::support::FixedBitConverter<Data, exotic_hashing::support::Bitvector<>>>;
 BM(HollowTrie);
 using MWHC = exotic_hashing::MWHC<Data>;
 BM(MWHC);
@@ -159,5 +161,8 @@ BM(CompactedMWHC);
 // TODO(dominik): investigate FST LoudsSparse SIGBART
 using FST = exotic_hashing::FastSuccinctTrie<Data>;
 BM(FST);
+using LearnedLinear = exotic_hashing::LearnedLinear<Data>;
+BENCHMARK_TEMPLATE(LookupTime, LearnedLinear)
+   ->ArgsProduct({dataset_sizes, {dataset::ID::SEQUENTIAL, dataset::ID::GAPPED_10}});
 
 BENCHMARK_MAIN();
