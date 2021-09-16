@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <queue>
 #include <random>
+#include <sdsl/bit_vector_il.hpp>
 #include <sdsl/io.hpp>
 #include <sdsl/rrr_vector.hpp>
 #include <sdsl/vectors.hpp>
@@ -107,7 +108,7 @@ namespace exotic_hashing {
       typename MWHC<Data>::Hasher hasher;
       hashing::reduction::FastModulo<std::uint64_t> mod_N;
 
-      sdsl::rrr_vector<> bit_vec;
+      sdsl::bit_vector_il<> bit_vec;
       decltype(bit_vec)::rank_1_type bit_vec_rank;
       sdsl::int_vector<> vertex_values;
    };
