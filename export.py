@@ -59,6 +59,8 @@ with open(file) as data_file:
             return 10
         if x == "learnedlinear":
             return 11
+        if x == "mapomphf":
+            return 12
         return 0
     df["order"] = df.apply(lambda x : order(x["hashfn"]), axis=1)
     df = df.sort_values(by=["order", "dataset_elem_count"])
