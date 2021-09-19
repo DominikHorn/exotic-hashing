@@ -9,6 +9,7 @@ from inspect import cleandoc
 from plotly.subplots import make_subplots
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly
 
 # plot colors
 pal = px.colors.qualitative.Plotly
@@ -65,33 +66,33 @@ with open(file) as data_file:
     df["order"] = df.apply(lambda x : order(x["hashfn"]), axis=1)
     df = df.sort_values(by=["order", "dataset_elem_count"])
 
-    # prepare datasets for plotting
-    lt_df = df[df["name"].str.lower().str.contains("lookuptime")].copy(deep=True)
-    bt_df = df[df["name"].str.lower().str.contains("buildtime")].copy(deep=True)
-
     # augment plotting datasets
-    lt_df["throughput"] = lt_df.apply(lambda x : 10**9 / x["cpu_time"], axis=1)
     def magnitude(x):
         l = math.log(x, 10)
         rem = round(x/pow(10, l), 2)
         exp = int(round(l, 0))
-        return f'${rem} \cdot 10^{{{exp}}}$'
-    lt_df["elem_magnitude"] = lt_df.apply(lambda x : magnitude(x["dataset_elem_count"]), axis=1)
+        #return f'${rem} \cdot 10^{{{exp}}}$'
+        return f'{rem}e-{exp}'
+    df["elem_magnitude"] = df.apply(lambda x : magnitude(x["dataset_elem_count"]), axis=1)
+
+    # prepare datasets for plotting & augment dataset specific columns
+    lt_df = df[df["name"].str.lower().str.contains("lookuptime")].copy(deep=True)
+    bt_df = df[df["name"].str.lower().str.contains("buildtime")].copy(deep=True)
+
     lt_df["cpu_time_per_key"] = lt_df['cpu_time']
+    lt_df["throughput"] = lt_df.apply(lambda x : 10**9 / x["cpu_time_per_key"], axis=1)
+
     bt_df["cpu_time_per_key"] = bt_df.apply(lambda x : x["cpu_time"] / x["dataset_elem_count"], axis=1)
+    bt_df["throughput"] = bt_df.apply(lambda x : 10**9 / x["cpu_time_per_key"], axis=1)
     bt_df["sorted"] = bt_df.apply(lambda x : x["name"].lower().startswith("presorted"), axis=1)
 
     # ensure export output folder exists
-    results_path = "results" if len(sys.argv) < 3 else sys.argv[2]
+    results_path = "docs" if len(sys.argv) < 3 else sys.argv[2]
     Path(results_path).mkdir(parents=True, exist_ok=True)
 
-    def save_as_csv():
-        df.to_csv(f'{results_path}/results.csv')
-
-    def commit(fig, name):
-        fig.write_image(f'{results_path}/{name}.png', width=1000,height=500, scale=8)
-        #fig.write_image(f'{results_path}/{name}.pdf', width=1000,height=500)
+    def convert_to_html(fig):
         #fig.show()
+        return plotly.offline.plot(fig, include_plotlyjs=False, output_type='div')
 
     def plot_lookup_times():
         name = "lookup_time"
@@ -104,33 +105,10 @@ with open(file) as data_file:
             facet_col_wrap=3,
             markers=True,
             log_x=True,
-            title="Lookup Time",
             labels=plot_labels,
             color_discrete_sequence=color_sequence
             )
-        commit(fig, name)
-        fig.update_yaxes(range=[-5, 1400])
-        commit(fig, f'zoomed_{name}')
-
-    def plot_lookup_throughput():
-        f_lt_df = lt_df[lt_df["dataset_elem_count"].isin([10**4, 10**6, 10**8])]
-        name = "lookup_throughput"
-        fig = px.bar(
-            f_lt_df,
-            x="elem_magnitude",
-            y="throughput",
-            color="hashfn",
-            barmode="group",
-            facet_col="dataset",
-            facet_col_wrap=3,
-            title="Lookup Throughput",
-            labels=plot_labels,
-            color_discrete_sequence=color_sequence
-            )
-        fig.update_xaxes(type='category')
-        commit(fig, name)
-        fig.update_yaxes(range=[0, 30 * 10**6])
-        commit(fig, f'zoomed_{name}')
+        return convert_to_html(fig)
 
     def plot_hashfn_bits_per_key():
         name = "bits_per_key"
@@ -143,76 +121,61 @@ with open(file) as data_file:
             facet_col_wrap=3,
             log_x=True,
             markers=True,
-            title="Bits per Key",
             labels=plot_labels,
             color_discrete_sequence=color_sequence
             )
-        commit(fig, name)
-        fig.update_yaxes(range=[-5, 170])
-        commit(fig, f'zoomed_{name}')
+        return convert_to_html(fig)
 
     def plot_build_time():
+        # cpu to enable value changes
+        f_bt_df = bt_df.copy(deep=True)
+        f_bt_df = f_bt_df[f_bt_df["dataset_elem_count"].isin([10**4, 10**6, 10**8])
+                & (f_bt_df["dataset"].str.lower() != "gap_10")]
+        f_bt_df["throughput"] = f_bt_df.apply(lambda x : 0 if x["hashfn"].lower() == 'donothinghash' else x['throughput'], axis=1)
         name = "build_time"
-        fig = px.line(
-            bt_df,
-            x="dataset_elem_count",
-            y="cpu_time_per_key",
+        fig = px.bar(
+            f_bt_df,
+            x="elem_magnitude",
+            y="throughput",
             color="hashfn",
+            barmode="group",
             facet_col="dataset",
             facet_row="sorted",
-            log_x=True,
-            markers=True,
-            title="Build time per Key",
             labels=plot_labels,
             color_discrete_sequence=color_sequence
             )
-        commit(fig, name)
-        fig.update_yaxes(matches=None, range=[-50, 4650], row=1)
-        fig.update_yaxes(matches=None, range=[-50, 2350], row=2)
-        commit(fig, f'zoomed_{name}')
+        return convert_to_html(fig)
 
-    save_as_csv()
-    plot_lookup_times()
-    plot_hashfn_bits_per_key()
-    plot_lookup_throughput()
-    plot_build_time()
+    def plot_raw_data():
+        raw_data = df.sort_values(by=["name"])
+        raw_data = raw_data.rename({"cpu_time": "ns", 'hashfn': 'function', 'dataset_elem_count': 'keys', 'hashfn_bits_per_key': 'bits per key'}, axis='columns')
 
-    # commit result files (to have new commit sha for png files)
-    repo = git.Repo(".")
-    repo.git.reset('HEAD')
-    added = repo.index.add(results_path)
-    if len(added) > 0:
-        repo.index.commit('export benchmark result plots and csv')
-    commit_sha = repo.head.commit.hexsha
+        return raw_data.to_html(
+                columns=["name", "function", "dataset", "keys", "bits per key", "ns"],
+                index=False,
+                formatters={"ns": lambda x : str(int(float(x))), 'keys': lambda x: str(int(x))}
+                )
 
-    with open(f'{results_path}/readme.md', 'w') as readme:
-        img_base_path = f'https://github.com/DominikHorn/exotic-hashing/raw/{commit_sha}/results'
+    with open(f'{results_path}/index.html', 'w') as readme:
         readme.write(cleandoc(f"""
-        ## Lookup time
-        ![lookup time]({img_base_path}/lookup_time.png)
+        <!doctype html>
+        <html>
+          <head>
+              <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+          </head>
 
-        Zoomed in on the top contendors:
-        ![zoomed lookup time]({img_base_path}/zoomed_lookup_time.png)
+          <body>
+            <h2>Lookup - Times in nanoseconds per key</h2>
+            {plot_lookup_times()}
 
-        Lookup throughput, i.e., amount of keys per second:
-        ![lookup throughput]({img_base_path}/lookup_throughput.png)
+            <h2>Space - Total bits per key occupied by datastructure</h2>
+            {plot_hashfn_bits_per_key()}
 
-        Zoomed in:
-        ![zoomed lookup throughput]({img_base_path}/zoomed_lookup_throughput.png)
+            <h2>Build - Build time per key in nanoseconds</h2>
+            {plot_build_time()}
 
-        ## Bits per key
-        ![bits per key]({img_base_path}/bits_per_key.png)
-
-        Zoomed in on the top contendors:
-        ![zoomed bits per key]({img_base_path}/zoomed_bits_per_key.png)
-
-        ## Build time
-        ![build time]({img_base_path}/build_time.png)
-
-        Zoomed in on the top contendors:
-        ![zoomed build time]({img_base_path}/zoomed_build_time.png)
+            <h2>Raw Data</h2>
+            {plot_raw_data()}
+          </body>
+        </html>
         """))
-
-    added = repo.index.add(results_path)
-    if len(added) > 0:
-        repo.index.commit('export benchmark result readme')
