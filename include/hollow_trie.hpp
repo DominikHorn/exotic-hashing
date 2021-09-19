@@ -45,6 +45,7 @@ namespace exotic_hashing {
       }
 
       forceinline size_t operator()(const Key& key) const {
+         const BitConverter converter;
          BitStream key_bits = converter(key);
 
          size_t left_leaf_cnt = 0, key_bits_ind = 0, leftmost_right = nodes.size();
@@ -241,7 +242,6 @@ namespace exotic_hashing {
       }
 
       std::vector<Node> nodes;
-      BitConverter converter;
    };
 
    template<class Key, class BitConverter, class BitStream = support::Bitvector<>>
@@ -266,6 +266,7 @@ namespace exotic_hashing {
          : representation(convert(*compact_trie.root)) {}
 
       size_t operator()(const Key& key) const {
+         const BitConverter converter;
          BitStream key_bits = converter(key);
 
          size_t left_leaf_cnt = 0, key_bits_ind = 0, leftmost_right = representation.size();
@@ -453,6 +454,5 @@ namespace exotic_hashing {
       }
 
       BitStream representation;
-      BitConverter converter;
    };
 } // namespace exotic_hashing

@@ -79,6 +79,7 @@ namespace exotic_hashing {
        * @param key
        */
       void insert(const Key& key) {
+         const BitConverter converter;
          BitStream key_bits = converter(key);
 
          if (unlikely(root == nullptr))
@@ -98,6 +99,7 @@ namespace exotic_hashing {
          if (unlikely(root == nullptr))
             return 0;
 
+         const BitConverter converter;
          BitStream key_bits = converter(key);
          return root->rank(key_bits, 0, 0);
       }
@@ -352,7 +354,6 @@ namespace exotic_hashing {
       };
 
       Node* root = nullptr;
-      BitConverter converter;
 
       friend HollowTrie<Key, BitConverter, BitStream>;
       friend SimpleHollowTrie<Key, BitConverter, BitStream>;
