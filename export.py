@@ -151,6 +151,7 @@ with open(file) as data_file:
             height=650,
             title="Build - throughput in keys per second"
             )
+        fig.update_traces(patch={'visible': 'legendonly'}, selector=lambda go : go.legendgroup.lower() in ["donothinghash"])
         return convert_to_html(fig)
 
     def plot_raw_data():
