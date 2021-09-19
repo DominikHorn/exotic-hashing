@@ -40,7 +40,9 @@ namespace exotic_hashing {
       }
 
       size_t byte_size() const {
-         return sizeof(CompactTrie) + root->byte_size();
+         const size_t struct_size = sizeof(CompactTrie);
+         const size_t nodes_size = root->byte_size();
+         return struct_size + nodes_size;
       };
 
       /**
@@ -322,7 +324,9 @@ namespace exotic_hashing {
          }
 
          size_t byte_size() const {
-            size_t size = sizeof(Node) + sizeof(BitStream) + static_cast<size_t>(std::ceil(prefix.size() / 8.));
+            const size_t struct_size = sizeof(decltype(local_left_leaf_cnt)) + 2 * sizeof(decltype(left));
+            const size_t prefix_size = prefix.byte_size();
+            size_t size = struct_size + prefix_size;
             if (left != nullptr)
                size += left->byte_size();
             if (right != nullptr)
