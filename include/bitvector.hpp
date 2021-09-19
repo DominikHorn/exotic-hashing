@@ -520,7 +520,13 @@ namespace exotic_hashing::support {
       }
 
      private:
-      std::array<Storage, 1 + max_bitcnt / (sizeof(Storage) * 8)> storage;
+      template<class T = double>
+      static constexpr size_t ceil(T num) {
+         return (static_cast<T>(static_cast<size_t>(num)) == num) ? static_cast<size_t>(num) :
+                                                                    static_cast<size_t>(num) + ((num > 0) ? 1 : 0);
+      }
+
+      std::array<Storage, ceil(max_bitcnt / (sizeof(Storage) * 8.))> storage;
       size_t bitcnt = 0;
 
       forceinline constexpr size_t unit_bits() const {
