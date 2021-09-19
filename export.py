@@ -129,9 +129,9 @@ with open(file) as data_file:
     def plot_build_time():
         # cpu to enable value changes
         f_bt_df = bt_df.copy(deep=True)
-        f_bt_df = f_bt_df[f_bt_df["dataset_elem_count"].isin([10**4, 10**6, 10**8])
+        f_bt_df = f_bt_df[f_bt_df["dataset_elem_count"].isin([10**8])
                 & (f_bt_df["dataset"].str.lower() != "gap_10")]
-        f_bt_df["throughput"] = f_bt_df.apply(lambda x : 0 if x["hashfn"].lower() == 'donothinghash' else x['throughput'], axis=1)
+        #f_bt_df["throughput"] = f_bt_df.apply(lambda x : 0 if x["hashfn"].lower() == 'donothinghash' else x['throughput'], axis=1)
         name = "build_time"
         fig = px.bar(
             f_bt_df,
