@@ -280,6 +280,13 @@ namespace exotic_hashing::support {
          return true;
       }
 
+      /**
+       * returns this bitvector's size in bytes
+       */
+      forceinline size_t byte_size() const {
+         return sizeof(decltype(*this));
+      }
+
      private:
       std::vector<Storage> storage;
       size_t bitcnt = 0;
@@ -517,6 +524,13 @@ namespace exotic_hashing::support {
          }
 
          return true;
+      }
+
+      /**
+       * returns this bitvector's size in bytes
+       */
+      forceinline size_t byte_size() const {
+         return sizeof(decltype(*this));
       }
 
      private:
