@@ -10,6 +10,7 @@ from plotly.subplots import make_subplots
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly
+from pretty_html_table import build_table
 
 # plot colors
 pal = px.colors.qualitative.Plotly
@@ -92,7 +93,7 @@ with open(file) as data_file:
 
     def convert_to_html(fig):
         #fig.show()
-        return plotly.offline.plot(fig, include_plotlyjs=False, output_type='div')
+        return fig.to_html(full_html=False, include_plotlyjs=False)
 
     def plot_lookup_times():
         name = "lookup_time"
@@ -106,7 +107,9 @@ with open(file) as data_file:
             markers=True,
             log_x=True,
             labels=plot_labels,
-            color_discrete_sequence=color_sequence
+            color_discrete_sequence=color_sequence,
+            height=650,
+            title="Lookup - nanoseconds per key"
             )
         return convert_to_html(fig)
 
@@ -122,7 +125,9 @@ with open(file) as data_file:
             log_x=True,
             markers=True,
             labels=plot_labels,
-            color_discrete_sequence=color_sequence
+            color_discrete_sequence=color_sequence,
+            height=650,
+            title="Space - total bits per key"
             )
         return convert_to_html(fig)
 
@@ -142,19 +147,24 @@ with open(file) as data_file:
             facet_col="dataset",
             facet_row="sorted",
             labels=plot_labels,
-            color_discrete_sequence=color_sequence
+            color_discrete_sequence=color_sequence,
+            height=650,
+            title="Build - throughput in keys per second"
             )
         return convert_to_html(fig)
 
     def plot_raw_data():
         raw_data = df.sort_values(by=["name"])
         raw_data = raw_data.rename({"cpu_time": "ns", 'hashfn': 'function', 'dataset_elem_count': 'keys', 'hashfn_bits_per_key': 'bits per key'}, axis='columns')
+        raw_data = raw_data[["name", "function", "dataset", "keys", "bits per key", "ns"]]
+        raw_data["ns"] = raw_data.apply(lambda x : str(int(float(x["ns"]))), axis=1)
+        raw_data["keys"] = raw_data.apply(lambda x : str(int(x["keys"])), axis=1)
 
-        return raw_data.to_html(
-                columns=["name", "function", "dataset", "keys", "bits per key", "ns"],
-                index=False,
-                formatters={"ns": lambda x : str(int(float(x))), 'keys': lambda x: str(int(x))}
-                )
+        return cleandoc(f"""
+        <div style="width: 100%; height: 500px; overflow-y: scroll;">
+            {build_table(raw_data, 'blue_light', width="100%")}
+        </div>
+        """)
 
     with open(f'{results_path}/index.html', 'w') as readme:
         readme.write(cleandoc(f"""
@@ -164,18 +174,14 @@ with open(file) as data_file:
               <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
           </head>
 
-          <body>
-            <h2>Lookup - Times in nanoseconds per key</h2>
+          <body style="display: grid; grid-template-columns: repeat(auto-fit, minmax(1200px, 1fr))">
             {plot_lookup_times()}
-
-            <h2>Space - Total bits per key occupied by datastructure</h2>
             {plot_hashfn_bits_per_key()}
-
-            <h2>Build - Build time per key in nanoseconds</h2>
             {plot_build_time()}
-
-            <h2>Raw Data</h2>
-            {plot_raw_data()}
+            <div style="margin: 15px">
+                <h3 style="color: rgb(42, 63, 95)">Raw Data</h2>
+                {plot_raw_data()}
+            </div>
           </body>
         </html>
         """))
