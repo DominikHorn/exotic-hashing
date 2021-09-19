@@ -164,5 +164,9 @@ BM(FST);
 using LearnedLinear = exotic_hashing::LearnedLinear<Data>;
 BENCHMARK_TEMPLATE(LookupTime, LearnedLinear)
    ->ArgsProduct({dataset_sizes, {dataset::ID::SEQUENTIAL, dataset::ID::GAPPED_10}});
+BENCHMARK_TEMPLATE(PresortedBuildTime, LearnedLinear)
+   ->ArgsProduct({dataset_sizes, {dataset::ID::SEQUENTIAL, dataset::ID::GAPPED_10}});
+BENCHMARK_TEMPLATE(UnorderedBuildTime, LearnedLinear)
+   ->ArgsProduct({dataset_sizes, {dataset::ID::SEQUENTIAL, dataset::ID::GAPPED_10}});
 
 BENCHMARK_MAIN();
