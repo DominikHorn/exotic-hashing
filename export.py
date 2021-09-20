@@ -152,7 +152,7 @@ with open(file) as data_file:
             )
         fig.update_traces(
                 patch={'visible': 'legendonly'},
-                selector=lambda go : go.legendgroup.lower() in ["donothinghash", "rankhash"])
+                selector=lambda go : go.legendgroup.lower() in ["donothinghash", "rankhash", "mapomphf"])
         return convert_to_html(fig)
 
     def plot_raw_data():
