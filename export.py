@@ -25,7 +25,7 @@ plot_labels = dict(
     throughput='keys per second')
 
 
-file = "benchmark_results.json" if len(sys.argv) < 2 else sys.argv[1]
+file = "results.json" if len(sys.argv) < 2 else sys.argv[1]
 with open(file) as data_file:
     data = json.load(data_file)
 
