@@ -136,7 +136,6 @@ with open(file) as data_file:
         f_bt_df = bt_df.copy(deep=True)
         f_bt_df = f_bt_df[f_bt_df["dataset_elem_count"].isin([10**8])
                 & (f_bt_df["dataset"].str.lower() != "gap_10")]
-        #f_bt_df["throughput"] = f_bt_df.apply(lambda x : 0 if x["hashfn"].lower() == 'donothinghash' else x['throughput'], axis=1)
         name = "build_time"
         fig = px.bar(
             f_bt_df,
@@ -151,7 +150,9 @@ with open(file) as data_file:
             height=650,
             title="Build - throughput in keys per second"
             )
-        fig.update_traces(patch={'visible': 'legendonly'}, selector=lambda go : go.legendgroup.lower() in ["donothinghash"])
+        fig.update_traces(
+                patch={'visible': 'legendonly'},
+                selector=lambda go : go.legendgroup.lower() in ["donothinghash", "rankhash"])
         return convert_to_html(fig)
 
     def plot_raw_data():
