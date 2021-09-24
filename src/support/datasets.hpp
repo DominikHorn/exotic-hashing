@@ -118,6 +118,7 @@ namespace dataset {
          case ID::WIKI:
             return "wiki";
       }
+      return "unnamed";
    };
 
    template<class Data = std::uint64_t>
