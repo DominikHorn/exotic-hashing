@@ -23,7 +23,7 @@ namespace exotic_hashing {
        * Builds a new fast succinct trie from a dataset
        */
       explicit FastSuccinctTrie(const std::vector<Key>& dataset) {
-         // find min and max elemnts. Assume dataset is not sorted!
+         // find min and max elements. Assume dataset is not sorted!
          const auto min_it = std::min_element(dataset.begin(), dataset.end());
          if (min_it < dataset.end())
             _min_key = *min_it;
@@ -96,7 +96,7 @@ namespace exotic_hashing {
 
       // FST internally stores a pointer to the string keys
       // which is required during lookup. Therefore, we must
-      // keep the string keys!
+      // keep the string keys in memory!
       std::vector<std::string> converted_keys;
    };
 }; // namespace exotic_hashing
