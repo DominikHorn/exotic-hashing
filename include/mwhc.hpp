@@ -312,18 +312,29 @@ namespace exotic_hashing {
       };
 
       class HyperGraph {
-         struct Vertex {
-            /// Each edge is represented as an index into the dataset
-            std::vector<size_t> edges;
+         class Vertex {
+            // TODO(dominik): is this a proper adaptation of the XOR trick?
+            // (https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6824443)
+            size_t d = 0, edges = 0;
 
+           public:
             forceinline size_t degree() const {
-               return edges.size();
+               return d;
             }
 
-            forceinline void remove(const size_t edge) {
-               const auto it = std::find(edges.begin(), edges.end(), edge);
-               if (likely(it != edges.end()))
-                  edges.erase(it);
+            forceinline void add_edge(const size_t edge) {
+               edges ^= edge;
+               d++;
+            }
+
+            forceinline void remove_edge(const size_t edge) {
+               edges ^= edge;
+               d--;
+            }
+
+            forceinline size_t retrieve_last() {
+               assert(d == 1);
+               return edges;
             }
          };
 
@@ -338,9 +349,9 @@ namespace exotic_hashing {
             // Construct random hypergraph using hasher
             for (size_t i = 0; i < dataset.size(); i++) {
                const auto [h0, h1, h2] = hasher(dataset[i]);
-               vertices[h0].edges.push_back(i);
-               vertices[h1].edges.push_back(i);
-               vertices[h2].edges.push_back(i);
+               vertices[h0].add_edge(i);
+               vertices[h1].add_edge(i);
+               vertices[h2].add_edge(i);
             }
          }
 
@@ -370,11 +381,11 @@ namespace exotic_hashing {
                      continue;
 
                   // Peel last edge from this vertex
-                  const auto edge = vertex.edges[0];
+                  const auto edge = vertex.retrieve_last();
                   const auto [h0, h1, h2] = hasher(dataset[edge]);
-                  vertices[h0].remove(edge);
-                  vertices[h1].remove(edge);
-                  vertices[h2].remove(edge);
+                  vertices[h0].remove_edge(edge);
+                  vertices[h1].remove_edge(edge);
+                  vertices[h2].remove_edge(edge);
 
                   // Keep track of edge removal order
                   res.push(edge);
