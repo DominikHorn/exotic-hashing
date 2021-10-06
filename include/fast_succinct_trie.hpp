@@ -18,12 +18,28 @@ namespace exotic_hashing {
     * https://github.com/christophanneser/FST
     */
    template<class Key>
-   struct FastSuccinctTrie {
+   class FastSuccinctTrie {
+      static forceinline std::string convert(const Key& key) {
+         Key endian_swapped_word = 0;
+         switch (sizeof(Key)) {
+            case 8:
+               endian_swapped_word = __builtin_bswap64(key);
+               break;
+            case 4:
+               endian_swapped_word = __builtin_bswap32(key);
+               break;
+            default:
+               break;
+         }
+         return std::string(reinterpret_cast<const char*>(&endian_swapped_word), sizeof(Key));
+      }
+
+     public:
       /**
        * Builds a new fast succinct trie from a dataset
        */
       explicit FastSuccinctTrie(const std::vector<Key>& dataset) {
-         // find min and max elemnts. Assume dataset is not sorted!
+         // find min and max elements. Assume dataset is not sorted!
          const auto min_it = std::min_element(dataset.begin(), dataset.end());
          if (min_it < dataset.end())
             _min_key = *min_it;
@@ -33,18 +49,8 @@ namespace exotic_hashing {
 
          // convert keys to string. IMPORTANT: they must be sorted for fst to work
          converted_keys.reserve(dataset.size());
-         for (const auto& key : dataset) {
-            Key endian_swapped_word;
-            if (std::is_same<Key, std::uint64_t>::value) {
-               endian_swapped_word = __builtin_bswap64(key);
-            } else if (std::is_same<Key, std::uint32_t>::value) {
-               endian_swapped_word = __builtin_bswap32(key);
-            } else {
-               throw std::runtime_error(std::string("FST unsupported raw key type ") + typeid(Key).name());
-            }
-
-            converted_keys.emplace_back(std::string(reinterpret_cast<const char*>(&endian_swapped_word), sizeof(Key)));
-         }
+         for (const auto& key : dataset)
+            converted_keys.emplace_back(convert(key));
          std::sort(converted_keys.begin(), converted_keys.end());
 
          // construct fst. Note that values is never used during construction, hence it is simply left empty
@@ -52,30 +58,11 @@ namespace exotic_hashing {
       }
 
       forceinline size_t operator()(const Key& key) const {
-         // deal with out of bounds keys here to prevent segfaults later
-         if (key < _min_key || key > _max_key)
-            return std::numeric_limits<size_t>::max();
+         const auto str_key = convert(key);
 
-         // convert key to string key
-         std::string str_key;
-         {
-            Key endian_swapped_word;
-            if (std::is_same<Key, std::uint64_t>::value) {
-               endian_swapped_word = __builtin_bswap64(key);
-            } else if (std::is_same<Key, std::uint32_t>::value) {
-               endian_swapped_word = __builtin_bswap32(key);
-            } else {
-               throw std::runtime_error(std::string("FST unsupported raw key type ") + typeid(Key).name());
-            }
-
-            str_key = std::string(reinterpret_cast<const char*>(&endian_swapped_word), sizeof(Key));
-         }
-
-         // obtain index, i.e., rank, from FST
-         const auto iter = _fst->moveToKeyGreaterThan(str_key, true);
-         if (!iter.isValid())
-            return std::numeric_limits<size_t>::max();
-         return iter.getValue();
+         std::uint64_t rank = 0;
+         _fst->lookupKey(str_key, rank);
+         return rank;
       }
 
       static std::string name() {
@@ -96,7 +83,7 @@ namespace exotic_hashing {
 
       // FST internally stores a pointer to the string keys
       // which is required during lookup. Therefore, we must
-      // keep the string keys!
+      // keep the string keys in memory!
       std::vector<std::string> converted_keys;
    };
 }; // namespace exotic_hashing
