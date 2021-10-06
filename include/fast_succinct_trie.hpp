@@ -58,19 +58,11 @@ namespace exotic_hashing {
       }
 
       forceinline size_t operator()(const Key& key) const {
-         // deal with out of bounds keys here to prevent segfaults later
-         // TODO(dominik): reevaluate whether this is necessary
-         if (key < _min_key || key > _max_key)
-            return std::numeric_limits<size_t>::max();
-
-         // convert to string key
          const auto str_key = convert(key);
 
-         // obtain index, i.e., rank, from FST
-         const auto iter = _fst->moveToKeyGreaterThan(str_key, true);
-         if (!iter.isValid())
-            return std::numeric_limits<size_t>::max();
-         return iter.getValue();
+         std::uint64_t rank = 0;
+         _fst->lookupKey(str_key, rank);
+         return rank;
       }
 
       static std::string name() {
