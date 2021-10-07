@@ -313,28 +313,40 @@ namespace exotic_hashing {
 
       class HyperGraph {
          class Vertex {
-            // TODO(dominik): is this a proper adaptation of the XOR trick?
-            // (https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6824443)
-            size_t d = 0, edges = 0;
+            /// implemented using modified XOR-trick. Original from:
+            /// https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6824443
+            std::uint64_t data = 0;
+
+            constexpr forceinline size_t edges_width() const {
+               return 48;
+            }
+
+            constexpr forceinline size_t edges_mask() const {
+               return (0x1LLU << edges_width()) - 1;
+            }
 
            public:
+            /// degree mustn't be larger than 255
             forceinline size_t degree() const {
-               return d;
+               return data >> edges_width();
             }
 
+            /// edges are represented as 48 bit integers
             forceinline void add_edge(const size_t edge) {
-               edges ^= edge;
-               d++;
+               // increment degree & xor edge ontop of data (add it)
+               data = ((degree() + 1) << edges_width()) | ((data ^ edge) & edges_mask());
             }
 
+            /// edges are represented as 48 bit integers
             forceinline void remove_edge(const size_t edge) {
-               edges ^= edge;
-               d--;
+               // decrement degree & xor edge ontop of data (remove it)
+               data = ((degree() - 1) << edges_width()) | ((data ^ edge) & edges_mask());
             }
 
+            /// edges are represented as 48 bit integers
             forceinline size_t retrieve_last() {
-               assert(d == 1);
-               return edges;
+               assert(degree() == 1);
+               return data & edges_mask();
             }
          };
 
