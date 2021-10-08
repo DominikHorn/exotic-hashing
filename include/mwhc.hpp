@@ -25,120 +25,6 @@
 
 namespace exotic_hashing {
    namespace support {
-      template<class Data, class Hasher>
-      class HyperGraph {
-         class Vertex {
-            /// implemented using modified XOR-trick. Original from:
-            /// https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6824443
-            std::uint64_t data = 0;
-
-            static constexpr forceinline size_t edges_width() {
-               return 48;
-            }
-
-            static constexpr forceinline size_t edges_mask() {
-               return (0x1LLU << edges_width()) - 1;
-            }
-
-           public:
-            /// degree mustn't be larger than 255
-            forceinline size_t degree() const {
-               return data >> edges_width();
-            }
-
-            /// edges are represented as 48 bit integers
-            forceinline void add_edge(const size_t edge) {
-               // increment degree & xor edge ontop of data (add it)
-               data = ((degree() + 1) << edges_width()) | ((data ^ edge) & edges_mask());
-            }
-
-            /// edges are represented as 48 bit integers
-            forceinline void remove_edge(const size_t edge) {
-               // decrement degree & xor edge ontop of data (remove it)
-               data = ((degree() - 1) << edges_width()) | ((data ^ edge) & edges_mask());
-            }
-
-            /// edges are represented as 48 bit integers
-            forceinline size_t retrieve_last() const {
-               assert(degree() == 1);
-               return data & edges_mask();
-            }
-         };
-
-         std::vector<Vertex> vertices;
-
-         const std::vector<Data>& dataset;
-         const Hasher& hasher;
-
-        public:
-         HyperGraph(const std::vector<Data>& dataset, const Hasher& hasher, const size_t& N)
-            : vertices(N), dataset(dataset), hasher(hasher) {
-            // Construct random hypergraph using hasher
-            for (size_t i = 0; i < dataset.size(); i++) {
-               // TODO(dominik): remove these random cache accesses
-               const auto [h0, h1, h2] = hasher(dataset[i]);
-               vertices[h0].add_edge(i);
-               vertices[h1].add_edge(i);
-               vertices[h2].add_edge(i);
-            }
-         }
-
-         /**
-          * Peels the hypergraph as described Majewski, Bohdan S., et al. in "A
-          * family of perfect hashing methods." The Computer Journal 39.6
-          * (1996): 547-554.
-          *
-          * @return stack containing the acyclicity check traversal order
-          *   (reversed since stack is FILO), or an empty stack if the hypegraph
-          *   contained a cycle
-          */
-         std::stack<size_t> peel() {
-            // TODO(dominik): implement cache oblivious peeling, i.e., remove random access to vertices in
-            // vertex struct!
-            std::stack<size_t> res;
-
-            // 1. Recursively peel all vertices if possible (without recursion to avoid stack overflows)
-            for (size_t vertex_index = 0; vertex_index < vertices.size(); vertex_index++) {
-               std::queue<size_t> next_vertices;
-               next_vertices.push(vertex_index);
-
-               while (!next_vertices.empty()) {
-                  // TODO(dominik): eliminiate (if possible) this random cache access
-                  auto& vertex = vertices[next_vertices.front()];
-                  next_vertices.pop();
-
-                  // Only vertices with degree 1 are peelable
-                  if (vertex.degree() != 1)
-                     continue;
-
-                  // Peel last edge from this vertex
-                  const auto edge = vertex.retrieve_last();
-                  const auto [h0, h1, h2] = hasher(dataset[edge]);
-                  // TODO(dominik): eliminiate (if ) these random cache accesses
-                  vertices[h0].remove_edge(edge);
-                  vertices[h1].remove_edge(edge);
-                  vertices[h2].remove_edge(edge);
-
-                  // Keep track of edge removal order
-                  res.push(edge);
-
-                  // Attempt to peel adjacent vertices next
-                  next_vertices.push(h0);
-                  next_vertices.push(h1);
-                  next_vertices.push(h2);
-               }
-            }
-
-            // 2. Check if there are any edges left, i.e., any vertex has degree > 0. If so, the
-            //    acyclicity check has failed
-            for (const auto& vertex : vertices)
-               if (vertex.degree() > 0)
-                  return {};
-
-            return res;
-         }
-      };
-
       template<class Data>
       class Hasher {
          const hashing::AquaHash<Data> hashfn;
@@ -209,6 +95,145 @@ namespace exotic_hashing {
          }
       };
 
+      template<class Data, class Hasher>
+      class HyperGraph {
+         class Vertex {
+            /// implemented using modified XOR-trick. Original from:
+            /// https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6824443
+            std::uint64_t data = 0;
+
+            static constexpr forceinline size_t edges_width() {
+               return 48;
+            }
+
+            static constexpr forceinline size_t edges_mask() {
+               return (0x1LLU << edges_width()) - 1;
+            }
+
+           public:
+            /// degree mustn't be larger than 255
+            forceinline size_t degree() const {
+               return data >> edges_width();
+            }
+
+            /// edges are represented as 48 bit integers
+            forceinline void add_edge(const size_t edge) {
+               // check that we have room for new values
+               assert(degree() < (0x1LLU << (8 * sizeof(decltype(data)) - edges_width())) - 1);
+               assert(edge <= (0x1LLU << edges_width()) - 1);
+
+               // increment degree & xor edge ontop of data (add it)
+               data = ((degree() + 1) << edges_width()) | ((data ^ edge) & edges_mask());
+            }
+
+            /// edges are represented as 48 bit integers
+            forceinline void remove_edge(const size_t edge) {
+               // check that removing the edge is legal
+               assert(degree() > 0);
+
+               // decrement degree & xor edge ontop of data (remove it)
+               data = ((degree() - 1) << edges_width()) | ((data ^ edge) & edges_mask());
+            }
+
+            /// edges are represented as 48 bit integers
+            forceinline size_t retrieve_last() const {
+               // retrieving the last edge only works when degree == 1 due to XOR-trick
+               assert(degree() == 1);
+
+               return data & edges_mask();
+            }
+         };
+
+         std::vector<Vertex> vertices;
+
+         const std::vector<Data>& dataset;
+         const Hasher& hasher;
+
+        public:
+         HyperGraph(const std::vector<Data>& dataset, const Hasher& hasher, const size_t& N)
+            : vertices(N), dataset(dataset), hasher(hasher) {
+            // Construct random hypergraph using hasher
+            for (size_t i = 0; i < dataset.size(); i++) {
+               // TODO(dominik): remove these random cache accesses
+               const auto [h0, h1, h2] = hasher(dataset[i]);
+               vertices[h0].add_edge(i);
+               vertices[h1].add_edge(i);
+               vertices[h2].add_edge(i);
+            }
+         }
+
+         /**
+          * Peels the hypergraph as described Majewski, Bohdan S., et al. in "A
+          * family of perfect hashing methods." The Computer Journal 39.6
+          * (1996): 547-554. Enhanced to reduce space usage during construction
+          * as much as possible, effectively speeding up construction & enabling
+          * more use cases.
+          *
+          * @return peel order, i.e., traversal order of the acyclicity check.
+          *         Empty if hypergraph contains a cycle.
+          */
+         std::vector<size_t> peel() {
+            // doubles as container for work items during traversal
+            // (vertices = 'preliminary section') & final peeling order (edges, denoted as indices into the dataset)
+            std::vector<size_t> peel_order;
+            size_t completed_ind = 0;
+
+            // 1. Recursively peel all vertices if possible (without recursion to avoid stack overflows)
+            for (size_t vertex_ind = 0; vertex_ind < vertices.size(); vertex_ind++) {
+               // only vertices with degree 1 are peelable
+               if (vertices[vertex_ind].degree() != 1)
+                  continue;
+
+               // add current vertex to preliminary section of peel_order
+               peel_order.push_back(vertex_ind);
+
+               // peel 'recursively', i.e., as long as there are more vertices in preliminary section
+               for (size_t curr_ind = peel_order.size() - 1; curr_ind < peel_order.size(); curr_ind++) {
+                  // Obtain next vertex to peel from preliminary section of peel_order
+                  const auto vind = peel_order[curr_ind];
+                  auto& vertex_to_peel = vertices[vind]; // TODO(dominik): random cache access into vertices
+
+                  // Between being added to preliminary section of peel_order
+                  // and now the peeling of another vertex might have also
+                  // peeled the edge adjacent to this vertex, i.e., reduced
+                  // degree to 0. If that is the case, don't peel again and
+                  // remove from peel_order (through override - see bellow).
+                  if (vertex_to_peel.degree() != 1)
+                     continue;
+                  // Obtain edge to peel & adjacent vertices
+                  const auto edge = vertex_to_peel.retrieve_last();
+                  const auto [h0, h1, h2] = hasher(dataset[edge]); // TODO(dominik): random cache access into dataset
+                  auto &v0 = vertices[h0], &v1 = vertices[h1],
+                       &v2 = vertices[h2]; // TODO(dominik): random cache accesses into vertices
+
+                  // Remove edge from all adjacent vertices
+                  v0.remove_edge(edge);
+                  v1.remove_edge(edge);
+                  v2.remove_edge(edge);
+
+                  // Commit peeled edge
+                  peel_order[completed_ind++] = edge;
+
+                  // Attempt to peel adjacent vertices next
+                  peel_order.push_back(h0);
+                  peel_order.push_back(h1);
+                  peel_order.push_back(h2);
+               }
+            }
+
+            // 2. Trim remaining preliminary section containing vertices
+            //    such that only the edges are left
+            peel_order.resize(completed_ind);
+
+            // 3. Check if there are any edges left. If so, the acyclicity test has failed.
+            //    Since we started with dataset.size() edges, checking whether this exact
+            //    amount has been peeled is sufficient
+            if (peel_order.size() != dataset.size())
+               return {};
+
+            return peel_order;
+         }
+      };
    } // namespace support
 
    template<class Data, class Hasher = support::Hasher<Data>, class HyperGraph = support::HyperGraph<Data, Hasher>>
@@ -361,21 +386,20 @@ namespace exotic_hashing {
          vertex_values.resize(mod_N.N);
          std::fill(vertex_values.begin(), vertex_values.end(), vertex_values.size());
 
-         std::stack<size_t> edge_order;
-         while (edge_order.empty()) {
+         std::vector<size_t> peel_order;
+         while (peel_order.empty()) {
             // 1. Generate random Hypergraph
             hasher = Hasher(mod_N.N);
             HyperGraph g(dataset, hasher, mod_N.N);
 
             // 2. Peel (i.e., check for acyclicity)
-            edge_order = g.peel();
+            peel_order = g.peel();
          }
 
-         // 3. Assign values to vertices depending on edge_order
-         while (!edge_order.empty()) {
+         // 3. Assign values to vertices depending on reverse peel order
+         for (auto it = peel_order.rbegin(); it != peel_order.rend(); it++) {
             // get next edge
-            const auto edge_ind = edge_order.top();
-            edge_order.pop();
+            const auto edge_ind = *it;
 
             // lookup vertices of this edge
             const auto [h0, h1, h2] = hasher(dataset[edge_ind]);
