@@ -215,9 +215,12 @@ namespace exotic_hashing {
                   peel_order[completed_ind++] = edge;
 
                   // Attempt to peel adjacent vertices next
-                  peel_order.push_back(h0);
-                  peel_order.push_back(h1);
-                  peel_order.push_back(h2);
+                  if (v0.degree() == 1)
+                     peel_order.push_back(h0);
+                  if (v1.degree() == 1)
+                     peel_order.push_back(h1);
+                  if (v2.degree() == 1)
+                     peel_order.push_back(h2);
                }
             }
 
