@@ -20,7 +20,7 @@
 using Data = std::uint64_t;
 const std::vector<std::int64_t> dataset_sizes{100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
 const std::vector<std::int64_t> datasets{dataset::ID::SEQUENTIAL, dataset::ID::UNIFORM, dataset::ID::FB,
-                                         dataset::ID::OSM /*, dataset::ID::WIKI*/};
+                                         dataset::ID::NORMAL,     dataset::ID::OSM,     dataset::ID::WIKI};
 
 template<class Hashfn>
 static void PresortedBuildTime(benchmark::State& state) {

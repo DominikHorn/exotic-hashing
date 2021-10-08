@@ -100,7 +100,8 @@ namespace dataset {
       UNIFORM = 2,
       FB = 3,
       OSM = 4,
-      WIKI = 5
+      WIKI = 5,
+      NORMAL = 6
    };
 
    inline std::string name(ID id) {
@@ -111,6 +112,8 @@ namespace dataset {
             return "gap_10";
          case ID::UNIFORM:
             return "uniform";
+         case ID::NORMAL:
+            return "normal";
          case ID::FB:
             return "fb";
          case ID::OSM:
@@ -159,10 +162,15 @@ namespace dataset {
             break;
          }
          case ID::UNIFORM: {
-            std::uniform_int_distribution<std::uint64_t> dist(0, std::numeric_limits<std::uint64_t>::max() - 1);
+            std::uniform_int_distribution<Data> dist(0, std::numeric_limits<Data>::max() - 1);
             for (size_t i = 0; i < ds.size(); i++)
                ds[i] = dist(rng);
             break;
+         }
+         case ID::NORMAL: {
+            std::normal_distribution<> dist(static_cast<double>(std::numeric_limits<Data>::max()) / 2.0, ds.size());
+            for (size_t i = 0; i < ds.size(); i++)
+               ds[i] = dist(rng);
          }
          case ID::FB: {
             if (ds_fb.empty()) {
