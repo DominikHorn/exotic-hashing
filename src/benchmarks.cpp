@@ -158,7 +158,6 @@ using CompressedMWHC = exotic_hashing::CompressedMWHC<Data>;
 BM(CompressedMWHC);
 using CompactedMWHC = exotic_hashing::CompactedMWHC<Data>;
 BM(CompactedMWHC);
-// TODO(dominik): investigate FST LoudsSparse SIGBART
 using FST = exotic_hashing::FastSuccinctTrie<Data>;
 BM(FST);
 using LearnedLinear = exotic_hashing::LearnedLinear<Data>;
