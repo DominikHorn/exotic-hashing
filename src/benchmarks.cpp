@@ -21,6 +21,7 @@
 using Data = std::uint64_t;
 const std::vector<std::int64_t> dataset_sizes{100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
 const std::vector<std::int64_t> datasets{static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
+                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10),
                                          static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::UNIFORM),
                                          static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::FB),
                                          static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::NORMAL),
