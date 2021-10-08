@@ -14,22 +14,19 @@
 #include "include/convenience/builtins.hpp"
 
 namespace dataset {
-   /**
- * Deduplicates the dataset. Data will be sorted to make this work
- * @param dataset
- */
-   static forceinline void deduplicate_and_sort(std::vector<uint64_t>& dataset) {
-      std::sort(dataset.begin(), dataset.end());
-      dataset.erase(std::unique(dataset.begin(), dataset.end()), dataset.end());
-      dataset.shrink_to_fit();
+   template<class T>
+   static void deduplicate_and_sort(std::vector<T>& vec) {
+      std::sort(vec.begin(), vec.end());
+      vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
+      vec.shrink_to_fit();
    }
 
    /**
- * Loads the datasets values into memory
- * @return a sorted and deduplicated list of all members of the dataset
- */
+    * Loads the datasets values into memory
+    * @return a sorted and deduplicated list of all members of the dataset
+    */
    template<class Key>
-   std::vector<Key> load(std::string filepath) {
+   std::vector<Key> load(const std::string& filepath) {
       std::cout << "loading dataset " << filepath << std::endl;
 
       // parsing helper functions
@@ -93,7 +90,7 @@ namespace dataset {
       return dataset;
    }
 
-   enum ID
+   enum class ID
    {
       SEQUENTIAL = 0,
       GAPPED_10 = 1,
@@ -206,7 +203,8 @@ namespace dataset {
             break;
          }
          default:
-            throw std::runtime_error("invalid datastet id " + std::to_string(id));
+            throw std::runtime_error("invalid datastet id " +
+                                     std::to_string(static_cast<std::underlying_type<ID>::type>(id)));
       }
 
       // deduplicate, sort before caching to avoid additional work in the future

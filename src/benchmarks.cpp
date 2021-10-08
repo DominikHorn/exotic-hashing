@@ -16,11 +16,19 @@
 #include "../include/convenience/tidy.hpp"
 
 #include "support/datasets.hpp"
+#include "support/probing_set.hpp"
 
 using Data = std::uint64_t;
 const std::vector<std::int64_t> dataset_sizes{100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
-const std::vector<std::int64_t> datasets{dataset::ID::SEQUENTIAL, dataset::ID::UNIFORM, dataset::ID::FB,
-                                         dataset::ID::NORMAL,     dataset::ID::OSM,     dataset::ID::WIKI};
+const std::vector<std::int64_t> datasets{static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
+                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::UNIFORM),
+                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::FB),
+                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::NORMAL),
+                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::OSM),
+                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::WIKI)};
+const std::vector<std::int64_t> probe_distributions{
+   static_cast<std::underlying_type_t<dataset::ProbingDistribution>>(dataset::ProbingDistribution::UNIFORM),
+   static_cast<std::underlying_type_t<dataset::ProbingDistribution>>(dataset::ProbingDistribution::EXPONENTIAL)};
 
 template<class Hashfn>
 static void PresortedBuildTime(benchmark::State& state) {
@@ -100,10 +108,8 @@ static void LookupTime(benchmark::State& state) {
    assert(std::is_sorted(dataset.begin(), dataset.end()));
 
    // probe in random order to limit caching effects
-   std::random_device rd;
-   std::default_random_engine rng(rd());
-   auto shuffled_dataset = dataset;
-   std::shuffle(shuffled_dataset.begin(), shuffled_dataset.end(), rng);
+   const auto probing_dist = static_cast<dataset::ProbingDistribution>(state.range(2));
+   const auto probing_set = dataset::generate_probing_set(dataset, probing_dist);
 
    // build hashfn
    const auto hashfn = Hashfn(dataset);
@@ -111,9 +117,9 @@ static void LookupTime(benchmark::State& state) {
    size_t i = 0;
    for (auto _ : state) {
       // get next lookup element
-      while (unlikely(i >= shuffled_dataset.size()))
-         i -= shuffled_dataset.size();
-      const auto element = shuffled_dataset[i++];
+      while (unlikely(i >= probing_set.size()))
+         i -= probing_set.size();
+      const auto element = probing_set[i++];
 
       // hash element
       const auto hash = hashfn(element);
@@ -128,13 +134,13 @@ static void LookupTime(benchmark::State& state) {
    state.counters["hashfn_bits_per_key"] = 8. * hashfn.byte_size() / dataset.size();
    state.counters["dataset_elem_count"] = dataset.size();
    state.counters["dataset_bytes"] = (sizeof(decltype(dataset)::value_type) * dataset.size());
-   state.SetLabel(Hashfn::name() + ":" + dataset::name(did));
+   state.SetLabel(Hashfn::name() + ":" + dataset::name(did) + ":" + dataset::name(probing_dist));
 };
 
 #define BM(Hashfn)                                                                         \
    BENCHMARK_TEMPLATE(PresortedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
    BENCHMARK_TEMPLATE(UnorderedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
-   BENCHMARK_TEMPLATE(LookupTime, Hashfn)->ArgsProduct({dataset_sizes, datasets});
+   BENCHMARK_TEMPLATE(LookupTime, Hashfn)->ArgsProduct({dataset_sizes, datasets, probe_distributions});
 
 using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
 BM(DoNothingHash);
@@ -162,10 +168,17 @@ using FST = exotic_hashing::FastSuccinctTrie<Data>;
 BM(FST);
 using LearnedLinear = exotic_hashing::LearnedLinear<Data>;
 BENCHMARK_TEMPLATE(LookupTime, LearnedLinear)
-   ->ArgsProduct({dataset_sizes, {dataset::ID::SEQUENTIAL, dataset::ID::GAPPED_10}});
+   ->ArgsProduct({dataset_sizes,
+                  {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
+                   static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)},
+                  probe_distributions});
 BENCHMARK_TEMPLATE(PresortedBuildTime, LearnedLinear)
-   ->ArgsProduct({dataset_sizes, {dataset::ID::SEQUENTIAL, dataset::ID::GAPPED_10}});
+   ->ArgsProduct({dataset_sizes,
+                  {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
+                   static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)}});
 BENCHMARK_TEMPLATE(UnorderedBuildTime, LearnedLinear)
-   ->ArgsProduct({dataset_sizes, {dataset::ID::SEQUENTIAL, dataset::ID::GAPPED_10}});
+   ->ArgsProduct({dataset_sizes,
+                  {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
+                   static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)}});
 
 BENCHMARK_MAIN();
