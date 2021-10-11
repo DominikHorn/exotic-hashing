@@ -35,6 +35,7 @@ with open(file) as data_file:
     # augment additional computed columns
     df["hashfn"] = df["label"].apply(lambda x : x.split(":")[0])
     df["dataset"] = df["label"].apply(lambda x : x.split(":")[1])
+    df["probe_distribution"] = df["label"].apply(lambda x : x.split(":")[2] if len(x.split(":")) > 2 else "-")
 
     # order data (important for legend & colors)
     def order(x):
@@ -102,14 +103,14 @@ with open(file) as data_file:
             x="dataset_elem_count",
             y="cpu_time_per_key",
             color="hashfn",
+            facet_row="probe_distribution",
             facet_col="dataset",
-            facet_col_wrap=3,
-            category_orders={"dataset": ["seq", "gap_10", "uniform", "osm", "fb"]},
+            category_orders={"dataset": ["seq", "gap_10", "uniform", "normal", "wiki", "osm", "fb"]},
             markers=True,
             log_x=True,
             labels=plot_labels,
             color_discrete_sequence=color_sequence,
-            height=650,
+            height=600,
             title="Lookup - nanoseconds per key"
             )
         return convert_to_html(fig)
@@ -123,12 +124,12 @@ with open(file) as data_file:
             color="hashfn",
             facet_col="dataset",
             facet_col_wrap=3,
-            category_orders={"dataset": ["seq", "gap_10", "uniform", "osm", "fb"]},
+            category_orders={"dataset": ["seq", "gap_10", "uniform", "normal", "wiki", "osm", "fb"]},
             log_x=True,
             markers=True,
             labels=plot_labels,
             color_discrete_sequence=color_sequence,
-            height=650,
+            height=600,
             title="Space - total bits per key"
             )
         return convert_to_html(fig)
@@ -146,21 +147,21 @@ with open(file) as data_file:
             barmode="group",
             facet_col="dataset",
             facet_row="sorted",
-            category_orders={"dataset": ["seq", "gap_10","uniform", "osm", "fb"]},
+            category_orders={"dataset": ["seq", "gap_10", "uniform", "normal", "wiki", "osm", "fb"]},
             labels=plot_labels,
             color_discrete_sequence=color_sequence,
-            height=650,
+            height=600,
             title="Build - throughput in keys per second"
             )
         fig.update_traces(
                 patch={'visible': 'legendonly'},
-                selector=lambda go : go.legendgroup.lower() in ["donothinghash", "rankhash", "mapomphf"])
+                selector=lambda go : go.legendgroup.lower() in ["donothinghash"])
         return convert_to_html(fig)
 
     def plot_raw_data():
         raw_data = df.sort_values(by=["name"])
-        raw_data = raw_data.rename({"cpu_time": "ns", 'hashfn': 'function', 'dataset_elem_count': 'keys', 'hashfn_bits_per_key': 'bits per key'}, axis='columns')
-        raw_data = raw_data[["name", "function", "dataset", "keys", "bits per key", "ns"]]
+        raw_data = raw_data.rename({"cpu_time": "ns", 'hashfn': 'function', "probe_distribution": "probe distribution", 'dataset_elem_count': 'keys', 'hashfn_bits_per_key': 'bits per key'}, axis='columns')
+        raw_data = raw_data[["name", "function", "probe distribution", "dataset", "keys", "bits per key", "ns"]]
         raw_data["ns"] = raw_data.apply(lambda x : str(int(float(x["ns"]))), axis=1)
         raw_data["keys"] = raw_data.apply(lambda x : str(int(x["keys"])), axis=1)
 
