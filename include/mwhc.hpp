@@ -98,11 +98,17 @@ namespace exotic_hashing {
       template<class Data, class Hasher>
       class HyperGraph {
          struct Vertex {
-            // limiting to 8 bytes might be sufficient in practice
+            /// limiting to 8 bytes might be sufficient in practice, however, max degree
+            /// changes probabilistically and might be based on dataset.size()!
             std::uint16_t degree : 16;
 
             /// implemented using modified XOR-trick. Original from:
             /// https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6824443
+            ///
+            /// limiting to log(dataset.size()) is sufficient practice, however,
+            /// would require runtime code genereration or some other dynamic
+            /// implementation. 2^48 vertices permit datasets of size <= 228,841,444,480,208,
+            /// i.e., is 'sufficient' in practice.
             std::uint64_t edges : 48;
 
             /// edges are represented as 48 bit integers
