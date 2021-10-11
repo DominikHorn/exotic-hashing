@@ -97,50 +97,35 @@ namespace exotic_hashing {
 
       template<class Data, class Hasher>
       class HyperGraph {
-         class Vertex {
+         struct Vertex {
+            // limiting to 8 bytes might be sufficient in practice
+            std::uint16_t degree : 16;
+
             /// implemented using modified XOR-trick. Original from:
             /// https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6824443
-            std::uint64_t data = 0;
-
-            static constexpr forceinline size_t edges_width() {
-               return 48;
-            }
-
-            static constexpr forceinline size_t edges_mask() {
-               return (0x1LLU << edges_width()) - 1;
-            }
-
-           public:
-            /// degree mustn't be larger than 255
-            forceinline size_t degree() const {
-               return data >> edges_width();
-            }
+            std::uint64_t edges : 48;
 
             /// edges are represented as 48 bit integers
             forceinline void add_edge(const size_t edge) {
-               // check that we have room for new values
-               assert(degree() < (0x1LLU << (8 * sizeof(decltype(data)) - edges_width())) - 1);
-               assert(edge <= (0x1LLU << edges_width()) - 1);
-
-               // increment degree & xor edge ontop of data (add it)
-               data = ((degree() + 1) << edges_width()) | ((data ^ edge) & edges_mask());
+               degree++;
+               edges ^= edge;
             }
 
             /// edges are represented as 48 bit integers
             forceinline void remove_edge(const size_t edge) {
                // check that removing the edge is legal
-               assert(degree() > 0);
+               assert(degree > 0);
 
-               // decrement degree & xor edge ontop of data (remove it)
-               data = ((degree() - 1) << edges_width()) | ((data ^ edge) & edges_mask());
+               degree--;
+               edges ^= edge;
             }
 
             /// edges are represented as 48 bit integers
             forceinline size_t retrieve_last() const {
                // retrieving the last edge only works when degree == 1 due to XOR-trick
-               assert(degree() == 1);
+               assert(degree == 1);
 
-               return data & edges_mask();
+               return edges;
             }
          };
 
@@ -181,7 +166,7 @@ namespace exotic_hashing {
             // 1. Recursively peel all vertices if possible (without recursion to avoid stack overflows)
             for (size_t vertex_ind = 0; vertex_ind < vertices.size(); vertex_ind++) {
                // only vertices with degree 1 are peelable
-               if (vertices[vertex_ind].degree() != 1)
+               if (vertices[vertex_ind].degree != 1)
                   continue;
 
                // add current vertex to preliminary section of peel_order
@@ -198,7 +183,7 @@ namespace exotic_hashing {
                   // peeled the edge adjacent to this vertex, i.e., reduced
                   // degree to 0. If that is the case, don't peel again and
                   // remove from peel_order (through override - see bellow).
-                  if (vertex_to_peel.degree() != 1)
+                  if (vertex_to_peel.degree != 1)
                      continue;
                   // Obtain edge to peel & adjacent vertices
                   const auto edge = vertex_to_peel.retrieve_last();
@@ -215,11 +200,11 @@ namespace exotic_hashing {
                   peel_order[completed_ind++] = edge;
 
                   // Attempt to peel adjacent vertices next
-                  if (v0.degree() == 1)
+                  if (v0.degree == 1)
                      peel_order.push_back(h0);
-                  if (v1.degree() == 1)
+                  if (v1.degree == 1)
                      peel_order.push_back(h1);
-                  if (v2.degree() == 1)
+                  if (v2.degree == 1)
                      peel_order.push_back(h2);
                }
             }
