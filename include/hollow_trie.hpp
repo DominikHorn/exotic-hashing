@@ -41,7 +41,7 @@ namespace exotic_hashing {
          const auto encoding_list = convert(*compact_trie.root);
 
          // 2. Convert to final, minimal encoding
-         nodes = std::vector<Node>(encoding_list.begin(), encoding_list.end());
+         nodes = std::vector<Node<>>(encoding_list.begin(), encoding_list.end());
       }
 
       forceinline size_t operator()(const Key& key) const {
@@ -50,28 +50,28 @@ namespace exotic_hashing {
 
          size_t left_leaf_cnt = 0, key_bits_ind = 0, leftmost_right = nodes.size();
          for (size_t i = 0; key_bits_ind < key_bits.size();) {
-            const Node& n = nodes[i];
+            const auto& n = nodes[i];
 
-            key_bits_ind += n.bit_skip();
+            key_bits_ind += n.bit_skip;
 
             // Right (if) or Left (else) traversal
             if (key_bits[key_bits_ind]) {
                // node_skip = left.leaf_cnt() == left_leaf_cnt of CompactTrie
-               left_leaf_cnt += n.node_skip();
+               left_leaf_cnt += n.node_skip;
 
                // Right child is always at i + node_skip
-               i = i + n.node_skip();
+               i = i + n.node_skip;
 
                // We encountered a right leaf
                if (i >= leftmost_right)
                   return left_leaf_cnt;
             } else {
                // We encountered a left leaf
-               if (n.node_skip() == 1)
+               if (n.node_skip == 1)
                   return left_leaf_cnt;
 
                // Keep track of this to be able to detect right leafs
-               leftmost_right = i + n.node_skip();
+               leftmost_right = i + n.node_skip;
 
                // Left child is always at i+1
                i = i + 1;
@@ -86,7 +86,8 @@ namespace exotic_hashing {
       }
 
       size_t byte_size() const {
-         return sizeof(SimpleHollowTrie<Key, BitConverter>) + sizeof(Node) * nodes.size();
+         return sizeof(SimpleHollowTrie<Key, BitConverter>) +
+            sizeof(typename decltype(nodes)::value_type) * nodes.size();
       };
 
       /**
@@ -134,29 +135,19 @@ namespace exotic_hashing {
       }
 
      private:
+      template<size_t BitSkipSize = 8>
       struct Node {
-         Node(const std::size_t& bit_skip, const std::size_t& node_skip) {
-            if (unlikely(bit_skip > (((std::uint64_t) 0x1 << bit_skip_size) - 1)))
+         const std::size_t bit_skip : BitSkipSize;
+         const std::size_t node_skip : 8 * sizeof(decltype(bit_skip)) - BitSkipSize;
+
+         Node(const std::size_t& bit_skip, const std::size_t& node_skip) : bit_skip(bit_skip), node_skip(node_skip) {
+            if (unlikely(bit_skip > ((0x1LLU << BitSkipSize) - 1)))
                throw std::runtime_error("Failed to construct HollowTrie: bit_skip exceeds " +
-                                        std::to_string(bit_skip_size) + " bits");
-            if (unlikely(node_skip > ((std::uint64_t) 0x1 << (sizeof(data) * 8 - bit_skip_size)) - 1))
+                                        std::to_string(BitSkipSize) + " bits");
+            if (unlikely(node_skip > (0x1LLU << (sizeof(decltype(bit_skip)) * 8 - BitSkipSize)) - 1))
                throw std::runtime_error("Failed to construct HollowTrie: node_skip exceeds " +
-                                        std::to_string(sizeof(data) * 8 - bit_skip_size) + " bits");
-
-            data = (bit_skip & ((static_cast<std::uint64_t>(0x1) << bit_skip_size) - 1)) | (node_skip << bit_skip_size);
+                                        std::to_string((sizeof(decltype(bit_skip)) * 8 - BitSkipSize)) + " bits");
          }
-
-         forceinline std::size_t bit_skip() const {
-            return data & ((static_cast<std::uint64_t>(0x1) << bit_skip_size) - 1);
-         }
-
-         forceinline std::size_t node_skip() const {
-            return data >> bit_skip_size;
-         }
-
-        private:
-         std::uint64_t data;
-         static const size_t bit_skip_size = 8;
       };
 
       /**
@@ -175,11 +166,11 @@ namespace exotic_hashing {
        * of edges along each path are expected to be left child accesses, this
        * should improve real world performance noticeably.
        */
-      std::list<Node> convert(const typename CompactTrie<Key, BitConverter, BitStream>::Node& subtrie) const {
+      std::list<Node<>> convert(const typename CompactTrie<Key, BitConverter, BitStream>::Node& subtrie) const {
          if (subtrie.is_leaf())
             return {};
 
-         // TODO: leaf_count() is an O(log(N)) operation where N is the max
+         // TODO(dominik): leaf_count() is an O(log(N)) operation where N is the max
          // length of any Key's bitstream.  By also storing right_leaf_count in
          // CompactTrie::Node, we could make this constant time
 
@@ -189,7 +180,7 @@ namespace exotic_hashing {
          const size_t node_skip = subtrie.left->leaf_count();
 
          // Encode parent | left subtrie | right subtrie
-         std::list<Node> l;
+         std::list<Node<>> l;
          l.emplace_back(subtrie.prefix.size(), node_skip);
          l.splice(l.end(), convert(*subtrie.left));
          l.splice(l.end(), convert(*subtrie.right));
@@ -215,33 +206,33 @@ namespace exotic_hashing {
             out << " ";
 
          // Current node
-         const Node& n = nodes[node_index];
-         out << "[{" << n.bit_skip() << ", " << n.node_skip() << "}" << std::endl;
+         const auto& n = nodes[node_index];
+         out << "[{" << n.bit_skip << ", " << n.node_skip << "}" << std::endl;
 
          // Left child
-         if (n.node_skip() == 1) {
+         if (n.node_skip == 1) {
             // ... is a leaf
             for (size_t i = 0; i < indent + 1; i++)
                out << " ";
             out << "[,phantom]" << std::endl;
          } else
-            print_subtrie_tikz(out, node_index + 1, node_index + n.node_skip(), indent + 1);
+            print_subtrie_tikz(out, node_index + 1, node_index + n.node_skip, indent + 1);
 
          // Right child
-         if (node_index + n.node_skip() >= leftmost_right) {
+         if (node_index + n.node_skip >= leftmost_right) {
             // ... is a leaf
             for (size_t i = 0; i < indent + 1; i++)
                out << " ";
             out << "[,phantom]" << std::endl;
          } else
-            print_subtrie_tikz(out, node_index + n.node_skip(), leftmost_right, indent + 1);
+            print_subtrie_tikz(out, node_index + n.node_skip, leftmost_right, indent + 1);
 
          for (size_t i = 0; i < indent; i++)
             out << " ";
          out << "]" << std::endl;
       }
 
-      std::vector<Node> nodes;
+      std::vector<Node<>> nodes;
    };
 
    template<class Key, class BitConverter, class BitStream = support::Bitvector<>>
