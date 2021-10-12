@@ -24,6 +24,10 @@ namespace exotic_hashing {
          UNUSED(predictor);
       }
 
+      forceinline size_t byte_size() const {
+         return 0;
+      }
+
       forceinline size_t operator()(size_t pred_ind, Key searched, const std::vector<Key>& dataset) const {
          const auto last_ind = dataset.size() - 1;
          size_t actual_ind = pred_ind;
@@ -42,19 +46,18 @@ namespace exotic_hashing {
          auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) this;
          self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
          self->queries++;
+#endif
 
          return actual_ind;
       }
 
+#if NDEBUG == 0
       double avg_error() const {
          return static_cast<double>(total_error) / static_cast<double>(queries);
       }
 
      private:
       size_t total_error = 0, queries = 0;
-#else
-         return actual_ind;
-      }
 #endif
    };
 
@@ -66,6 +69,10 @@ namespace exotic_hashing {
       ExponentialRangeLookup(const std::vector<Key>& dataset, const Predictor& predictor) {
          UNUSED(dataset);
          UNUSED(predictor);
+      }
+
+      forceinline size_t byte_size() const {
+         return 0;
       }
 
       forceinline size_t operator()(size_t pred_ind, Key searched, const std::vector<Key>& dataset) const {
@@ -105,24 +112,23 @@ namespace exotic_hashing {
             std::distance(dataset.begin(), std::lower_bound(interval_start, interval_end, searched));
 
 #if NDEBUG == 0
-   #warning "Using debug SequentialRangeLookup implementation"
+   #warning "Using debug ExponentialRangeLookup implementation"
          // tricking the compiler like this should be illegal...
          auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) this;
          self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
          self->queries++;
+#endif
 
          return actual_ind;
       }
 
+#if NDEBUG == 0
       double avg_error() const {
          return static_cast<double>(total_error) / static_cast<double>(queries);
       }
 
      private:
       size_t total_error = 0, queries = 0;
-#else
-         return actual_ind;
-      }
 #endif
    };
 
@@ -140,6 +146,10 @@ namespace exotic_hashing {
          }
       }
 
+      forceinline size_t byte_size() const {
+         return sizeof(decltype(max_error));
+      }
+
       forceinline size_t operator()(size_t pred_ind, Key searched, const std::vector<Key>& dataset) const {
          // compute interval bounds
          const auto interval_start = dataset.begin() + (pred_ind > max_error) * (pred_ind - max_error);
@@ -154,24 +164,23 @@ namespace exotic_hashing {
             std::distance(dataset.begin(), std::lower_bound(interval_start, interval_end, searched));
 
 #if NDEBUG == 0
-   #warning "Using debug SequentialRangeLookup implementation"
+   #warning "Using debug BinaryRangeLookup implementation"
          // tricking the compiler like this should be illegal...
          auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) this;
          self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
          self->queries++;
+#endif
 
          return actual_ind;
       }
 
+#if NDEBUG == 0
       double avg_error() const {
          return static_cast<double>(total_error) / static_cast<double>(queries);
       }
 
      private:
       size_t total_error = 0, queries = 0;
-#else
-         return actual_ind;
-      }
 #endif
    };
 
@@ -212,8 +221,7 @@ namespace exotic_hashing {
       }
 
       size_t byte_size() const {
-         // TODO(dominik): implement
-         return dataset.size() * sizeof(Data) + sizeof(std::vector<Data>);
+         return dataset.size() * sizeof(Data) + sizeof(std::vector<Data>) + rmi.byte_size() + lls.byte_size();
       };
 
 #if NDEBUG == 0
