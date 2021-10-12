@@ -11,11 +11,11 @@
 #include <tuple>
 #include <vector>
 
+#include "../convenience/builtins.hpp"
+#include "../convenience/tidy.hpp"
+#include "../support/bitvector.hpp"
+#include "../support/elias.hpp"
 #include "compact_trie.hpp"
-#include "convenience/builtins.hpp"
-#include "convenience/tidy.hpp"
-#include "include/bitvector.hpp"
-#include "include/elias.hpp"
 
 namespace exotic_hashing {
    /**

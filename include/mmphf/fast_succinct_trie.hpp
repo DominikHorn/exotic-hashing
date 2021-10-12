@@ -10,7 +10,7 @@
 
 #include <fst.hpp>
 
-#include "include/convenience/builtins.hpp"
+#include "../convenience/builtins.hpp"
 
 namespace exotic_hashing {
    /**

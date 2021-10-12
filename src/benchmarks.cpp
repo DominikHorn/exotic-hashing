@@ -11,7 +11,6 @@
 #include <sdsl/suffix_arrays.hpp>
 #include <benchmark/benchmark.h>
 
-#include "../include/bitconverter.hpp"
 #include "../include/convenience/builtins.hpp"
 #include "../include/convenience/tidy.hpp"
 

@@ -7,7 +7,7 @@
 #include <sdsl/util.hpp>
 #include <string>
 
-#include "include/convenience/builtins.hpp"
+#include "../convenience/builtins.hpp"
 
 namespace exotic_hashing {
    template<class Data>

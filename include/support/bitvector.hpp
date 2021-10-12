@@ -5,8 +5,8 @@
 #include <cstdint>
 #include <vector>
 
-#include "include/convenience/builtins.hpp"
-#include "include/support.hpp"
+#include "../convenience/builtins.hpp"
+#include "support.hpp"
 
 namespace exotic_hashing::support {
    template<class Storage = std::uint64_t>

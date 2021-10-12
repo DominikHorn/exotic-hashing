@@ -6,9 +6,9 @@
 #include <cstdint>
 #include <vector>
 
-#include "include/bitvector.hpp"
-#include "include/convenience/builtins.hpp"
-#include "include/support.hpp"
+#include "../convenience/builtins.hpp"
+#include "bitvector.hpp"
+#include "support.hpp"
 
 namespace exotic_hashing::support {
    /**

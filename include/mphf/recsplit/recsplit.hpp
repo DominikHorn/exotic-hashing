@@ -7,7 +7,7 @@
  * Please see LICENSE.md for more information
  */
 
-#include "../convenience/builtins.hpp"
+#include "../../convenience/builtins.hpp"
 #include "src/RecSplit.hpp"
 
 #include <string>
@@ -17,7 +17,8 @@ namespace exotic_hashing {
    template<class Data, size_t BucketSize = 9, size_t LeafSize = 12,
             sux::util::AllocType AllocType = sux::util::AllocType::MALLOC>
    struct RecSplit : protected sux::function::RecSplit<LeafSize, AllocType> {
-      RecSplit(const std::vector<Data>& d) : sux::function::RecSplit<LeafSize, AllocType>(to_string(d), BucketSize) {}
+      explicit RecSplit(const std::vector<Data>& d)
+         : sux::function::RecSplit<LeafSize, AllocType>(to_string(d), BucketSize) {}
 
       static std::string name() {
          return "RecSplit_leaf" + std::to_string(LeafSize) + "_bucket" + std::to_string(BucketSize);

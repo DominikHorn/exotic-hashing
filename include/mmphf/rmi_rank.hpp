@@ -10,8 +10,8 @@
 
 #include <learned_hashing.hpp>
 
-#include "convenience/builtins.hpp"
-#include "convenience/tidy.hpp"
+#include "../convenience/builtins.hpp"
+#include "../convenience/tidy.hpp"
 
 namespace exotic_hashing {
    template<class Key>

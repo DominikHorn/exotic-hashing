@@ -3,8 +3,8 @@
 #include <cassert>
 #include <vector>
 
-#include "convenience/builtins.hpp"
-#include "include/bitvector.hpp"
+#include "../convenience/builtins.hpp"
+#include "bitvector.hpp"
 
 namespace exotic_hashing::support {
    template<class T, class BitStream = FixedBitvector<>>

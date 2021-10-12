@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <x86intrin.h>
 
-#include "include/convenience/builtins.hpp"
+#include "../convenience/builtins.hpp"
 
 namespace exotic_hashing::support {
    template<class T>

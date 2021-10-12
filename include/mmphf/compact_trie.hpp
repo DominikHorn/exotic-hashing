@@ -6,9 +6,9 @@
 #include <limits>
 #include <optional>
 
-#include "include/bitvector.hpp"
-#include "include/convenience/builtins.hpp"
-#include "include/convenience/tidy.hpp"
+#include "../convenience/builtins.hpp"
+#include "../convenience/tidy.hpp"
+#include "../support/bitvector.hpp"
 
 namespace exotic_hashing {
    template<class Key, class BitConverter, class BitStream>

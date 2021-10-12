@@ -1,14 +1,18 @@
 #pragma once
 
-#include "include/bitconverter.hpp"
-#include "include/bitvector.hpp"
-#include "include/compact_trie.hpp"
-#include "include/elias.hpp"
-#include "include/fast_succinct_trie.hpp"
-#include "include/hollow_trie.hpp"
-#include "include/learned_linear.hpp"
-#include "include/mwhc.hpp"
-#include "include/naive_baseline.hpp"
-#include "include/recsplit/recsplit.hpp"
-#include "include/rmi_rank.hpp"
-#include "include/support.hpp"
+#include "include/phf/do_nothing_hash.hpp"
+
+#include "include/mphf/recsplit/recsplit.hpp"
+
+#include "include/mmphf/compact_trie.hpp"
+#include "include/mmphf/fast_succinct_trie.hpp"
+#include "include/mmphf/hollow_trie.hpp"
+#include "include/mmphf/learned_linear.hpp"
+#include "include/mmphf/rank_hash.hpp"
+#include "include/mmphf/rmi_rank.hpp"
+
+#include "include/omphf/map_omphf.hpp"
+#include "include/omphf/mwhc.hpp"
+
+#include "include/support/bitconverter.hpp"
+#include "include/support/bitvector.hpp"

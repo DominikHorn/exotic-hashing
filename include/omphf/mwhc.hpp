@@ -20,8 +20,7 @@
 
 #include <hashing.hpp>
 
-#include "include/convenience/builtins.hpp"
-#include "include/reduction.hpp"
+#include "../convenience/builtins.hpp"
 
 namespace exotic_hashing {
    namespace support {
