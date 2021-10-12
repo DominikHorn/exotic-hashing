@@ -11,3 +11,4 @@
 #include "tests/map-omphf-tests.hpp"
 #include "tests/mwhc-tests.hpp"
 #include "tests/rankhash-tests.hpp"
+#include "tests/rmirank-tests.hpp"

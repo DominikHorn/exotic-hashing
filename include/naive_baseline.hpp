@@ -48,7 +48,7 @@ namespace exotic_hashing {
     */
    template<class Data>
    struct RankHash {
-      RankHash(const std::vector<Data>& d) : dataset(d) {
+      explicit RankHash(const std::vector<Data>& d) : dataset(d) {
          // sort the dataset
          std::sort(dataset.begin(), dataset.end());
 

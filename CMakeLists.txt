@@ -16,8 +16,9 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 include(${PROJECT_SOURCE_DIR}/thirdparty/sdsl-lite.cmake)
 include(${PROJECT_SOURCE_DIR}/thirdparty/fst.cmake)
 include(${PROJECT_SOURCE_DIR}/thirdparty/hashing.cmake)
+include(${PROJECT_SOURCE_DIR}/thirdparty/learned_hashing.cmake)
 
-target_link_libraries(${PROJECT_NAME} INTERFACE ${SDSL_LIBRARY} ${HASHING_LIBRARY} ${FST_LIBRARY})
+target_link_libraries(${PROJECT_NAME} INTERFACE ${SDSL_LIBRARY} ${HASHING_LIBRARY} ${LEARNED_HASHING_LIBRARY} ${FST_LIBRARY})
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-fconstexpr-steps=999999999 CONSTEXPR_RECURSION_DEPTH_CONFIGURABLE)

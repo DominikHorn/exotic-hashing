@@ -10,4 +10,5 @@
 #include "include/mwhc.hpp"
 #include "include/naive_baseline.hpp"
 #include "include/recsplit/recsplit.hpp"
+#include "include/rmi_rank.hpp"
 #include "include/support.hpp"
