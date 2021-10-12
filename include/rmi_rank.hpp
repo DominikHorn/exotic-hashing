@@ -195,14 +195,13 @@ namespace exotic_hashing {
          // ensure dataset is sorted
          std::sort(dataset.begin(), dataset.end());
 
-         // TODO(dominik): remove every second element to save on space
-         // // omit every second element, deleting junk and ensuring the final dataset
-         // // vector is minimal, i.e., does not waste any additional space
-         // for (size_t i = 1, j = 2; j < dataset.size(); i++, j += 2)
-         //    dataset[i] = dataset[j];
-         // const size_t middle = (dataset.size() / 2) + (dataset.size() & 0x1);
-         // dataset.erase(dataset.begin() + middle, dataset.end());
-         // dataset.resize(dataset.size());
+         // omit every second element, deleting junk and ensuring the final dataset
+         // vector is minimal, i.e., does not waste any additional space
+         for (size_t i = 1, j = 2; j < dataset.size(); i++, j += 2)
+            dataset[i] = dataset[j];
+         const size_t middle = (dataset.size() / 2) + (dataset.size() & 0x1);
+         dataset.erase(dataset.begin() + middle, dataset.end());
+         dataset.resize(dataset.size());
 
          rmi = decltype(rmi)(dataset.begin(), dataset.end(), dataset.size());
          lls = LastLevelSearch(dataset, rmi);
@@ -217,7 +216,11 @@ namespace exotic_hashing {
          const auto pred_ind = rmi(key);
 
          // Last level search to find actual index
-         return lls(pred_ind, key, dataset);
+         const auto actual_ind = lls(pred_ind, key, dataset);
+
+         if (unlikely(actual_ind == dataset.size()))
+            return 2 * actual_ind - 1;
+         return 2 * actual_ind - (dataset[actual_ind] == key ? 0 : 1);
       }
 
       size_t byte_size() const {
