@@ -17,16 +17,9 @@ else()
 endif()
 
 # ==== Test target ====
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/96f4ce02a3a78d63981c67acbd368945d11d7d70.zip
-  )
-
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
 add_executable(eh_tests tests.cpp)
+
+include(../thirdparty/googletest.cmake)
 target_link_libraries(eh_tests exotic-hashing gtest_main)
 
 # enable ctest support (i.e., test discovery)
@@ -36,4 +29,5 @@ gtest_discover_tests(eh_tests)
 # ==== Benchmarks target ====
 add_executable(eh_benchmarks benchmarks.cpp)
 
+include(../thirdparty/googlebenchmark.cmake)
 target_link_libraries(eh_benchmarks PRIVATE exotic-hashing ${GOOGLEBENCHMARK_LIBRARY})

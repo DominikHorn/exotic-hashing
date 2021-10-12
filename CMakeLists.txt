@@ -32,7 +32,5 @@ target_sources(${PROJECT_NAME} INTERFACE exotic_hashing.hpp include/)
 # Benchmark code
 get_directory_property(hasParent PARENT_DIRECTORY)
 if (NOT hasParent)
-  include(thirdparty/googlebenchmark.cmake)
-
   add_subdirectory(src)
 endif()

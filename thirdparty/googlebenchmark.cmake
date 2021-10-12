@@ -6,7 +6,7 @@ set(GOOGLEBENCHMARK_LIBRARY eh_googlebenchmark)
 
 ExternalProject_Add(
         ${GOOGLEBENCHMARK_LIBRARY}_src
-        PREFIX external/${GOOGLEBENCHMARK_LIBRARY}
+        PREFIX ../external/${GOOGLEBENCHMARK_LIBRARY}
         GIT_REPOSITORY "https://github.com/google/benchmark.git"
         GIT_TAG v1.5.5
         TIMEOUT 10
