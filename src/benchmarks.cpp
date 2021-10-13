@@ -146,6 +146,8 @@ using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
 BM(DoNothingHash);
 using RankHash = exotic_hashing::RankHash<Data>;
 BM(RankHash);
+using RMIRank = exotic_hashing::RMIRank<Data>;
+BM(RMIRank);
 using MapOMPHF = exotic_hashing::MapOMPHF<Data>;
 BM(MapOMPHF);
 using RecSplit = exotic_hashing::RecSplit<Data>;
