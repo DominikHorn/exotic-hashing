@@ -100,12 +100,65 @@ namespace exotic_hashing::support {
       }
 
       size_t size() const {
-         return upper.size() / 2;
+         return n;
       }
 
       size_t byte_size() const {
          return sdsl::size_in_bytes(upper) + sdsl::size_in_bytes(lower) + sdsl::size_in_bytes(u_select) +
             sizeof(decltype(l));
+      }
+
+      /// Custom copy constructor is necessary since sdsl's select support does not properly implement this itself
+      EliasFanoList(const EliasFanoList& other) noexcept {
+         lower = other.lower;
+         upper = other.upper;
+         l = other.l;
+         n = other.n;
+         u_select = other.u_select;
+
+         // reset vector as otherwise u_select contains broken pointer
+         u_select.set_vector(&upper);
+      }
+
+      /// Custom move constructor is necessary since sdsl's select support does not properly implement this itself
+      EliasFanoList(EliasFanoList&& other) noexcept {
+         lower = other.lower;
+         upper = other.upper;
+         l = other.l;
+         n = other.n;
+         u_select = other.u_select;
+
+         // reset vector as otherwise u_select contains broken pointer
+         u_select.set_vector(&upper);
+      }
+
+      /// Custom copy assignment is necessary since sdsl's select support does not properly implement this itself
+      EliasFanoList& operator=(const EliasFanoList& other) noexcept {
+         if (this != &other) {
+            lower = other.lower;
+            upper = other.upper;
+            l = other.l;
+            n = other.n;
+            u_select = other.u_select;
+
+            // reset vector as otherwise u_select contains broken pointer
+            u_select.set_vector(&upper);
+         }
+
+         return *this;
+      }
+
+      /// Custom move assignment is necessary since sdsl's select support does not properly implement this itself
+      EliasFanoList& operator=(EliasFanoList&& other) noexcept {
+         lower = other.lower;
+         upper = other.upper;
+         l = other.l;
+         n = other.n;
+         u_select = other.u_select;
+
+         // reset vector as otherwise u_select contains broken pointer
+         u_select.set_vector(&upper);
+         return *this;
       }
    };
 } // namespace exotic_hashing::support
