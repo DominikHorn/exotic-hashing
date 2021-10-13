@@ -13,14 +13,37 @@
 
 #include "../convenience/builtins.hpp"
 #include "../convenience/tidy.hpp"
+#include "../support/elias_fano_list.hpp"
 
 namespace exotic_hashing {
+   namespace support {
+      /// Lower bound implementation from https://en.cppreference.com/w/cpp/algorithm/lower_bound, adapted to be usable
+      /// on std::vector as well as support::EliasFanoList
+      template<class Dataset, class Data>
+      forceinline size_t lower_bound(size_t first, size_t last, const Data& value, const Dataset& dataset) {
+         size_t i = first, count = last - first, step = 0;
+
+         while (count > 0) {
+            i = first;
+            step = count / 2;
+            i += step;
+            if (dataset[i] < value) {
+               first = ++i;
+               count -= step + 1;
+            } else
+               count = step;
+         }
+         return first;
+      };
+
+   } // namespace support
+
    template<class Key>
    struct SequentialRangeLookup {
       SequentialRangeLookup() = default;
 
-      template<class Predictor>
-      SequentialRangeLookup(const std::vector<Key>& dataset, const Predictor& predictor) {
+      template<class Dataset, class Predictor>
+      SequentialRangeLookup(const Dataset& dataset, const Predictor& predictor) {
          UNUSED(dataset);
          UNUSED(predictor);
       }
@@ -29,7 +52,8 @@ namespace exotic_hashing {
          return 0;
       }
 
-      forceinline size_t operator()(size_t pred_ind, Key searched, const std::vector<Key>& dataset) const {
+      template<class Dataset>
+      forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
          const auto last_ind = dataset.size() - 1;
          size_t actual_ind = pred_ind;
 
@@ -66,8 +90,8 @@ namespace exotic_hashing {
    struct ExponentialRangeLookup {
       ExponentialRangeLookup() = default;
 
-      template<class Predictor>
-      ExponentialRangeLookup(const std::vector<Key>& dataset, const Predictor& predictor) {
+      template<class Dataset, class Predictor>
+      ExponentialRangeLookup(const Dataset& dataset, const Predictor& predictor) {
          UNUSED(dataset);
          UNUSED(predictor);
       }
@@ -76,9 +100,10 @@ namespace exotic_hashing {
          return 0;
       }
 
-      forceinline size_t operator()(size_t pred_ind, Key searched, const std::vector<Key>& dataset) const {
-         typename std::vector<Key>::const_iterator interval_start, interval_end;
+      template<class Dataset>
+      forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
          const auto dataset_size = dataset.size();
+         size_t interval_start, interval_end;
 
          size_t next_err = 1;
          if (dataset[pred_ind] < searched) {
@@ -89,9 +114,9 @@ namespace exotic_hashing {
             }
             err = std::min(err, dataset_size - pred_ind);
 
-            interval_start = dataset.begin() + pred_ind;
+            interval_start = pred_ind;
             // +1 since lower_bound searches up to *excluding*
-            interval_end = dataset.begin() + pred_ind + err;
+            interval_end = pred_ind + err;
          } else {
             size_t err = 0;
             while (err < pred_ind && dataset[pred_ind - err] < searched) {
@@ -100,17 +125,16 @@ namespace exotic_hashing {
             }
             err = std::min(err, pred_ind);
 
-            interval_start = dataset.begin() + pred_ind - err;
+            interval_start = pred_ind - err;
             // +1 since lower_bound searches up to *excluding*
-            interval_end = dataset.begin() + pred_ind;
+            interval_end = pred_ind;
          }
 
-         assert(interval_start >= dataset.begin());
+         assert(interval_start >= 0);
          assert(interval_end >= interval_start);
-         assert(interval_end <= dataset.end());
+         assert(interval_end <= dataset.size());
 
-         const size_t actual_ind =
-            std::distance(dataset.begin(), std::lower_bound(interval_start, interval_end, searched));
+         const size_t actual_ind = support::lower_bound(interval_start, interval_end, searched, dataset);
 
 #if NDEBUG == 0
    #warning "Using additional counters in ExponentialRangeLookup implementation for debugging"
@@ -139,8 +163,8 @@ namespace exotic_hashing {
 
       BinaryRangeLookup() = default;
 
-      template<class Predictor>
-      BinaryRangeLookup(const std::vector<Key>& dataset, const Predictor& predictor) {
+      template<class Dataset, class Predictor>
+      BinaryRangeLookup(const Dataset& dataset, const Predictor& predictor) {
          for (size_t i = 0; i < dataset.size(); i++) {
             const size_t pred = predictor(dataset[i]);
             max_error = std::max(max_error, pred >= i ? pred - i : i - pred);
@@ -151,18 +175,18 @@ namespace exotic_hashing {
          return sizeof(decltype(max_error));
       }
 
-      forceinline size_t operator()(size_t pred_ind, Key searched, const std::vector<Key>& dataset) const {
+      template<class Dataset>
+      forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
          // compute interval bounds
-         const auto interval_start = dataset.begin() + (pred_ind > max_error) * (pred_ind - max_error);
+         const auto interval_start = (pred_ind > max_error) * (pred_ind - max_error);
          // +1 since std::lower_bound searches up to excluding upper bound
-         const auto interval_end = dataset.begin() + std::min(pred_ind + max_error, dataset.size() - 1) + 1;
+         const auto interval_end = std::min(pred_ind + max_error, dataset.size() - 1) + 1;
 
-         assert(interval_start >= dataset.begin());
+         assert(interval_start >= 0);
          assert(interval_end >= interval_start);
-         assert(interval_end <= dataset.end());
+         assert(interval_end <= dataset.size());
 
-         const size_t actual_ind =
-            std::distance(dataset.begin(), std::lower_bound(interval_start, interval_end, searched));
+         const size_t actual_ind = support::lower_bound(interval_start, interval_end, searched, dataset);
 
 #if NDEBUG == 0
    #warning "Using additional counters in BinaryRangeLookup implementation for debugging"
@@ -232,6 +256,70 @@ namespace exotic_hashing {
 
       size_t byte_size() const {
          return dataset.size() * sizeof(Data) + sizeof(std::vector<Data>) + rmi.byte_size() + lls.byte_size();
+      };
+
+#if NDEBUG == 0
+      /// average model prediction error experienced thus far
+      size_t avg_lls_error() const {
+         return lls.avg_error();
+      }
+#endif
+   };
+
+   template<class Data, size_t SecondLevelModelCount = 1000000, class LastLevelSearch = ExponentialRangeLookup<Data>>
+   class CompressedRMIRank {
+      support::EliasFanoList<Data> efl{};
+      learned_hashing::RMIHash<Data, SecondLevelModelCount, true> rmi{};
+      LastLevelSearch lls;
+
+     public:
+      explicit CompressedRMIRank(std::vector<Data> dataset) {
+         // ensure dataset is sorted
+         std::sort(dataset.begin(), dataset.end());
+
+         // median of dataset
+         const size_t median = (dataset.size() / 2) + (dataset.size() & 0x1);
+
+         // build rmi on full dataset
+         rmi.train(dataset.begin(), dataset.end(), median);
+
+         // omit every second element, deleting junk and ensuring the final dataset
+         // vector is minimal, i.e., does not waste any additional space
+         for (size_t i = 1, j = 2; j < dataset.size(); i++, j += 2)
+            dataset[i] = dataset[j];
+         dataset.erase(dataset.begin() + median, dataset.end());
+         dataset.resize(dataset.size());
+         assert(dataset.size() == median);
+
+         // store dataset as elias fano monotone list
+         efl = decltype(efl)(dataset.begin(), dataset.end());
+
+         for (size_t i = 0; i < dataset.size(); i++)
+            assert(dataset[i] == efl[i]);
+
+         // train lls using reduced dataset
+         lls = LastLevelSearch(dataset, rmi);
+      }
+
+      static std::string name() {
+         return "CompressedRMIRank";
+      }
+
+      forceinline size_t operator()(const Data& key) const {
+         // Predict using RMI
+         const auto pred_ind = rmi(key);
+
+         // Last level search to find actual index
+         const auto actual_ind = lls(pred_ind, key, efl);
+
+         // Even/Odd depending on whether key is stored in efl or not
+         if (unlikely(actual_ind == efl.size()))
+            return 2 * actual_ind - 1;
+         return 2 * actual_ind - (efl[actual_ind] == key ? 0 : 1);
+      }
+
+      size_t byte_size() const {
+         return efl.byte_size() + rmi.byte_size() + lls.byte_size();
       };
 
 #if NDEBUG == 0
