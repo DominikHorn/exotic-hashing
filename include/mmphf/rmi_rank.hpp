@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cassert>
 #include <cstdint>
 #include <random>
 #include <string>
@@ -41,9 +42,9 @@ namespace exotic_hashing {
          assert(actual_ind <= last_ind);
 
 #if NDEBUG == 0
-   #warning "Using debug SequentialRangeLookup implementation"
+   #warning "Using additional counters in SequentialRangeLookup implementation for debugging"
          // tricking the compiler like this should be illegal...
-         auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) this;
+         auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
          self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
          self->queries++;
 #endif
@@ -106,15 +107,15 @@ namespace exotic_hashing {
 
          assert(interval_start >= dataset.begin());
          assert(interval_end >= interval_start);
-         assert(interval_end < dataset.end());
+         assert(interval_end <= dataset.end());
 
-         const auto actual_ind =
+         const size_t actual_ind =
             std::distance(dataset.begin(), std::lower_bound(interval_start, interval_end, searched));
 
 #if NDEBUG == 0
-   #warning "Using debug ExponentialRangeLookup implementation"
+   #warning "Using additional counters in ExponentialRangeLookup implementation for debugging"
          // tricking the compiler like this should be illegal...
-         auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) this;
+         auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
          self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
          self->queries++;
 #endif
@@ -158,15 +159,15 @@ namespace exotic_hashing {
 
          assert(interval_start >= dataset.begin());
          assert(interval_end >= interval_start);
-         assert(interval_end < dataset.end());
+         assert(interval_end <= dataset.end());
 
          const size_t actual_ind =
             std::distance(dataset.begin(), std::lower_bound(interval_start, interval_end, searched));
 
 #if NDEBUG == 0
-   #warning "Using debug BinaryRangeLookup implementation"
+   #warning "Using additional counters in BinaryRangeLookup implementation for debugging"
          // tricking the compiler like this should be illegal...
-         auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) this;
+         auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
          self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
          self->queries++;
 #endif
@@ -187,7 +188,7 @@ namespace exotic_hashing {
    template<class Data, size_t SecondLevelModelCount = 1000000, class LastLevelSearch = ExponentialRangeLookup<Data>>
    class RMIRank {
       std::vector<Data> dataset;
-      learned_hashing::RMIHash<Data, SecondLevelModelCount> rmi;
+      learned_hashing::RMIHash<Data, SecondLevelModelCount> rmi{};
       LastLevelSearch lls;
 
      public:
@@ -195,15 +196,21 @@ namespace exotic_hashing {
          // ensure dataset is sorted
          std::sort(dataset.begin(), dataset.end());
 
+         // median of dataset
+         const size_t median = (dataset.size() / 2) + (dataset.size() & 0x1);
+
+         // build rmi on full dataset
+         rmi = decltype(rmi)(dataset.begin(), dataset.end(), median);
+
          // omit every second element, deleting junk and ensuring the final dataset
          // vector is minimal, i.e., does not waste any additional space
          for (size_t i = 1, j = 2; j < dataset.size(); i++, j += 2)
             dataset[i] = dataset[j];
-         const size_t middle = (dataset.size() / 2) + (dataset.size() & 0x1);
-         dataset.erase(dataset.begin() + middle, dataset.end());
+         dataset.erase(dataset.begin() + median, dataset.end());
          dataset.resize(dataset.size());
+         assert(dataset.size() == median);
 
-         rmi = decltype(rmi)(dataset.begin(), dataset.end(), dataset.size());
+         // train lls using reduced dataset
          lls = LastLevelSearch(dataset, rmi);
       }
 
@@ -211,7 +218,7 @@ namespace exotic_hashing {
          return "RMIRank";
       }
 
-      constexpr forceinline size_t operator()(const Data& key) const {
+      forceinline size_t operator()(const Data& key) const {
          // predict using RMI
          const auto pred_ind = rmi(key);
 
