@@ -146,8 +146,6 @@ using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
 BM(DoNothingHash);
 using RankHash = exotic_hashing::RankHash<Data>;
 BM(RankHash);
-using RMIRank = exotic_hashing::RMIRank<Data>;
-BM(RMIRank);
 using MapOMPHF = exotic_hashing::MapOMPHF<Data>;
 BM(MapOMPHF);
 using RecSplit = exotic_hashing::RecSplit<Data>;
@@ -168,6 +166,10 @@ using CompactedMWHC = exotic_hashing::CompactedMWHC<Data>;
 BM(CompactedMWHC);
 using FST = exotic_hashing::FastSuccinctTrie<Data>;
 BM(FST);
+using RMIRank = exotic_hashing::RMIRank<Data>;
+BM(RMIRank);
+using CompressedRMIRank = exotic_hashing::CompressedRMIRank<Data>;
+BM(CompressedRMIRank);
 using LearnedLinear = exotic_hashing::LearnedLinear<Data>;
 BENCHMARK_TEMPLATE(LookupTime, LearnedLinear)
    ->ArgsProduct({dataset_sizes,
