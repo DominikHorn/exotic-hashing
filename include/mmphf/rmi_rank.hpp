@@ -294,9 +294,6 @@ namespace exotic_hashing {
          // store dataset as elias fano monotone list
          efl = decltype(efl)(dataset.begin(), dataset.end());
 
-         for (size_t i = 0; i < dataset.size(); i++)
-            assert(dataset[i] == efl[i]);
-
          // train lls using reduced dataset
          lls = LastLevelSearch(dataset, rmi);
       }
