@@ -20,7 +20,7 @@ namespace exotic_hashing::support {
       sdsl::bit_vector upper{0, false};
       sdsl::bit_vector lower{0, false};
       decltype(upper)::select_1_type u_select{};
-      size_t l;
+      size_t l, n;
 
      public:
       /**
@@ -32,7 +32,7 @@ namespace exotic_hashing::support {
       template<class ForwardIt>
       EliasFanoList(const ForwardIt& begin, const ForwardIt& end) {
          // Gather general parameters
-         const auto n = std::distance(begin, end);
+         n = std::distance(begin, end);
          if (n == 0)
             return;
 
@@ -43,7 +43,9 @@ namespace exotic_hashing::support {
          l = log_m - u;
 
          // Initialize bitvectors
-         upper = decltype(upper)(2 * n + 1, 0);
+         // each element contributes a single 1 bit (n)
+         // there are 2^u bucket, each of which contributes a single 0 bit (2^u == 0x1 << u)
+         upper = decltype(upper)(n + (0x1 << u), 0);
          lower = decltype(lower)(n * l, 0);
 
          // Initialize support variables
@@ -68,17 +70,18 @@ namespace exotic_hashing::support {
             for (size_t i = t_bits - log_m; i < t_bits - l; i++)
                bucket_ind = (bucket_ind << 1) | (bitstream[i] & 0x1);
             upper_ind += bucket_ind - last_upper_bucket;
+            assert(upper_ind < upper.size());
             last_upper_bucket = bucket_ind;
 
-            assert(upper_ind < upper.size());
             upper[upper_ind++] = 0x1;
          }
 
          // Initialize select support
          sdsl::util::init_support(u_select, &upper);
       }
-
       T operator[](const size_t i) const {
+         assert(n > 0);
+
          // upper bits == bucket index. Therefore count the amount of 0
          // preceeding the i-th 1 bit
          T res = u_select(i + 1) - i;
