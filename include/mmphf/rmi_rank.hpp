@@ -188,7 +188,7 @@ namespace exotic_hashing {
    template<class Data, size_t SecondLevelModelCount = 1000000, class LastLevelSearch = ExponentialRangeLookup<Data>>
    class RMIRank {
       std::vector<Data> dataset;
-      learned_hashing::RMIHash<Data, SecondLevelModelCount> rmi{};
+      learned_hashing::RMIHash<Data, SecondLevelModelCount, true> rmi{};
       LastLevelSearch lls;
 
      public:
