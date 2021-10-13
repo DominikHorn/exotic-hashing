@@ -143,7 +143,7 @@ with open(file) as data_file:
         # copy to enable value changes
         f_bt_df = bt_df.copy(deep=True)
         #f_bt_df = f_bt_df[f_bt_df["dataset_elem_count"].isin([10**6, 10**8])]
-        f_bt_df = f_bt_df[f_bt_df["dataset_elem_count"].isin([10**8])]
+        f_bt_df = f_bt_df[f_bt_df["dataset_elem_count"] > 9 * 10**7]
         name = "build_time"
         fig = px.bar(
             f_bt_df,
