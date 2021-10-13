@@ -378,22 +378,7 @@ namespace exotic_hashing::support {
 
          assert(max_bitcnt > 0);
 
-         // compatibility with other compilers
-         // TODO(dominik): provide optimal bitreverse ourselfs (?)
-#ifndef __has_builtin
-   #define __has_builtin(x) 0
-#endif
-#if __has_builtin(__builtin_bitreverse64)
-         const Storage val = __builtin_bitreverse64(data);
-#else
-   #warning "using unoptimized bitreverse implementation in Bitvector(std::uint64_t)
-         Storage val = 0x0;
-         for (size_t i = 0; i < bitcnt; i++) {
-            val <<= 1;
-            val |= (data >> i) & 0x1;
-         }
-#endif
-         storage[0] = val;
+         storage[0] = support::bitreverse(data);
       }
 
       /**

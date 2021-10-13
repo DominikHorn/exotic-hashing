@@ -54,4 +54,41 @@ namespace exotic_hashing::support {
             return i;
       }
    }
+
+   template<class T>
+   forceinline constexpr T bitreverse(const T& x) {
+#ifndef __has_builtin
+   #define __has_builtin(x) 0
+#endif
+
+      constexpr const auto bitcnt = sizeof(T) * 8;
+
+      switch (bitcnt) {
+#if __has_builtin(__builtin_bitreverse64)
+         case 64:
+            return __builtin_bitreverse64(x);
+#endif
+#if __has_builtin(__builtin_bitreverse32)
+         case 32:
+            return __builtin_bitreverse32(x);
+#endif
+#if __has_builtin(__builtin_bitreverse16)
+         case 16:
+            return __builtin_bitreverse16(x);
+#endif
+#if __has_builtin(__builtin_bitreverse8)
+         case 8:
+            return __builtin_bitreverse8(x);
+#endif
+         default: {
+            // default to unoptimized implementation
+            T r_elem = 0;
+            for (size_t i = 0; i < bitcnt; i++) {
+               r_elem <<= 1;
+               r_elem |= (x >> i) & 0x1;
+            }
+            return r_elem;
+         }
+      }
+   }
 } // namespace exotic_hashing::support

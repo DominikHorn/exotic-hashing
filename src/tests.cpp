@@ -5,6 +5,7 @@
 #include "tests/compacttrie-tests.hpp"
 #include "tests/compressedmwhc-tests.hpp"
 #include "tests/elias-tests.hpp"
+#include "tests/eliasfanolist-tests.hpp"
 #include "tests/fst-tests.hpp"
 #include "tests/hollowtrie-tests.hpp"
 #include "tests/learnedlinear-tests.hpp"
