@@ -60,10 +60,14 @@ with open(file) as data_file:
             return 9
         if x == "compactedmwhc":
             return 10
-        if x == "learnedlinear":
+        if x == "rmirank":
             return 11
-        if x == "mapomphf":
+        if x == "compressedrmirank":
             return 12
+        if x == "learnedlinear":
+            return 13
+        if x == "mapomphf":
+            return 14
         return 0
     df["order"] = df.apply(lambda x : order(x["hashfn"]), axis=1)
     df = df.sort_values(by=["order", "dataset_elem_count"])
@@ -132,6 +136,7 @@ with open(file) as data_file:
             height=600,
             title="Space - total bits per key"
             )
+        fig.update_yaxes(range=[-50, 700])
         return convert_to_html(fig)
 
     def plot_build_time():
