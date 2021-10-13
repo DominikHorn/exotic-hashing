@@ -24,6 +24,11 @@ namespace exotic_hashing::support {
 
      public:
       /**
+       * Initializes an empty elias fano list
+       */
+      EliasFanoList() = default;
+
+      /**
        * Creates an Elias Fano list from an *already sorted* input range
        * [begin, end). Implemented according to instructions from
        *
