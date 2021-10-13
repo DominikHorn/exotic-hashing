@@ -200,7 +200,7 @@ namespace exotic_hashing {
          const size_t median = (dataset.size() / 2) + (dataset.size() & 0x1);
 
          // build rmi on full dataset
-         rmi = decltype(rmi)(dataset.begin(), dataset.end(), median);
+         rmi.train(dataset.begin(), dataset.end(), median);
 
          // omit every second element, deleting junk and ensuring the final dataset
          // vector is minimal, i.e., does not waste any additional space
