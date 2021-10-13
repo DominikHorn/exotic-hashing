@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <iostream>
 #include <sdsl/bit_vectors.hpp>
 #include <stdexcept>
 
@@ -17,8 +16,8 @@ namespace exotic_hashing::support {
    */
    template<class T, class BitConverter = support::FixedBitConverter<T>>
    class EliasFanoList {
-      sdsl::bit_vector upper{0, false};
-      sdsl::bit_vector lower{0, false};
+      sdsl::bit_vector lower{0};
+      sdsl::bit_vector upper{0};
       decltype(upper)::select_1_type u_select{};
       size_t l, n;
 
