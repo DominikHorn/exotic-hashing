@@ -74,22 +74,15 @@ namespace exotic_hashing::support {
          curr_regions[i] = begin + i;
       }
 
-      // TODO: tmp
-      std::cout << std::endl;
-
       // Iteratively merge the most promising neighboring regions as measured
       // by gauge, until no further progress is made
       for (size_t round = 0;; round++) {
          // Verify assumptions
          assert(curr_size > 0);
-         std::cout << "\tcommencing round " << round << std::endl;
 
          // Merging pass where we only ever merge left should left exceed threshold
          // and should the right merge's score be lower
          for (size_t i = 1; i + 1 < curr_size; i++) {
-            // TODO: tmp
-            std::cout << "\t\t" << i << ": " << std::flush;
-
             // Measure what would happen if we were to merge left
             const auto left_measurement = gauge(curr_regions[i - 1], curr_regions[i + 1]);
 
@@ -101,21 +94,11 @@ namespace exotic_hashing::support {
             // right's score is higher than left's (only check if we have a right neighbor region at all)
             if (left_measurement >= score_threshold &&
                 (i + 2 >= curr_size || gauge(curr_regions[i], curr_regions[i + 2]) <= left_measurement)) {
-               // TODO: tmp
-               const auto a = curr_regions[i - 1];
-               const auto b = curr_regions[i + 1];
-               std::cout << "merge (" << left_measurement << "), committing [" << (a < end ? *a : -1) << ", "
-                         << (b < end ? *b : -1) << ")" << std::flush;
-               next_regions[next_i++] = b;
+               next_regions[next_i++] = curr_regions[i + 1];
                i++;
             } else {
-               // TODO: tmp
-               std::cout << "don't merge (" << left_measurement << ") writing " << *curr_regions[i] << std::flush;
                next_regions[next_i++] = curr_regions[i];
             }
-
-            // TODO: tmp
-            std::cout << std::endl;
          }
 
          // Next must contain at least 2 entries, otherwise we're left with a
@@ -126,34 +109,6 @@ namespace exotic_hashing::support {
          assert(curr_regions[curr_size - 1] == end);
          if (next_regions[next_i - 1] < end)
             next_regions[next_i++] = end;
-
-         // TODO: TMP
-         std::cout << "\tcurr:";
-         for (size_t i = 1; i < curr_size; i++) {
-            const auto a = curr_regions[i - 1];
-            const auto b = curr_regions[i];
-            std::cout << " [";
-            for (auto it = a; it < b; it++) {
-               std::cout << *it;
-               if (it + 1 < b)
-                  std::cout << ", ";
-            }
-            std::cout << "]";
-         }
-         std::cout << std::endl << "\tnext: ";
-         for (size_t i = 1; i < next_i; i++) {
-            assert(i < curr_size);
-            const auto a = next_regions[i - 1];
-            const auto b = next_regions[i];
-            std::cout << " [";
-            for (auto it = a; it < b; it++) {
-               std::cout << *it;
-               if (it + 1 < b)
-                  std::cout << ", ";
-            }
-            std::cout << "]";
-         }
-         std::cout << std::endl;
 
          // Advance state (swap buffers etc)
          swap(curr_regions, next_regions);
