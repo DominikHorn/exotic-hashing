@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "tests/bitvector-tests.hpp"
+#include "tests/clustering-tests.hpp"
 #include "tests/compactedmwhc-tests.hpp"
 #include "tests/compacttrie-tests.hpp"
 #include "tests/compressedmwhc-tests.hpp"
