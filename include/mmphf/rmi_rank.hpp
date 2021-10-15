@@ -14,30 +14,9 @@
 #include "../convenience/builtins.hpp"
 #include "../convenience/tidy.hpp"
 #include "../support/elias_fano_list.hpp"
+#include "../support/support.hpp"
 
 namespace exotic_hashing {
-   namespace support {
-      /// Lower bound implementation from https://en.cppreference.com/w/cpp/algorithm/lower_bound, adapted to be usable
-      /// on std::vector as well as support::EliasFanoList
-      template<class Dataset, class Data>
-      forceinline size_t lower_bound(size_t first, size_t last, const Data& value, const Dataset& dataset) {
-         size_t i = first, count = last - first, step = 0;
-
-         while (count > 0) {
-            i = first;
-            step = count / 2;
-            i += step;
-            if (dataset[i] < value) {
-               first = ++i;
-               count -= step + 1;
-            } else
-               count = step;
-         }
-         return first;
-      };
-
-   } // namespace support
-
    template<class Key>
    struct SequentialRangeLookup {
       SequentialRangeLookup() = default;
