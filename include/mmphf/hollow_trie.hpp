@@ -241,6 +241,8 @@ namespace exotic_hashing {
       using IntEncoder = support::EliasDeltaCoder;
 
      public:
+      HollowTrie() = default;
+
       /**
        * Builds a new hollow trie from a dataset by constructing a compacted
        * trie and converting it to the space efficient hollow trie
