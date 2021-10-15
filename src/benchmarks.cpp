@@ -182,5 +182,7 @@ BENCHMARK_TEMPLATE(UnorderedBuildTime, LearnedLinear)
    ->ArgsProduct({dataset_sizes,
                   {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
                    static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)}});
+using AdaptiveLearnedMMPHF = exotic_hashing::AdaptiveLearnedMMPHF<Data>;
+BM(AdaptiveLearnedMMPHF);
 
 BENCHMARK_MAIN();
