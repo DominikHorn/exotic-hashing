@@ -154,9 +154,7 @@ using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::support::F
 BM(CompactTrie);
 using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
 BM(SimpleHollowTrie);
-using HollowTrie =
-   exotic_hashing::HollowTrie<Data,
-                              exotic_hashing::support::FixedBitConverter<Data, exotic_hashing::support::Bitvector<>>>;
+using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
 BM(HollowTrie);
 using MWHC = exotic_hashing::MWHC<Data>;
 BM(MWHC);

@@ -235,7 +235,7 @@ namespace exotic_hashing {
       std::vector<Node<>> nodes;
    };
 
-   template<class Key, class BitConverter, class BitStream = support::Bitvector<>>
+   template<class Key, class BitConverter, class BitStream = support::FixedBitvector<>>
    struct HollowTrie {
      private:
       using IntEncoder = support::EliasDeltaCoder;
@@ -350,11 +350,11 @@ namespace exotic_hashing {
        * of edges along each path are expected to be left child accesses, this
        * should improve real world performance noticeably.
        */
-      BitStream convert(const typename CompactTrie<Key, BitConverter, BitStream>::Node& subtrie) const {
+      support::Bitvector<> convert(const typename CompactTrie<Key, BitConverter, BitStream>::Node& subtrie) const {
          if (subtrie.is_leaf())
-            return BitStream();
+            return support::Bitvector<>();
 
-         BitStream rep;
+         support::Bitvector<> rep;
 
          // Since inner_node_count = leaf_count - 1 for compact tries, this
          // call elegantly computes inner_node_count + 1, i.e., the required
@@ -390,7 +390,7 @@ namespace exotic_hashing {
        *
        * @return node parameters as well as amount of bits read from stream, packed into Node struct
        */
-      Node read_node(const BitStream& stream, size_t& bit_index) const {
+      Node read_node(const support::Bitvector<>& stream, size_t& bit_index) const {
          const auto discriminator_ind = IntEncoder::decode(stream, bit_index);
          const auto left_bitsize = IntEncoder::decode(stream, bit_index);
          const auto left_leaf_count = IntEncoder::decode(stream, bit_index);
@@ -446,6 +446,6 @@ namespace exotic_hashing {
          out << "]" << std::endl;
       }
 
-      BitStream representation;
+      support::Bitvector<> representation;
    };
 } // namespace exotic_hashing
