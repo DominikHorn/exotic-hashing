@@ -19,7 +19,7 @@ namespace exotic_hashing::support {
       sdsl::bit_vector lower{0};
       sdsl::bit_vector upper{0};
       decltype(upper)::select_1_type u_select{};
-      size_t l, n;
+      size_t l{}, n{};
 
      public:
       /**
@@ -107,7 +107,7 @@ namespace exotic_hashing::support {
             sizeof(decltype(l));
       }
 
-      /// Custom copy constructor is necessary since sdsl's select support does not properly implement this itself
+      /// Custom copy constructor is necessary since sdsl's select support contains a pointer to upper
       EliasFanoList(const EliasFanoList& other) noexcept {
          lower = other.lower;
          upper = other.upper;
@@ -119,7 +119,7 @@ namespace exotic_hashing::support {
          u_select.set_vector(&upper);
       }
 
-      /// Custom move constructor is necessary since sdsl's select support does not properly implement this itself
+      /// Custom copy constructor is necessary since sdsl's select support contains a pointer to upper
       EliasFanoList(EliasFanoList&& other) noexcept {
          lower = other.lower;
          upper = other.upper;
@@ -131,7 +131,7 @@ namespace exotic_hashing::support {
          u_select.set_vector(&upper);
       }
 
-      /// Custom copy assignment is necessary since sdsl's select support does not properly implement this itself
+      /// Custom copy constructor is necessary since sdsl's select support contains a pointer to upper
       EliasFanoList& operator=(const EliasFanoList& other) noexcept {
          if (this != &other) {
             lower = other.lower;
@@ -147,7 +147,7 @@ namespace exotic_hashing::support {
          return *this;
       }
 
-      /// Custom move assignment is necessary since sdsl's select support does not properly implement this itself
+      /// Custom copy constructor is necessary since sdsl's select support contains a pointer to upper
       EliasFanoList& operator=(EliasFanoList&& other) noexcept {
          lower = other.lower;
          upper = other.upper;
@@ -157,7 +157,11 @@ namespace exotic_hashing::support {
 
          // reset vector as otherwise u_select contains broken pointer
          u_select.set_vector(&upper);
+
          return *this;
       }
+
+      // Destructing does not have to manually do anything
+      ~EliasFanoList() noexcept = default;
    };
 } // namespace exotic_hashing::support
