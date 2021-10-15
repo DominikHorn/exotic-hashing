@@ -20,6 +20,7 @@ namespace exotic_hashing::support {
       sdsl::bit_vector upper{0};
       decltype(upper)::select_1_type u_select{};
       size_t l{}, n{};
+      T min;
 
      public:
       /**
@@ -29,8 +30,9 @@ namespace exotic_hashing::support {
 
       /**
        * Creates an Elias Fano list from an *already sorted* input range
-       * [begin, end). Implemented according to instructions from
+       * of monotone (non-decreasing) integers [begin, end).
        *
+       * Implemented according to instructions from;
        * https://www.antoniomallia.it/sorted-integers-compression-with-elias-fano-encoding.html
        */
       template<class ForwardIt>
@@ -40,7 +42,16 @@ namespace exotic_hashing::support {
          if (n == 0)
             return;
 
-         const T m = 1 + *std::max_element(begin, end);
+#if NDEBUG == 0
+         // check non-decreasing. Compiler should always eliminate this if assertions are turned of,
+         // however, never trust the compiler :)
+         for (auto it = begin + 1; it < end; it++)
+            assert(*it >= *(it - 1));
+         assert(std::is_sorted(begin, end));
+#endif
+
+         min = *std::min_element(begin, end);
+         const T m = 1 + *std::max_element(begin, end) - min;
          constexpr const size_t t_bits = 8 * sizeof(T);
          const size_t log_m = t_bits - clz(m);
          const size_t u = t_bits - clz(n);
@@ -59,7 +70,7 @@ namespace exotic_hashing::support {
 
          // Set bitvector values
          for (auto it = begin; it < end; it++) {
-            const auto& elem = *it;
+            const auto& elem = *it - min;
             const auto bitstream = bc(elem);
 
             // lower l bits go into lower stream
@@ -95,7 +106,7 @@ namespace exotic_hashing::support {
          for (size_t j = 0; j < l; j++)
             res = (res << 0x1) | (lower[base_l_ind + j] & 0x1);
 
-         return res;
+         return res + min;
       }
 
       size_t size() const {
@@ -104,7 +115,7 @@ namespace exotic_hashing::support {
 
       size_t byte_size() const {
          return sdsl::size_in_bytes(upper) + sdsl::size_in_bytes(lower) + sdsl::size_in_bytes(u_select) +
-            sizeof(decltype(l));
+            sizeof(decltype(l)) + sizeof(decltype(n)) + sizeof(decltype(min));
       }
 
       /// Custom copy constructor is necessary since sdsl's select support contains a pointer to upper
