@@ -12,7 +12,7 @@
 namespace exotic_hashing {
    template<class Data>
    class LearnedLinear {
-      std::uint32_t neg_intercept = 0;
+      Data neg_intercept = 0;
       sdsl::bit_vector_il<> bitvec{};
       decltype(bitvec)::rank_1_type rank{};
 
@@ -32,6 +32,7 @@ namespace exotic_hashing {
 
          // Set intercept
          neg_intercept = min;
+         assert(neg_intercept == min);
 
          // build rank bitvector
          sdsl::bit_vector bv(scale, 0);
@@ -39,6 +40,7 @@ namespace exotic_hashing {
             const auto key = *(begin + i);
             const auto ind = rank_index(key);
 
+            assert(ind < scale);
             bv[ind] = true;
          }
          bitvec = bv;

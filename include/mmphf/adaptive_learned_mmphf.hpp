@@ -18,8 +18,8 @@ namespace exotic_hashing {
    template<class Data>
    class AdaptiveLearnedMMPHF {
       // // TODO(dominik): play with the idea of using different building blocks,
-      // e.g., merge highly non-dense regions and put them in MWHC instead. Decide
-      // based on region's size, e.g., via threshold. Small region -> merge & put in MWHC (?)
+      // // e.g., merge highly non-dense regions and put them in MWHC instead to save space!
+      // // Decide based on region's size, e.g., via threshold. Small region -> merge & put in MWHC (?)
       // enum BuildingBlock
       // {
       //    MWHC,
