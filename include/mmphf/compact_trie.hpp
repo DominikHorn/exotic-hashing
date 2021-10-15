@@ -302,8 +302,8 @@ namespace exotic_hashing {
                out << " ";
 
             out << "[{";
-            for (auto it = prefix.begin(); it < prefix.end(); it++)
-               out << *it;
+            for (size_t i = 0; i < prefix.size(); i++)
+               out << prefix[i];
             out << ", " << local_left_leaf_cnt << "}" << std::endl;
 
             if (left == nullptr) {
