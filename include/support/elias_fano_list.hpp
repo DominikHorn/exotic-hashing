@@ -51,7 +51,8 @@ namespace exotic_hashing::support {
 #endif
 
          min = *std::min_element(begin, end);
-         const T m = 1 + *std::max_element(begin, end) - min;
+         const auto max = *std::max_element(begin, end);
+         const T m = 1 + max - min;
          constexpr const size_t t_bits = 8 * sizeof(T);
          const size_t log_m = t_bits - clz(m);
          const size_t u = t_bits - clz(n);
@@ -94,6 +95,7 @@ namespace exotic_hashing::support {
          // Initialize select support
          sdsl::util::init_support(u_select, &upper);
       }
+
       T operator[](const size_t i) const {
          assert(n > 0);
 
@@ -122,9 +124,10 @@ namespace exotic_hashing::support {
       EliasFanoList(const EliasFanoList& other) noexcept {
          lower = other.lower;
          upper = other.upper;
+         u_select = other.u_select;
          l = other.l;
          n = other.n;
-         u_select = other.u_select;
+         min = other.min;
 
          // reset vector as otherwise u_select contains broken pointer
          u_select.set_vector(&upper);
@@ -134,9 +137,10 @@ namespace exotic_hashing::support {
       EliasFanoList(EliasFanoList&& other) noexcept {
          lower = other.lower;
          upper = other.upper;
+         u_select = other.u_select;
          l = other.l;
          n = other.n;
-         u_select = other.u_select;
+         min = other.min;
 
          // reset vector as otherwise u_select contains broken pointer
          u_select.set_vector(&upper);
@@ -147,9 +151,10 @@ namespace exotic_hashing::support {
          if (this != &other) {
             lower = other.lower;
             upper = other.upper;
+            u_select = other.u_select;
             l = other.l;
             n = other.n;
-            u_select = other.u_select;
+            min = other.min;
 
             // reset vector as otherwise u_select contains broken pointer
             u_select.set_vector(&upper);
@@ -162,9 +167,10 @@ namespace exotic_hashing::support {
       EliasFanoList& operator=(EliasFanoList&& other) noexcept {
          lower = other.lower;
          upper = other.upper;
+         u_select = other.u_select;
          l = other.l;
          n = other.n;
-         u_select = other.u_select;
+         min = other.min;
 
          // reset vector as otherwise u_select contains broken pointer
          u_select.set_vector(&upper);
