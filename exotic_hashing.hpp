@@ -4,6 +4,7 @@
 
 #include "include/mphf/recsplit/recsplit.hpp"
 
+#include "include/mmphf/adaptive_learned_mmphf.hpp"
 #include "include/mmphf/compact_trie.hpp"
 #include "include/mmphf/fast_succinct_trie.hpp"
 #include "include/mmphf/hollow_trie.hpp"

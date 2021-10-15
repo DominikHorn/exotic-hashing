@@ -13,21 +13,17 @@ namespace exotic_hashing {
    template<class Data>
    class LearnedLinear {
       std::uint32_t neg_intercept = 0;
-      sdsl::bit_vector_il<> bitvec;
-      decltype(bitvec)::rank_1_type rank;
+      sdsl::bit_vector_il<> bitvec{};
+      decltype(bitvec)::rank_1_type rank{};
 
       forceinline size_t rank_index(const Data& key) const {
          // slope is always 1 since we don't want to produce collisions
          return key - neg_intercept;
       }
 
-     public:
       template<class It>
-      LearnedLinear(It begin, It end) {
+      void construct_from_sorted(const It& begin, const It& end) {
          const size_t size = std::distance(begin, end);
-
-         // We have to sort to enable rank computation bellow
-         std::sort(begin, end);
 
          // Compute dataset properties
          const auto min = *begin;
@@ -49,10 +45,27 @@ namespace exotic_hashing {
          sdsl::util::init_support(rank, &bitvec);
       }
 
-      explicit LearnedLinear(std::vector<Data> dataset) : LearnedLinear(dataset.begin(), dataset.end()) {}
+     public:
+      /**
+       * Constructs from *already sorted* range [begin, end)
+       */
+      template<class It>
+      LearnedLinear(const It& begin, const It& end) {
+         construct_from_sorted(begin, end);
+      }
+
+      /**
+       * Constructs given any dataset. Note: does not have
+       * to be sorted
+       */
+      explicit LearnedLinear(std::vector<Data> dataset) {
+         std::sort(dataset.begin(), dataset.end());
+         construct_from_sorted(dataset.begin(), dataset.end());
+      }
 
       forceinline size_t operator()(const Data& key) const {
          const size_t ind = rank_index(key);
+         assert(ind < bitvec.size());
          const size_t res = rank(ind);
 
          return res;
@@ -65,5 +78,54 @@ namespace exotic_hashing {
       static std::string name() {
          return "LearnedLinear";
       }
+
+      /// Custom copy constructor is necessary since sdsl's rank support contains a pointer to bitvec
+      LearnedLinear(const LearnedLinear& other) noexcept {
+         neg_intercept = other.neg_intercept;
+         bitvec = other.bitvec;
+         rank = other.rank;
+
+         // reset vector as otherwise rank contains broken pointer
+         rank.set_vector(&bitvec);
+      }
+
+      /// Custom copy constructor is necessary since sdsl's rank support contains a pointer to bitvec
+      LearnedLinear(LearnedLinear&& other) noexcept {
+         neg_intercept = other.neg_intercept;
+         bitvec = other.bitvec;
+         rank = other.rank;
+
+         // reset vector as otherwise rank contains broken pointer
+         rank.set_vector(&bitvec);
+      }
+
+      /// Custom copy constructor is necessary since sdsl's select support contains a pointer to upper
+      LearnedLinear& operator=(const LearnedLinear& other) noexcept {
+         if (this != &other) {
+            neg_intercept = other.neg_intercept;
+            bitvec = other.bitvec;
+            rank = other.rank;
+
+            // reset vector as otherwise rank contains broken pointer
+            rank.set_vector(&bitvec);
+         }
+
+         return *this;
+      }
+
+      /// Custom copy constructor is necessary since sdsl's select support contains a pointer to upper
+      LearnedLinear& operator=(LearnedLinear&& other) noexcept {
+         neg_intercept = other.neg_intercept;
+         bitvec = other.bitvec;
+         rank = other.rank;
+
+         // reset vector as otherwise rank contains broken pointer
+         rank.set_vector(&bitvec);
+
+         return *this;
+      }
+
+      // Destructor does not have to do any special work
+      ~LearnedLinear() noexcept = default;
    };
 } // namespace exotic_hashing
