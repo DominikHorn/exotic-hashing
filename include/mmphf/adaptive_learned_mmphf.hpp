@@ -49,6 +49,32 @@ namespace exotic_hashing {
             }
          }
 
+         forceinline size_t operator()(const Data& key) const {
+            switch (type) {
+               case MWHC: {
+                  const auto* ptr = reinterpret_cast<exotic_hashing::CompressedMWHC<Data>*>(m);
+                  return ptr->operator()(key);
+               }
+               case LearnedLinear: {
+                  const auto ptr = reinterpret_cast<exotic_hashing::LearnedLinear<Data>*>(m);
+                  return ptr->operator()(key);
+               }
+            }
+         }
+
+         size_t byte_size() const {
+            switch (type) {
+               case MWHC: {
+                  const auto* ptr = reinterpret_cast<exotic_hashing::CompressedMWHC<Data>*>(m);
+                  return ptr->byte_size();
+               }
+               case LearnedLinear: {
+                  const auto ptr = reinterpret_cast<exotic_hashing::LearnedLinear<Data>*>(m);
+                  return ptr->byte_size();
+               }
+            }
+         }
+
          // Can't copy BuildingBlock (for now)
          BuildingBlock(const BuildingBlock& other) = delete;
          BuildingBlock& operator=(const BuildingBlock& other) = delete;
@@ -82,19 +108,6 @@ namespace exotic_hashing {
             }
 
             m = 0x0;
-         }
-
-         forceinline size_t operator()(const Data& key) const {
-            switch (type) {
-               case MWHC: {
-                  const auto* ptr = reinterpret_cast<exotic_hashing::CompressedMWHC<Data>*>(m);
-                  return ptr->operator()(key);
-               }
-               case LearnedLinear: {
-                  const auto ptr = reinterpret_cast<exotic_hashing::LearnedLinear<Data>*>(m);
-                  return ptr->operator()(key);
-               }
-            }
          }
 
         private:
