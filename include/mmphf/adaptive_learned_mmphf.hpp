@@ -156,8 +156,8 @@ namespace exotic_hashing {
             assert(new_region_size == region_size);
             assert(i + 1 >= clusters.size() || new_region_size >= size_threshold);
 
-            const size_t previous = rs.empty() ? 0 : rs[rs.size() - 1];
-            rs.emplace_back(region_size + previous); // TODO(dominik): prob. last entry not necessary!
+            if (i + 1 < clusters.size())
+               rs.emplace_back(region_size + rs.back());
 
             if (rs.size() > 2)
                d.emplace_back(*a);
