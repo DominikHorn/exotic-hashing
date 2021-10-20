@@ -18,7 +18,8 @@
 #include "learned_linear.hpp"
 
 namespace exotic_hashing {
-   template<class Data, size_t MinRegionSize = 1000, size_t MaxRegionCount = 10000>
+   // turns out for compressed mwhc 832, 1665 are optimal sizes to obtain min bits/key.
+   template<class Data, size_t MinRegionSize = 1665, size_t MaxRegionCount = 10000>
    class AdaptiveLearnedMMPHF {
       /**
        * Certain model types only work on specific dataset regions. To
