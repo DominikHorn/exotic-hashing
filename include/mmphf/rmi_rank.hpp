@@ -45,7 +45,6 @@ namespace exotic_hashing {
          assert(actual_ind <= last_ind);
 
 #if NDEBUG == 0
-   #warning "Using additional counters in SequentialRangeLookup implementation for debugging"
          // tricking the compiler like this should be illegal...
          auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
          self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
@@ -116,7 +115,6 @@ namespace exotic_hashing {
          const size_t actual_ind = support::lower_bound(interval_start, interval_end, searched, dataset);
 
 #if NDEBUG == 0
-   #warning "Using additional counters in ExponentialRangeLookup implementation for debugging"
          // tricking the compiler like this should be illegal...
          auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
          self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
@@ -168,7 +166,6 @@ namespace exotic_hashing {
          const size_t actual_ind = support::lower_bound(interval_start, interval_end, searched, dataset);
 
 #if NDEBUG == 0
-   #warning "Using additional counters in BinaryRangeLookup implementation for debugging"
          // tricking the compiler like this should be illegal...
          auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
          self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
