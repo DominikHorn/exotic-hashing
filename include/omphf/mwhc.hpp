@@ -340,7 +340,7 @@ namespace exotic_hashing {
          const auto is_set = [&](const auto& val) { return val != 0 && val != mod_N.N; };
 
          // copy & compress vertex values. Bit compression seems to be most efficient
-         // since vertex_values are more or less uniform random (flat entropy)
+         // since vertex_values are all < N
          sdsl::int_vector<> vec(mwhc.vertex_values.size(), 0);
          assert(vec.size() == mwhc.vertex_values.size());
          for (size_t i = 0; i < vec.size(); i++) {
