@@ -18,7 +18,7 @@
 #include "learned_linear.hpp"
 
 namespace exotic_hashing {
-   template<class Data>
+   template<class Data, size_t MinRegionSize = 1000, size_t MaxRegionCount = 10000>
    class AdaptiveLearnedMMPHF {
       /**
        * Certain model types only work on specific dataset regions. To
@@ -129,7 +129,7 @@ namespace exotic_hashing {
 
          // thresholds for clustering
          const auto density_threshold = learned_linear_density_threshold(5);
-         const auto size_threshold = std::max(10LU, data.size() / 10000); // at most 10^5 leafs
+         const auto size_threshold = std::max(MinRegionSize, data.size() / MaxRegionCount);
 
          // 1. cluster based on density metric
          const auto clusters = support::cluster(data.begin(), data.end(), density_threshold);
