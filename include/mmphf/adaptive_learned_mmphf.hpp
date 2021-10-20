@@ -19,7 +19,7 @@
 
 namespace exotic_hashing {
    // turns out for compressed mwhc 832, 1665 are optimal sizes to obtain min bits/key.
-   template<class Data, size_t MinRegionSize = 1665, size_t MaxRegionCount = 10000>
+   template<class Data, size_t MinRegionSize = 832>
    class AdaptiveLearnedMMPHF {
       /**
        * Certain model types only work on specific dataset regions. To
@@ -142,8 +142,8 @@ namespace exotic_hashing {
          std::sort(data.begin(), data.end());
 
          // thresholds for clustering
-         const auto density_threshold = learned_linear_density_threshold(5);
-         const auto size_threshold = std::max(MinRegionSize, data.size() / MaxRegionCount);
+         const auto density_threshold = learned_linear_density_threshold(13);
+         const auto size_threshold = MinRegionSize;
 
          // 1. cluster based on density metric
          const auto clusters = support::cluster(data.begin(), data.end(), density_threshold);
