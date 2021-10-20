@@ -152,9 +152,9 @@ namespace exotic_hashing {
                b = clusters[++i];
                region_size = std::distance(a, b);
             }
-            const size_t new_region_size = std::distance(a, b);
-            assert(new_region_size == region_size);
-            assert(i + 1 >= clusters.size() || new_region_size >= size_threshold);
+            // ensure regions are now properly sized
+            assert(region_size == std::distance(a, b));
+            assert(i + 1 >= clusters.size() || region_size >= size_threshold);
 
             if (i + 1 < clusters.size())
                rs.emplace_back(region_size + rs.back());
