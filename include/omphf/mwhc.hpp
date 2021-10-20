@@ -94,7 +94,7 @@ namespace exotic_hashing {
          }
       };
 
-      template<class Data, class Hasher>
+      template<class Data, class Hasher, class RandomIt = typename std::vector<Data>::const_iterator>
       class HyperGraph {
          struct Vertex {
             /// limiting to 8 bytes might be sufficient in practice, however, max degree
@@ -136,16 +136,17 @@ namespace exotic_hashing {
 
          std::vector<Vertex> vertices;
 
-         const std::vector<Data>& dataset;
+         const RandomIt begin, end;
          const Hasher& hasher;
 
         public:
-         HyperGraph(const std::vector<Data>& dataset, const Hasher& hasher, const size_t& N)
-            : vertices(N), dataset(dataset), hasher(hasher) {
+         HyperGraph(RandomIt begin, RandomIt end, const Hasher& hasher, const size_t& N)
+            : vertices(N), begin(begin), end(end), hasher(hasher) {
             // Construct random hypergraph using hasher
-            for (size_t i = 0; i < dataset.size(); i++) {
+            const size_t dataset_size = std::distance(begin, end);
+            for (size_t i = 0; i < dataset_size; i++) {
                // TODO(dominik): remove these random cache accesses
-               const auto [h0, h1, h2] = hasher(dataset[i]);
+               const auto [h0, h1, h2] = hasher(*(begin + i));
                vertices[h0].add_edge(i);
                vertices[h1].add_edge(i);
                vertices[h2].add_edge(i);
@@ -192,7 +193,7 @@ namespace exotic_hashing {
                      continue;
                   // Obtain edge to peel & adjacent vertices
                   const auto edge = vertex_to_peel.retrieve_last();
-                  const auto [h0, h1, h2] = hasher(dataset[edge]); // TODO(dominik): random cache access into dataset
+                  const auto [h0, h1, h2] = hasher(*(begin + edge)); // TODO(dominik): random cache access into dataset
                   auto &v0 = vertices[h0], &v1 = vertices[h1],
                        &v2 = vertices[h2]; // TODO(dominik): random cache accesses into vertices
 
@@ -221,7 +222,8 @@ namespace exotic_hashing {
             // 3. Check if there are any edges left. If so, the acyclicity test has failed.
             //    Since we started with dataset.size() edges, checking whether this exact
             //    amount has been peeled is sufficient
-            if (peel_order.size() != dataset.size())
+            const size_t dataset_size = std::distance(begin, end);
+            if (peel_order.size() != dataset_size)
                return {};
 
             return peel_order;
@@ -328,9 +330,11 @@ namespace exotic_hashing {
       sdsl::int_vector<> vertex_values;
 
      public:
-      explicit CompressedMWHC(const std::vector<Data>& dataset)
-         : hasher(MWHC::vertices_count(dataset.size())), mod_N(MWHC::vertices_count(dataset.size())) {
-         const MWHC mwhc(dataset);
+      template<class RandomIt>
+      CompressedMWHC(RandomIt begin, RandomIt end)
+         : hasher(MWHC::vertices_count(std::distance(begin, end))),
+           mod_N(MWHC::vertices_count(std::distance(begin, end))) {
+         const MWHC mwhc(begin, end);
 
          // copy unchanged fields
          hasher = mwhc.hasher;
@@ -351,6 +355,8 @@ namespace exotic_hashing {
 
          vertex_values = vec;
       }
+
+      explicit CompressedMWHC(const std::vector<Data>& dataset) : CompressedMWHC(dataset.begin(), dataset.end()) {}
 
       forceinline size_t operator()(const Data& key) const {
          const auto [h0, h1, h2] = hasher(key);
@@ -373,8 +379,9 @@ namespace exotic_hashing {
 
    template<class Data, class Hasher, class HyperGraph>
    struct MWHC {
-      explicit MWHC(const std::vector<Data>& dataset)
-         : hasher(vertices_count(dataset.size())), mod_N(vertices_count(dataset.size())) {
+      template<class RandomIt>
+      MWHC(RandomIt begin, RandomIt end)
+         : hasher(vertices_count(std::distance(begin, end))), mod_N(vertices_count(std::distance(begin, end))) {
          // 'unassigned vertex value' is marked using the value of N since N mod N = 0
          vertex_values.resize(mod_N.N);
          std::fill(vertex_values.begin(), vertex_values.end(), vertex_values.size());
@@ -383,7 +390,7 @@ namespace exotic_hashing {
          while (peel_order.empty()) {
             // 1. Generate random Hypergraph
             hasher = Hasher(mod_N.N);
-            HyperGraph g(dataset, hasher, mod_N.N);
+            HyperGraph g(begin, end, hasher, mod_N.N);
 
             // 2. Peel (i.e., check for acyclicity)
             peel_order = g.peel();
@@ -395,7 +402,7 @@ namespace exotic_hashing {
             const auto edge_ind = *it;
 
             // lookup vertices of this edge
-            const auto [h0, h1, h2] = hasher(dataset[edge_ind]);
+            const auto [h0, h1, h2] = hasher(*(begin + edge_ind));
 
             // compute vertex assign value. Handle the case that there are collisions, i.e. same h value twice
             size_t current_val = vertex_values[h0];
@@ -421,9 +428,11 @@ namespace exotic_hashing {
             if (vertex_values[h2] == static_cast<size_t>(mod_N.N))
                vertex_values[h2] = assigned ? 0 : x;
 
-            assert(this->operator()(dataset[edge_ind]) == edge_ind);
+            assert(this->operator()(*(begin + edge_ind)) == edge_ind);
          }
       }
+
+      explicit MWHC(const std::vector<Data>& dataset) : MWHC(dataset.begin(), dataset.end()) {}
 
       static std::string name() {
          return "MWHC";
