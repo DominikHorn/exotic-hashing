@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "../convenience/builtins.hpp"
@@ -76,9 +77,12 @@ namespace exotic_hashing::support {
 
       // Iteratively merge the most promising neighboring regions as measured
       // by gauge, until no further progress is made
+      std::cout << "clustering:";
       for (size_t round = 0;; round++) {
          // Verify assumptions
          assert(curr_size > 0);
+
+         std::cout << " " << curr_size << std::flush;
 
          // Merging pass where we only ever merge left should left exceed threshold
          // and should the right merge's score be lower
@@ -117,6 +121,7 @@ namespace exotic_hashing::support {
          curr_size = next_i;
          next_i = 0;
       }
+      std::cout << std::endl;
 
       // copy data into vector for further use (TODO(dominik): eliminate this copy)
       std::vector<RandomIt> regions(curr_regions, curr_regions + next_i);

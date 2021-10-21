@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <iostream>
+#include <map>
 #include <memory>
+#include <ostream>
 #include <sdsl/vectors.hpp>
 #include <string>
 #include <vector>
@@ -137,17 +139,45 @@ namespace exotic_hashing {
       }
 
      public:
-      explicit AdaptiveLearnedMMPHF(std::vector<Data> data) {
+      explicit AdaptiveLearnedMMPHF(std::vector<Data> data, double bits_per_key = 5) {
          // ensure data is sorted before we start
          std::sort(data.begin(), data.end());
 
          // thresholds for clustering
-         const auto density_threshold = learned_linear_density_threshold(13);
+         const auto density_threshold = learned_linear_density_threshold(bits_per_key);
          const auto size_threshold = MinRegionSize;
 
          // 1. cluster based on density metric
          const auto clusters = support::cluster(data.begin(), data.end(), density_threshold);
          size_t clusters_count = clusters.size() - 1; // due to representation as iterators
+
+         // TODO(dominik): tmp debug
+         std::cout << "bits_per_key: " << bits_per_key << ", clusters_count: " << clusters_count << std::endl
+                   << "clusters:" << std::endl;
+         std::map<size_t, size_t> hist_buckets;
+         size_t max_count = 0;
+         for (size_t i = 1; i < clusters.size(); i++) {
+            const auto a = clusters[i - 1];
+            const auto b = clusters[i];
+            size_t region_size = std::pow(10, std::ceil(std::log(std::distance(a, b)) / std::log(10)));
+
+            size_t count = 0;
+            if (hist_buckets.find(region_size) != hist_buckets.end())
+               count = hist_buckets[region_size];
+            count++;
+
+            hist_buckets.insert_or_assign(region_size, count);
+            max_count = std::max(count, max_count);
+         }
+         for (const auto& bucket : hist_buckets) {
+            std::cout << "<" << bucket.first << " {" << bucket.second << "}: ";
+            const auto percent = static_cast<double>(bucket.second) / static_cast<double>(max_count);
+            const auto dot_cnt = static_cast<size_t>(100.0 * percent);
+            for (size_t i = 0; i < dot_cnt; i++)
+               std::cout << ".";
+            std::cout << std::endl;
+         }
+         std::cout << std::endl;
 
          // 2. build one leaf model for each region
          std::vector<size_t> rs{0};
@@ -179,6 +209,20 @@ namespace exotic_hashing {
             // choose model type based on size violation for now
             leafs.emplace_back(size_violation ? BuildingBlock::Type::MWHC : BuildingBlock::Type::LearnedLinear, a, b);
          }
+         // std::cout << "rs: [";
+         // for (size_t i = 0; i < rs.size(); i++) {
+         //    std::cout << rs[i];
+         //    if (i + 1 < rs.size())
+         //       std::cout << ", ";
+         // }
+         // std::cout << "]" << std::endl << "ds: [";
+         // for (size_t i = 0; i < d.size(); i++) {
+         //    std::cout << d[i];
+         //    if (i + 1 < d.size())
+         //       std::cout << ", ";
+         // }
+         // std::cout << "]" << std::endl << std::endl;
+
          region_offsets = decltype(region_offsets)(rs.begin(), rs.end());
          delimiters = decltype(delimiters)(d.begin(), d.end());
       }

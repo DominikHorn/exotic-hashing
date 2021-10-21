@@ -18,17 +18,10 @@
 #include "support/probing_set.hpp"
 
 using Data = std::uint64_t;
-const std::vector<std::int64_t> dataset_sizes{100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
-const std::vector<std::int64_t> datasets{static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
-                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10),
-                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::UNIFORM),
-                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::FB),
-                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::NORMAL),
-                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::OSM),
-                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::WIKI)};
+const std::vector<std::int64_t> dataset_sizes{1000000};
+const std::vector<std::int64_t> datasets{static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::NORMAL)};
 const std::vector<std::int64_t> probe_distributions{
-   static_cast<std::underlying_type_t<dataset::ProbingDistribution>>(dataset::ProbingDistribution::UNIFORM),
-   static_cast<std::underlying_type_t<dataset::ProbingDistribution>>(dataset::ProbingDistribution::EXPONENTIAL)};
+   static_cast<std::underlying_type_t<dataset::ProbingDistribution>>(dataset::ProbingDistribution::UNIFORM)};
 
 template<class Hashfn>
 static void PresortedBuildTime(benchmark::State& state) {
@@ -137,52 +130,16 @@ static void LookupTime(benchmark::State& state) {
    state.SetLabel(Hashfn::name() + ":" + dataset::name(did) + ":" + dataset::name(probing_dist));
 };
 
-#define BM(Hashfn)                                                                         \
-   BENCHMARK_TEMPLATE(PresortedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
-   BENCHMARK_TEMPLATE(UnorderedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
-   BENCHMARK_TEMPLATE(LookupTime, Hashfn)->ArgsProduct({dataset_sizes, datasets, probe_distributions});
+int main() {
+   using Data = std::uint64_t;
 
-using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
-BM(DoNothingHash);
-using RankHash = exotic_hashing::RankHash<Data>;
-BM(RankHash);
-using MapOMPHF = exotic_hashing::MapOMPHF<Data>;
-BM(MapOMPHF);
-using RecSplit = exotic_hashing::RecSplit<Data>;
-BM(RecSplit);
-using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
-BM(CompactTrie);
-using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
-BM(SimpleHollowTrie);
-using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
-BM(HollowTrie);
-using MWHC = exotic_hashing::MWHC<Data>;
-BM(MWHC);
-using CompressedMWHC = exotic_hashing::CompressedMWHC<Data>;
-BM(CompressedMWHC);
-using CompactedMWHC = exotic_hashing::CompactedMWHC<Data>;
-BM(CompactedMWHC);
-using FST = exotic_hashing::FastSuccinctTrie<Data>;
-BM(FST);
-using RMIRank = exotic_hashing::RMIRank<Data>;
-BM(RMIRank);
-using CompressedRMIRank = exotic_hashing::CompressedRMIRank<Data>;
-BM(CompressedRMIRank);
-using LearnedLinear = exotic_hashing::LearnedLinear<Data>;
-BENCHMARK_TEMPLATE(LookupTime, LearnedLinear)
-   ->ArgsProduct({dataset_sizes,
-                  {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
-                   static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)},
-                  probe_distributions});
-BENCHMARK_TEMPLATE(PresortedBuildTime, LearnedLinear)
-   ->ArgsProduct({dataset_sizes,
-                  {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
-                   static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)}});
-BENCHMARK_TEMPLATE(UnorderedBuildTime, LearnedLinear)
-   ->ArgsProduct({dataset_sizes,
-                  {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
-                   static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)}});
-using AdaptiveLearnedMMPHF = exotic_hashing::AdaptiveLearnedMMPHF<Data>;
-BM(AdaptiveLearnedMMPHF);
+   for (size_t dataset_size : {100000000}) {
+      const auto dataset = dataset::load_cached<Data>(dataset::ID::WIKI, dataset_size);
+      // std::cout << "============ DATASET SIZE: " << dataset_size << " ==============" << std::endl;
 
-BENCHMARK_MAIN();
+      for (double bits_per_key : {4., 8., 16., 32., 64.})
+         const auto hashfn = exotic_hashing::AdaptiveLearnedMMPHF<Data>(dataset, bits_per_key);
+   }
+
+   return 0;
+}
