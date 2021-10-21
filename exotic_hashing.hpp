@@ -9,8 +9,8 @@
 #include "include/mmphf/fast_succinct_trie.hpp"
 #include "include/mmphf/hollow_trie.hpp"
 #include "include/mmphf/learned_linear.hpp"
+#include "include/mmphf/learned_rank.hpp"
 #include "include/mmphf/rank_hash.hpp"
-#include "include/mmphf/rmi_rank.hpp"
 
 #include "include/omphf/map_omphf.hpp"
 #include "include/omphf/mwhc.hpp"

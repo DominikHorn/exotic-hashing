@@ -80,32 +80,24 @@ namespace exotic_hashing {
 
       template<class Dataset>
       forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
+         // fast path correct predictions
+         if (dataset[pred_ind] == searched)
+            return pred_ind;
+
          const auto dataset_size = dataset.size();
-         size_t interval_start, interval_end;
+         size_t interval_start = pred_ind, interval_end = pred_ind + 1;
 
-         size_t next_err = 1;
-         if (dataset[pred_ind] < searched) {
-            size_t err = 0;
-            while (err + pred_ind < dataset_size && dataset[err + pred_ind] < searched) {
-               err = next_err;
-               next_err *= 2;
-            }
-            err = std::min(err, dataset_size - pred_ind);
-
-            interval_start = pred_ind;
-            // +1 since lower_bound searches up to *excluding*
-            interval_end = pred_ind + err;
-         } else {
-            size_t err = 0;
-            while (err < pred_ind && dataset[pred_ind - err] < searched) {
-               err = next_err;
-               next_err *= 2;
-            }
-            err = std::min(err, pred_ind);
-
-            interval_start = pred_ind - err;
-            // +1 since lower_bound searches up to *excluding*
-            interval_end = pred_ind;
+         size_t err = 1;
+         while (interval_start > 0 && dataset[interval_start] > searched) {
+            interval_end = interval_start;
+            interval_start -= std::min(err, interval_start);
+            err *= 2;
+         }
+         err = 1;
+         while (interval_end < dataset_size && dataset[interval_end] < searched) {
+            interval_start = interval_end;
+            interval_end += std::min(err, dataset_size - interval_end);
+            err *= 2;
          }
 
          assert(interval_start >= 0);
@@ -185,53 +177,67 @@ namespace exotic_hashing {
 #endif
    };
 
-   template<class Data, size_t SecondLevelModelCount = 1000000, class LastLevelSearch = ExponentialRangeLookup<Data>>
-   class RMIRank {
+   template<class Data, class Model = learned_hashing::RMIHash<Data, 1000000>,
+            class LastLevelSearch = ExponentialRangeLookup<Data>>
+   class LearnedRank {
       std::vector<Data> dataset;
-      learned_hashing::RMIHash<Data, SecondLevelModelCount, true> rmi{};
+      Model model{};
       LastLevelSearch lls;
 
      public:
-      explicit RMIRank(const std::vector<Data>& d) : dataset(d) {
+      explicit LearnedRank(const std::vector<Data>& d) : dataset(d) {
+         // nothing to do on empty data
+         if (dataset.empty())
+            return;
+
          // ensure dataset is sorted
          std::sort(dataset.begin(), dataset.end());
 
-         // median of dataset
-         const size_t median = (dataset.size() / 2) + (dataset.size() & 0x1);
+         // median of dataset (since is_sorted)
+         const size_t half_size = dataset.size() / 2;
 
-         // build rmi on full dataset
-         rmi.train(dataset.begin(), dataset.end(), median);
+         // train on full data
+         model.train(dataset.begin(), dataset.end(), half_size);
 
          // omit every second element, deleting junk and ensuring the final dataset
          // vector is minimal, i.e., does not waste any additional space
-         for (size_t i = 1, j = 2; j < dataset.size(); i++, j += 2)
-            dataset[i] = dataset[j];
-         dataset.erase(dataset.begin() + median, dataset.end());
+         size_t i = 0;
+         for (size_t j = 1; j < dataset.size(); j += 2)
+            dataset[i++] = dataset[j];
+         assert(i == half_size);
+         dataset.erase(dataset.begin() + half_size, dataset.end());
          dataset.resize(dataset.size());
-         assert(dataset.size() == median);
+         assert(dataset.size() == half_size);
+         assert(std::is_sorted(dataset.begin(), dataset.end()));
 
          // train lls using reduced dataset
-         lls = LastLevelSearch(dataset, rmi);
+         lls = LastLevelSearch(dataset, model);
       }
 
       static std::string name() {
-         return "RMIRank";
+         return "LearnedRank<" + Model::name() + ">";
       }
 
       forceinline size_t operator()(const Data& key) const {
          // predict using RMI
-         const auto pred_ind = rmi(key);
+         const auto pred_ind = model(key);
 
          // Last level search to find actual index
          const auto actual_ind = lls(pred_ind, key, dataset);
 
+         assert(actual_ind == dataset.size() || dataset[actual_ind] >= key);
+         assert(actual_ind == 0 || dataset[actual_ind - 1] < key);
+
+         // edge case last element ('unlikely'?)
          if (unlikely(actual_ind == dataset.size()))
-            return 2 * actual_ind - 1;
-         return 2 * actual_ind - (dataset[actual_ind] == key ? 0 : 1);
+            return 2 * actual_ind;
+
+         // all others
+         return 2 * actual_ind + (dataset[actual_ind] == key) * 0x1;
       }
 
       size_t byte_size() const {
-         return dataset.size() * sizeof(Data) + sizeof(std::vector<Data>) + rmi.byte_size() + lls.byte_size();
+         return dataset.size() * sizeof(Data) + sizeof(std::vector<Data>) + model.byte_size() + lls.byte_size();
       };
 
 #if NDEBUG == 0
@@ -242,57 +248,70 @@ namespace exotic_hashing {
 #endif
    };
 
-   template<class Data, size_t SecondLevelModelCount = 1000000, class LastLevelSearch = ExponentialRangeLookup<Data>>
-   class CompressedRMIRank {
+   template<class Data, class Model = learned_hashing::RMIHash<Data, 1000000>,
+            class LastLevelSearch = ExponentialRangeLookup<Data>>
+   class CompressedLearnedRank {
       support::EliasFanoList<Data> efl{};
-      learned_hashing::RMIHash<Data, SecondLevelModelCount, true> rmi{};
+      Model model{};
       LastLevelSearch lls;
 
      public:
-      explicit CompressedRMIRank(std::vector<Data> dataset) {
+      explicit CompressedLearnedRank(std::vector<Data> dataset) {
+         // nothing to do on empty data
+         if (dataset.empty())
+            return;
+
          // ensure dataset is sorted
          std::sort(dataset.begin(), dataset.end());
 
-         // median of dataset
-         const size_t median = (dataset.size() / 2) + (dataset.size() & 0x1);
+         // median of dataset (since is_sorted)
+         const size_t half_size = dataset.size() / 2;
 
-         // build rmi on full dataset
-         rmi.train(dataset.begin(), dataset.end(), median);
+         // train on full data
+         model.train(dataset.begin(), dataset.end(), half_size);
 
          // omit every second element, deleting junk and ensuring the final dataset
          // vector is minimal, i.e., does not waste any additional space
-         for (size_t i = 1, j = 2; j < dataset.size(); i++, j += 2)
-            dataset[i] = dataset[j];
-         dataset.erase(dataset.begin() + median, dataset.end());
+         size_t i = 0;
+         for (size_t j = 1; j < dataset.size(); j += 2)
+            dataset[i++] = dataset[j];
+         assert(i == half_size);
+         dataset.erase(dataset.begin() + half_size, dataset.end());
          dataset.resize(dataset.size());
-         assert(dataset.size() == median);
+         assert(dataset.size() == half_size);
+         assert(std::is_sorted(dataset.begin(), dataset.end()));
+
+         // train lls using reduced dataset
+         lls = LastLevelSearch(dataset, model);
 
          // store dataset as elias fano monotone list
          efl = decltype(efl)(dataset.begin(), dataset.end());
-
-         // train lls using reduced dataset
-         lls = LastLevelSearch(dataset, rmi);
       }
 
       static std::string name() {
-         return "CompressedRMIRank";
+         return "CompressedLearnedRank<" + Model::name() + ">";
       }
 
       forceinline size_t operator()(const Data& key) const {
-         // Predict using RMI
-         const auto pred_ind = rmi(key);
+         // predict using RMI
+         const auto pred_ind = model(key);
 
          // Last level search to find actual index
          const auto actual_ind = lls(pred_ind, key, efl);
 
-         // Even/Odd depending on whether key is stored in efl or not
+         assert(actual_ind == efl.size() || efl[actual_ind] >= key);
+         assert(actual_ind == 0 || efl[actual_ind - 1] < key);
+
+         // edge case last element ('unlikely'?)
          if (unlikely(actual_ind == efl.size()))
-            return 2 * actual_ind - 1;
-         return 2 * actual_ind - (efl[actual_ind] == key ? 0 : 1);
+            return 2 * actual_ind;
+
+         // all others
+         return 2 * actual_ind + (efl[actual_ind] == key) * 0x1;
       }
 
       size_t byte_size() const {
-         return efl.byte_size() + rmi.byte_size() + lls.byte_size();
+         return efl.byte_size() + model.byte_size() + lls.byte_size();
       };
 
 #if NDEBUG == 0
