@@ -118,9 +118,6 @@ namespace tests::common {
          // generate gapped dataset
          auto sorted_dataset = gapped_dataset<T>(dataset_size, rng_gen);
 
-         // increase dataset size for next iteration
-         dataset_size += dataset_size - 1;
-
          // random insert order (respective algorithm must acknowledge this)
          auto shuffled_dataset = sorted_dataset;
          std::shuffle(shuffled_dataset.begin(), shuffled_dataset.end(), rng_gen);
@@ -128,6 +125,9 @@ namespace tests::common {
 
          // execute the designated test
          test_fun(h, sorted_dataset, shuffled_dataset);
+
+         // increase dataset size for next iteration
+         dataset_size += dataset_size - 1;
       }
    }
 } // namespace tests::common
