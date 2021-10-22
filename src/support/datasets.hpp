@@ -165,9 +165,12 @@ namespace dataset {
             break;
          }
          case ID::NORMAL: {
-            std::normal_distribution<> dist(static_cast<double>(std::numeric_limits<Data>::max()) / 2.0, ds.size());
+            const auto mean = static_cast<double>(std::numeric_limits<Data>::max()) / 2.0;
+            const auto variance = static_cast<double>(ds.size());
+            std::normal_distribution<> dist(mean, variance);
             for (size_t i = 0; i < ds.size(); i++)
-               ds[i] = dist(rng);
+               // cutoff after 3*variance
+               ds[i] = std::max(mean - 3 * variance, std::min(mean + 3 * variance, dist(rng)));
          }
          case ID::FB: {
             if (ds_fb.empty()) {
