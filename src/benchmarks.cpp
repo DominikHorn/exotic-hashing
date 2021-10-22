@@ -165,11 +165,12 @@ BM(CompactedMWHC);
 using FST = exotic_hashing::FastSuccinctTrie<Data>;
 BM(FST);
 
-using LearnedRank_RMI = exotic_hashing::LearnedRank<Data, learned_hashing::RMIHash<Data, 1000000>>;
+using LearnedRank_RMI = exotic_hashing::LearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>>;
 BM(LearnedRank_RMI);
 using LearnedRank_RadixSpline = exotic_hashing::LearnedRank<Data, learned_hashing::RadixSplineHash<Data>>;
 BM(LearnedRank_RadixSpline);
-using CompressedLearnedRank_RMI = exotic_hashing::CompressedLearnedRank<Data, learned_hashing::RMIHash<Data, 1000000>>;
+using CompressedLearnedRank_RMI =
+   exotic_hashing::CompressedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>>;
 BM(CompressedLearnedRank_RMI);
 using CompressedLearnedRank_RadixSpline =
    exotic_hashing::CompressedLearnedRank<Data, learned_hashing::RadixSplineHash<Data>>;

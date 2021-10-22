@@ -177,7 +177,7 @@ namespace exotic_hashing {
 #endif
    };
 
-   template<class Data, class Model = learned_hashing::RMIHash<Data, 1000000>,
+   template<class Data, class Model = learned_hashing::MonotoneRMIHash<Data, 1000000>,
             class LastLevelSearch = ExponentialRangeLookup<Data>>
    class LearnedRank {
       std::vector<Data> dataset;
@@ -248,7 +248,7 @@ namespace exotic_hashing {
 #endif
    };
 
-   template<class Data, class Model = learned_hashing::RMIHash<Data, 1000000>,
+   template<class Data, class Model = learned_hashing::MonotoneRMIHash<Data, 1000000>,
             class LastLevelSearch = ExponentialRangeLookup<Data>>
    class CompressedLearnedRank {
       support::EliasFanoList<Data> efl{};

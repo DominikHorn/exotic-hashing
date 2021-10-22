@@ -9,40 +9,60 @@
 
 // ==== LearnedRankRMI ====
 TEST(LearnedRankRMI, IsPerfect) {
-   tests::common::run_test<std::uint64_t, exotic_hashing::LearnedRank<std::uint64_t>, tests::common::TestIsPerfect>();
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::LearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsPerfect>();
 }
 
 TEST(LearnedRankRMI, IsMinimal) {
-   tests::common::run_test<std::uint64_t, exotic_hashing::LearnedRank<std::uint64_t>, tests::common::TestIsMinimal>();
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::LearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsMinimal>();
 }
 
 TEST(LearnedRankRMI, IsMonotone) {
-   tests::common::run_test<std::uint64_t, exotic_hashing::LearnedRank<std::uint64_t>, tests::common::TestIsMonotone>();
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::LearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsMonotone>();
 }
 
 TEST(LearnedRankRMI, IsMMPHF) {
-   tests::common::run_test<std::uint64_t, exotic_hashing::LearnedRank<std::uint64_t>, tests::common::TestIsMMPHF>();
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::LearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsMMPHF>();
 }
 
 // ==== CompressedLearnedRankRMI ====
 TEST(CompressedLearnedRankRMI, IsPerfect) {
-   tests::common::run_test<std::uint64_t, exotic_hashing::CompressedLearnedRank<std::uint64_t>,
-                           tests::common::TestIsPerfect>();
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::CompressedLearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsPerfect>();
 }
 
 TEST(CompressedLearnedRankRMI, IsMinimal) {
-   tests::common::run_test<std::uint64_t, exotic_hashing::CompressedLearnedRank<std::uint64_t>,
-                           tests::common::TestIsMinimal>();
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::CompressedLearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsMinimal>();
 }
 
 TEST(CompressedLearnedRankRMI, IsMonotone) {
-   tests::common::run_test<std::uint64_t, exotic_hashing::CompressedLearnedRank<std::uint64_t>,
-                           tests::common::TestIsMonotone>();
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::CompressedLearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsMonotone>();
 }
 
 TEST(CompressedLearnedRankRMI, IsMMPHF) {
-   tests::common::run_test<std::uint64_t, exotic_hashing::CompressedLearnedRank<std::uint64_t>,
-                           tests::common::TestIsMMPHF>();
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::CompressedLearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsMMPHF>();
 }
 
 // ==== LearnedRankRadixSpline ====
