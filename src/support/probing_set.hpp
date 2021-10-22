@@ -6,7 +6,10 @@
 namespace dataset {
    enum class ProbingDistribution
    {
+      /// every key has the same probability to be queried
       UNIFORM,
+      /// probing skewed according to exponential distribution, i.e.,
+      /// some keys are way more likely to be picked than others
       EXPONENTIAL
    };
 
@@ -24,7 +27,7 @@ namespace dataset {
     * generates a probing order for any dataset dataset, given a desired distribution
     */
    template<class T>
-   static std::vector<T> generate_probing_set(const std::vector<T>& dataset, ProbingDistribution distribution) {
+   static std::vector<T> generate_probing_set(std::vector<T> dataset, ProbingDistribution distribution) {
       if (dataset.empty())
          return {};
 
@@ -42,7 +45,14 @@ namespace dataset {
             break;
          }
          case ProbingDistribution::EXPONENTIAL: {
-            std::exponential_distribution<> dist(5);
+            // shuffle to avoid skewed results for sorted data, i.e., when
+            // dataset is sorted, this will always prefer lower keys. This
+            // might make a difference for tries, e.g. when they are left deep
+            // vs right deep!
+            std::shuffle(dataset.begin(), dataset.end(), rng);
+
+            std::exponential_distribution<> dist(10);
+
             for (size_t i = 0; i < size; i++)
                probing_set[i] = dataset[(dataset.size() - 1) * std::min(1.0, dist(rng))];
             break;
