@@ -7,8 +7,8 @@ set(SDSL_LIBRARY sdsl-lite)
 ExternalProject_Add(
         ${SDSL_LIBRARY}_src
         PREFIX external/${SDSL_LIBRARY}
-        GIT_REPOSITORY "https://github.com/simongog/sdsl-lite.git"
-        GIT_TAG c32874c
+        GIT_REPOSITORY "https://github.com/DominikHorn/sdsl-lite.git"
+        GIT_TAG 3b18ab2
         TIMEOUT 10
         CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX=${PROJECT_BINARY_DIR}/external/${SDSL_LIBRARY}
@@ -19,7 +19,6 @@ ExternalProject_Add(
         -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
         -DBENCHMARK_ENABLE_GTEST_TESTS=0
         UPDATE_COMMAND ""
-        #BUILD_BYPRODUCTS <INSTALL_DIR>/lib/libbenchmark.a
 )
 
 # path to installed artifacts
