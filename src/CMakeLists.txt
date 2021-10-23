@@ -19,8 +19,8 @@ endif()
 # ==== Test target ====
 add_executable(eh_tests tests.cpp)
 
-include(../thirdparty/googletest.cmake)
-target_link_libraries(eh_tests exotic-hashing gtest_main)
+include(${PROJECT_SOURCE_DIR}/thirdparty/googletest.cmake)
+target_link_libraries(eh_tests exotic-hashing ${GOOGLETEST_LIBRARY})
 
 # enable ctest support (i.e., test discovery)
 include(GoogleTest)
@@ -29,5 +29,5 @@ gtest_discover_tests(eh_tests)
 # ==== Benchmarks target ====
 add_executable(eh_benchmarks benchmarks.cpp)
 
-include(../thirdparty/googlebenchmark.cmake)
+include(${PROJECT_SOURCE_DIR}/thirdparty/googlebenchmark.cmake)
 target_link_libraries(eh_benchmarks PRIVATE exotic-hashing ${GOOGLEBENCHMARK_LIBRARY})

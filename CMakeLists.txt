@@ -29,7 +29,7 @@ endif()
 # Make IDE friendly
 target_sources(${PROJECT_NAME} INTERFACE exotic_hashing.hpp include/)
 
-# Benchmark code
+# Benchmark and test code
 get_directory_property(hasParent PARENT_DIRECTORY)
 if (NOT hasParent)
   add_subdirectory(src)
