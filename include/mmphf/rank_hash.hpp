@@ -18,11 +18,11 @@ namespace exotic_hashing {
     * Using more space than this function is not desirable.
     */
    template<class Data>
-   struct RankHash {
-      explicit RankHash(const std::vector<Data>& d) : dataset(d) {
-         // sort the dataset
-         std::sort(dataset.begin(), dataset.end());
+   class RankHash {
+      std::vector<Data> dataset;
 
+      /// assumes sorted *full* data is in dataset
+      void construct() {
          // omit every second element, deleting junk and ensuring the final dataset
          // vector is minimal, i.e., does not waste any additional space
          for (size_t i = 1, j = 2; j < dataset.size(); i++, j += 2)
@@ -30,6 +30,37 @@ namespace exotic_hashing {
          const size_t middle = (dataset.size() / 2) + (dataset.size() & 0x1);
          dataset.erase(dataset.begin() + middle, dataset.end());
          dataset.resize(dataset.size());
+      }
+
+     public:
+      RankHash() noexcept = default;
+
+      /**
+       * Constructs on already sorted range of keys
+       */
+      template<class ForwardIt>
+      RankHash(const ForwardIt& begin, const ForwardIt& end) {
+         construct(begin, end);
+      }
+
+      /**
+       * Constructs on arbitrarily ordered keyset
+       */
+      explicit RankHash(const std::vector<Data>& d) : dataset(d) {
+         // sort the dataset
+         std::sort(dataset.begin(), dataset.end());
+
+         // construct on internal dataset
+         construct();
+      }
+
+      /**
+       * Constructs on *already sorted* range of keys
+       */
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         dataset = decltype(dataset)(begin, end);
+         construct();
       }
 
       static std::string name() {
@@ -54,9 +85,6 @@ namespace exotic_hashing {
       size_t byte_size() const {
          return dataset.size() * sizeof(Data) + sizeof(std::vector<Data>);
       };
-
-     private:
-      std::vector<Data> dataset;
    };
 
    /**
@@ -91,6 +119,17 @@ namespace exotic_hashing {
      public:
       CompressedRankHash() noexcept = default;
 
+      /**
+       * Constructs on *already sorted* range of keys
+       */
+      template<class ForwardIt>
+      CompressedRankHash(const ForwardIt& begin, const ForwardIt& end) {
+         construct(begin, end);
+      }
+
+      /**
+       * Constructs on arbitrarily ordered keyset
+       */
       explicit CompressedRankHash(std::vector<Data> dataset) {
          // sort the dataset
          std::sort(dataset.begin(), dataset.end());

@@ -17,181 +17,181 @@
 #include "../support/support.hpp"
 
 namespace exotic_hashing {
-   template<class Key>
-   struct SequentialRangeLookup {
-      SequentialRangeLookup() = default;
+   namespace last_level_search {
+      template<class Key>
+      struct SequentialRangeLookup {
+         SequentialRangeLookup() = default;
 
-      template<class Dataset, class Predictor>
-      SequentialRangeLookup(const Dataset& dataset, const Predictor& predictor) {
-         UNUSED(dataset);
-         UNUSED(predictor);
-      }
-
-      forceinline size_t byte_size() const {
-         return 0;
-      }
-
-      template<class Dataset>
-      forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
-         const auto last_ind = dataset.size() - 1;
-         size_t actual_ind = pred_ind;
-
-         while (actual_ind > 0 && dataset[actual_ind] > searched)
-            actual_ind--;
-         while (actual_ind < last_ind && dataset[actual_ind] < searched)
-            actual_ind++;
-
-         assert(actual_ind >= 0);
-         assert(actual_ind <= last_ind);
-
-#if NDEBUG == 0
-         // tricking the compiler like this should be illegal...
-         auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
-         self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
-         self->queries++;
-#endif
-
-         return actual_ind;
-      }
-
-#if NDEBUG == 0
-      double avg_error() const {
-         return static_cast<double>(total_error) / static_cast<double>(queries);
-      }
-
-     private:
-      size_t total_error = 0, queries = 0;
-#endif
-   };
-
-   template<class Key>
-   struct ExponentialRangeLookup {
-      ExponentialRangeLookup() = default;
-
-      template<class Dataset, class Predictor>
-      ExponentialRangeLookup(const Dataset& dataset, const Predictor& predictor) {
-         UNUSED(dataset);
-         UNUSED(predictor);
-      }
-
-      forceinline size_t byte_size() const {
-         return 0;
-      }
-
-      template<class Dataset>
-      forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
-         // fast path correct predictions
-         if (dataset[pred_ind] == searched)
-            return pred_ind;
-
-         const auto dataset_size = dataset.size();
-         size_t interval_start = pred_ind, interval_end = pred_ind + 1;
-
-         size_t err = 1;
-         while (interval_start > 0 && dataset[interval_start] > searched) {
-            interval_end = interval_start;
-            interval_start -= std::min(err, interval_start);
-            err *= 2;
-         }
-         err = 1;
-         while (interval_end < dataset_size && dataset[interval_end] < searched) {
-            interval_start = interval_end;
-            interval_end += std::min(err, dataset_size - interval_end);
-            err *= 2;
+         template<class Dataset, class Predictor>
+         SequentialRangeLookup(const Dataset& dataset, const Predictor& predictor) {
+            UNUSED(dataset);
+            UNUSED(predictor);
          }
 
-         assert(interval_start >= 0);
-         assert(interval_end >= interval_start);
-         assert(interval_end <= dataset.size());
-
-         const size_t actual_ind = support::lower_bound(interval_start, interval_end, searched, dataset);
-
-#if NDEBUG == 0
-         // tricking the compiler like this should be illegal...
-         auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
-         self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
-         self->queries++;
-#endif
-
-         return actual_ind;
-      }
-
-#if NDEBUG == 0
-      double avg_error() const {
-         return static_cast<double>(total_error) / static_cast<double>(queries);
-      }
-
-     private:
-      size_t total_error = 0, queries = 0;
-#endif
-   };
-
-   template<class Key>
-   struct BinaryRangeLookup {
-      size_t max_error = 0;
-
-      BinaryRangeLookup() = default;
-
-      template<class Dataset, class Predictor>
-      BinaryRangeLookup(const Dataset& dataset, const Predictor& predictor) {
-         for (size_t i = 0; i < dataset.size(); i++) {
-            const size_t pred = predictor(dataset[i]);
-            max_error = std::max(max_error, pred >= i ? pred - i : i - pred);
+         forceinline size_t byte_size() const {
+            return 0;
          }
-      }
 
-      forceinline size_t byte_size() const {
-         return sizeof(decltype(max_error));
-      }
+         template<class Dataset>
+         forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
+            const auto last_ind = dataset.size() - 1;
+            size_t actual_ind = pred_ind;
 
-      template<class Dataset>
-      forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
-         // compute interval bounds
-         const auto interval_start = (pred_ind > max_error) * (pred_ind - max_error);
-         // +1 since std::lower_bound searches up to excluding upper bound
-         const auto interval_end = std::min(pred_ind + max_error, dataset.size() - 1) + 1;
+            while (actual_ind > 0 && dataset[actual_ind] > searched)
+               actual_ind--;
+            while (actual_ind < last_ind && dataset[actual_ind] < searched)
+               actual_ind++;
 
-         assert(interval_start >= 0);
-         assert(interval_end >= interval_start);
-         assert(interval_end <= dataset.size());
-
-         const size_t actual_ind = support::lower_bound(interval_start, interval_end, searched, dataset);
+            assert(actual_ind >= 0);
+            assert(actual_ind <= last_ind);
 
 #if NDEBUG == 0
-         // tricking the compiler like this should be illegal...
-         auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
-         self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
-         self->queries++;
+            // tricking the compiler like this should be illegal...
+            auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
+            self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
+            self->queries++;
 #endif
 
-         return actual_ind;
-      }
+            return actual_ind;
+         }
 
 #if NDEBUG == 0
-      double avg_error() const {
-         return static_cast<double>(total_error) / static_cast<double>(queries);
-      }
+         double avg_error() const {
+            return static_cast<double>(total_error) / static_cast<double>(queries);
+         }
 
-     private:
-      size_t total_error = 0, queries = 0;
+        private:
+         size_t total_error = 0, queries = 0;
 #endif
-   };
+      };
+
+      template<class Key>
+      struct ExponentialRangeLookup {
+         ExponentialRangeLookup() = default;
+
+         template<class Dataset, class Predictor>
+         ExponentialRangeLookup(const Dataset& dataset, const Predictor& predictor) {
+            UNUSED(dataset);
+            UNUSED(predictor);
+         }
+
+         forceinline size_t byte_size() const {
+            return 0;
+         }
+
+         template<class Dataset>
+         forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
+            // fast path correct predictions
+            if (dataset[pred_ind] == searched)
+               return pred_ind;
+
+            const auto dataset_size = dataset.size();
+            size_t interval_start = pred_ind, interval_end = pred_ind + 1;
+
+            size_t err = 1;
+            while (interval_start > 0 && dataset[interval_start] > searched) {
+               interval_end = interval_start;
+               interval_start -= std::min(err, interval_start);
+               err *= 2;
+            }
+            err = 1;
+            while (interval_end < dataset_size && dataset[interval_end] < searched) {
+               interval_start = interval_end;
+               interval_end += std::min(err, dataset_size - interval_end);
+               err *= 2;
+            }
+
+            assert(interval_start >= 0);
+            assert(interval_end >= interval_start);
+            assert(interval_end <= dataset.size());
+
+            const size_t actual_ind = support::lower_bound(interval_start, interval_end, searched, dataset);
+
+#if NDEBUG == 0
+            // tricking the compiler like this should be illegal...
+            auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
+            self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
+            self->queries++;
+#endif
+
+            return actual_ind;
+         }
+
+#if NDEBUG == 0
+         double avg_error() const {
+            return static_cast<double>(total_error) / static_cast<double>(queries);
+         }
+
+        private:
+         size_t total_error = 0, queries = 0;
+#endif
+      };
+
+      template<class Key>
+      struct BinaryRangeLookup {
+         size_t max_error = 0;
+
+         BinaryRangeLookup() = default;
+
+         template<class Dataset, class Predictor>
+         BinaryRangeLookup(const Dataset& dataset, const Predictor& predictor) {
+            for (size_t i = 0; i < dataset.size(); i++) {
+               const size_t pred = predictor(dataset[i]);
+               max_error = std::max(max_error, pred >= i ? pred - i : i - pred);
+            }
+         }
+
+         forceinline size_t byte_size() const {
+            return sizeof(decltype(max_error));
+         }
+
+         template<class Dataset>
+         forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
+            // compute interval bounds
+            const auto interval_start = (pred_ind > max_error) * (pred_ind - max_error);
+            // +1 since std::lower_bound searches up to excluding upper bound
+            const auto interval_end = std::min(pred_ind + max_error, dataset.size() - 1) + 1;
+
+            assert(interval_start >= 0);
+            assert(interval_end >= interval_start);
+            assert(interval_end <= dataset.size());
+
+            const size_t actual_ind = support::lower_bound(interval_start, interval_end, searched, dataset);
+
+#if NDEBUG == 0
+            // tricking the compiler like this should be illegal...
+            auto self = (std::remove_const_t<std::remove_pointer_t<decltype(this)>>*) (this);
+            self->total_error += actual_ind > pred_ind ? actual_ind - pred_ind : pred_ind - actual_ind;
+            self->queries++;
+#endif
+
+            return actual_ind;
+         }
+
+#if NDEBUG == 0
+         double avg_error() const {
+            return static_cast<double>(total_error) / static_cast<double>(queries);
+         }
+
+        private:
+         size_t total_error = 0, queries = 0;
+#endif
+      };
+   } // namespace last_level_search
 
    template<class Data, class Model = learned_hashing::MonotoneRMIHash<Data, 1000000>,
-            class LastLevelSearch = ExponentialRangeLookup<Data>>
+            class LastLevelSearch = last_level_search::ExponentialRangeLookup<Data>>
    class LearnedRank {
       std::vector<Data> dataset;
       Model model{};
       LastLevelSearch lls;
 
-     public:
-      explicit LearnedRank(const std::vector<Data>& d) : dataset(d) {
+      /// avoid additional copy where possible by assuming in this function
+      /// that dataset has been correctly set
+      void construct() {
          // nothing to do on empty data
          if (dataset.empty())
             return;
-
-         // ensure dataset is sorted
-         std::sort(dataset.begin(), dataset.end());
 
          // median of dataset (since is_sorted)
          const size_t half_size = dataset.size() / 2;
@@ -212,6 +212,37 @@ namespace exotic_hashing {
 
          // train lls using reduced dataset
          lls = LastLevelSearch(dataset, model);
+      }
+
+     public:
+      LearnedRank() noexcept = default;
+
+      /**
+       * Constructs on already sorted range of keys
+       */
+      template<class ForwardIt>
+      LearnedRank(const ForwardIt& begin, const ForwardIt& end) {
+         construct(begin, end);
+      }
+
+      /**
+       * Constructs on arbitrarily ordered keyset
+       */
+      explicit LearnedRank(std::vector<Data> d) : dataset(d) {
+         // ensure dataset is sorted
+         std::sort(dataset.begin(), dataset.end());
+
+         // construct on sorted data
+         construct();
+      }
+
+      /**
+       * Constructs on *already sorted* range of keys
+       */
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         dataset = decltype(dataset)(begin, end);
+         construct();
       }
 
       static std::string name() {
@@ -249,20 +280,17 @@ namespace exotic_hashing {
    };
 
    template<class Data, class Model = learned_hashing::MonotoneRMIHash<Data, 1000000>,
-            class LastLevelSearch = ExponentialRangeLookup<Data>>
+            class LastLevelSearch = last_level_search::ExponentialRangeLookup<Data>>
    class CompressedLearnedRank {
       support::EliasFanoList<Data> efl{};
       Model model{};
       LastLevelSearch lls;
 
-     public:
-      explicit CompressedLearnedRank(std::vector<Data> dataset) {
+      /// constructs on already sorted, mutable dataset copy
+      void construct(std::vector<Data>& dataset) {
          // nothing to do on empty data
          if (dataset.empty())
             return;
-
-         // ensure dataset is sorted
-         std::sort(dataset.begin(), dataset.end());
 
          // median of dataset (since is_sorted)
          const size_t half_size = dataset.size() / 2;
@@ -286,6 +314,37 @@ namespace exotic_hashing {
 
          // store dataset as elias fano monotone list
          efl = decltype(efl)(dataset.begin(), dataset.end());
+      }
+
+     public:
+      CompressedLearnedRank() noexcept = default;
+
+      /**
+       * Constructs on already sorted range of keys
+       */
+      template<class ForwardIt>
+      CompressedLearnedRank(const ForwardIt& begin, const ForwardIt& end) {
+         construct(begin, end);
+      }
+
+      /**
+       * Constructs on arbitrarily ordered keyset
+       */
+      explicit CompressedLearnedRank(std::vector<Data> dataset) {
+         // ensure dataset is sorted
+         std::sort(dataset.begin(), dataset.end());
+
+         // construct on sorted data
+         construct(dataset);
+      }
+
+      /**
+       * Constructs on already sorted range of keys
+       */
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         std::vector<Data> dataset(begin, end);
+         construct(dataset);
       }
 
       static std::string name() {

@@ -15,8 +15,28 @@ namespace exotic_hashing {
     */
    template<class Data>
    struct DoNothingHash {
+      /**
+       * Constructs on arbitrarily ordered keyset
+       */
       explicit DoNothingHash(const std::vector<Data>& d) {
          UNUSED(d);
+      }
+
+      /**
+       * Constructs on arbitrarily ordered range of keys
+       */
+      template<class ForwardIt>
+      explicit DoNothingHash(const ForwardIt& begin, const ForwardIt& end) {
+         construct(begin, end);
+      }
+
+      /**
+       * Constructs on arbitrarily ordered range of keys
+       */
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         UNUSED(begin);
+         UNUSED(end);
       }
 
       static std::string name() {

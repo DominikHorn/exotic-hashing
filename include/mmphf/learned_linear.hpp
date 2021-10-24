@@ -21,8 +21,31 @@ namespace exotic_hashing {
          return key - neg_intercept;
       }
 
+     public:
+      LearnedLinear() noexcept = default;
+
+      /**
+       * Constructs from *already sorted* range [begin, end)
+       */
       template<class It>
-      void construct_from_sorted(const It& begin, const It& end) {
+      LearnedLinear(const It& begin, const It& end) {
+         construct(begin, end);
+      }
+
+      /**
+       * Constructs given any dataset. Note: does not have
+       * to be sorted
+       */
+      explicit LearnedLinear(std::vector<Data> dataset) {
+         std::sort(dataset.begin(), dataset.end());
+         construct(dataset.begin(), dataset.end());
+      }
+
+      /**
+       * Constructs from *already sorted* range [begin, end)
+       */
+      template<class It>
+      void construct(const It& begin, const It& end) {
          const size_t size = std::distance(begin, end);
 
          // Compute dataset properties
@@ -45,24 +68,6 @@ namespace exotic_hashing {
          }
          bitvec = bv;
          sdsl::util::init_support(rank, &bitvec);
-      }
-
-     public:
-      /**
-       * Constructs from *already sorted* range [begin, end)
-       */
-      template<class It>
-      LearnedLinear(const It& begin, const It& end) {
-         construct_from_sorted(begin, end);
-      }
-
-      /**
-       * Constructs given any dataset. Note: does not have
-       * to be sorted
-       */
-      explicit LearnedLinear(std::vector<Data> dataset) {
-         std::sort(dataset.begin(), dataset.end());
-         construct_from_sorted(dataset.begin(), dataset.end());
       }
 
       forceinline size_t operator()(const Data& key) const {
