@@ -11,10 +11,11 @@
 
 #include <learned_hashing.hpp>
 
-#include "../convenience/builtins.hpp"
-#include "../convenience/tidy.hpp"
 #include "../support/elias_fano_list.hpp"
 #include "../support/support.hpp"
+
+// Order important
+#include "../convenience/builtins.hpp"
 
 namespace exotic_hashing {
    namespace last_level_search {

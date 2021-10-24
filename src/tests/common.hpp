@@ -1,6 +1,5 @@
 #pragma once
 
-#include "include/convenience/tidy.hpp"
 #include <random>
 #include <stdexcept>
 #include <string>
@@ -9,6 +8,9 @@
 #include <vector>
 
 #include <gtest/gtest.h>
+
+// Order important
+#include "include/convenience/builtins.hpp"
 
 namespace tests::common {
    template<class T, size_t GapSize = 10, class RandomEngine>

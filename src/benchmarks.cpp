@@ -11,11 +11,11 @@
 #include <sdsl/suffix_arrays.hpp>
 #include <benchmark/benchmark.h>
 
-#include "../include/convenience/builtins.hpp"
-#include "../include/convenience/tidy.hpp"
-
 #include "support/datasets.hpp"
 #include "support/probing_set.hpp"
+
+// Order important
+#include "../include/convenience/builtins.hpp"
 
 using Data = std::uint64_t;
 const std::vector<std::int64_t> dataset_sizes{100, 1000, 10000, 100000, 1000000, 10000000, 100000000};

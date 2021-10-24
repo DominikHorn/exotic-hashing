@@ -6,9 +6,10 @@
 #include <limits>
 #include <optional>
 
-#include "../convenience/builtins.hpp"
-#include "../convenience/tidy.hpp"
 #include "../support/bitvector.hpp"
+
+// Order important
+#include "../convenience/builtins.hpp"
 
 namespace exotic_hashing {
    template<class Key, class BitConverter, class BitStream>

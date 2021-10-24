@@ -17,3 +17,6 @@
 
 #include "include/support/bitconverter.hpp"
 #include "include/support/bitvector.hpp"
+
+// Order is important
+#include "include/convenience/undef.hpp"

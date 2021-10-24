@@ -7,8 +7,6 @@
 #include <string>
 #include <vector>
 
-#include "../convenience/builtins.hpp"
-#include "../convenience/tidy.hpp"
 #include "../omphf/mwhc.hpp"
 #include "../support/bitconverter.hpp"
 #include "../support/clustering.hpp"
@@ -16,6 +14,9 @@
 #include "../support/support.hpp"
 #include "hollow_trie.hpp"
 #include "learned_linear.hpp"
+
+// Ordering important
+#include "../convenience/builtins.hpp"
 
 namespace exotic_hashing {
    // turns out for compressed mwhc 832, 1665 are optimal sizes to obtain min bits/key.

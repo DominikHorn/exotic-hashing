@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "../convenience/builtins.hpp"
-#include "../convenience/tidy.hpp"
 
 namespace exotic_hashing {
    /**
