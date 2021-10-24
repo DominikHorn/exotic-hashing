@@ -121,27 +121,15 @@ namespace exotic_hashing::support {
       }
 
       /// Custom copy constructor is necessary since sdsl's select support contains a pointer to upper
-      EliasFanoList(const EliasFanoList& other) noexcept {
-         lower = other.lower;
-         upper = other.upper;
-         u_select = other.u_select;
-         l = other.l;
-         n = other.n;
-         min = other.min;
-
+      EliasFanoList(const EliasFanoList& other) noexcept
+         : lower(other.lower), upper(other.upper), u_select(other.u_select), l(other.l), n(other.n), min(other.min) {
          // reset vector as otherwise u_select contains broken pointer
          u_select.set_vector(&upper);
       }
 
       /// Custom copy constructor is necessary since sdsl's select support contains a pointer to upper
-      EliasFanoList(EliasFanoList&& other) noexcept {
-         lower = other.lower;
-         upper = other.upper;
-         u_select = other.u_select;
-         l = other.l;
-         n = other.n;
-         min = other.min;
-
+      EliasFanoList(EliasFanoList&& other) noexcept
+         : lower(other.lower), upper(other.upper), u_select(other.u_select), l(other.l), n(other.n), min(other.min) {
          // reset vector as otherwise u_select contains broken pointer
          u_select.set_vector(&upper);
       }
