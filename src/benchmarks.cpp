@@ -156,6 +156,9 @@ using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::
 BM(SimpleHollowTrie);
 using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
 BM(HollowTrie);
+
+using BitMWHC = exotic_hashing::BitMWHC<Data>;
+BM(BitMWHC);
 using MWHC = exotic_hashing::MWHC<Data>;
 BM(MWHC);
 using CompressedMWHC = exotic_hashing::CompressedMWHC<Data>;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "include/phf/bit_mwhc.hpp"
 #include "include/phf/do_nothing_hash.hpp"
 
 #include "include/mphf/recsplit/recsplit.hpp"

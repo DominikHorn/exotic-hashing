@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "tests/adaptivelearnedmmphf-tests.hpp"
+#include "tests/bitmwhc-tests.hpp"
 #include "tests/bitvector-tests.hpp"
 #include "tests/clustering-tests.hpp"
 #include "tests/compactedmwhc-tests.hpp"
