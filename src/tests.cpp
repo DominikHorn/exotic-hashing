@@ -17,3 +17,4 @@
 #include "tests/mwhc-tests.hpp"
 #include "tests/rankhash-tests.hpp"
 #include "tests/recsplit-tests.hpp"
+#include "tests/sfmwhc-tests.hpp"

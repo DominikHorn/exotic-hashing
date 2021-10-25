@@ -16,6 +16,8 @@
 #include "include/omphf/map_omphf.hpp"
 #include "include/omphf/mwhc.hpp"
 
+#include "include/sf/sf_mwhc.hpp"
+
 #include "include/support/bitconverter.hpp"
 #include "include/support/bitvector.hpp"
 
