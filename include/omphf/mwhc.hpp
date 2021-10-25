@@ -381,11 +381,7 @@ namespace exotic_hashing {
    struct MWHC {
       template<class RandomIt>
       MWHC(RandomIt begin, RandomIt end)
-         : hasher(vertices_count(std::distance(begin, end))), mod_N(vertices_count(std::distance(begin, end))) {
-         // 'unassigned vertex value' is marked using the value of N since N mod N = 0
-         vertex_values.resize(mod_N.N);
-         std::fill(vertex_values.begin(), vertex_values.end(), vertex_values.size());
-
+         : mod_N(vertices_count(std::distance(begin, end))), hasher(mod_N.N), vertex_values(mod_N.N, mod_N.N) {
          std::vector<size_t> peel_order;
          while (peel_order.empty()) {
             // 1. Generate random Hypergraph
@@ -411,7 +407,7 @@ namespace exotic_hashing {
             if (h2 != h0 && h2 != h1)
                current_val += vertex_values[h2];
             current_val = mod_N(current_val);
-            size_t x = mod_N(mod_N.N + edge_ind - current_val);
+            const size_t x = mod_N(mod_N.N + edge_ind - current_val);
 
             // assign vertex values
             bool assigned = false;
@@ -458,8 +454,8 @@ namespace exotic_hashing {
          return std::ceil(overalloc * dataset_size);
       }
 
-      Hasher hasher;
       hashing::reduction::FastModulo<std::uint64_t> mod_N;
+      Hasher hasher;
 
       std::vector<size_t> vertex_values;
 
