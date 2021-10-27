@@ -35,16 +35,16 @@ namespace exotic_hashing {
 
          template<class Dataset>
          forceinline size_t operator()(size_t pred_ind, Key searched, const Dataset& dataset) const {
-            const auto last_ind = dataset.size() - 1;
             size_t actual_ind = pred_ind;
 
             while (actual_ind > 0 && dataset[actual_ind] > searched)
                actual_ind--;
-            while (actual_ind < last_ind && dataset[actual_ind] < searched)
+            while (actual_ind < dataset.size() && dataset[actual_ind] < searched)
                actual_ind++;
 
+            assert(actual_ind == dataset.size() || dataset[actual_ind] >= searched);
             assert(actual_ind >= 0);
-            assert(actual_ind <= last_ind);
+            assert(actual_ind <= dataset.size());
 
 #if NDEBUG == 0
             // tricking the compiler like this should be illegal...
