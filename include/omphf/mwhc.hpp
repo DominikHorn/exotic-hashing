@@ -45,7 +45,7 @@ namespace exotic_hashing {
          }
 
         public:
-         explicit Hasher(const size_t& N) : reducer(N) {
+         explicit Hasher(const size_t& N = 1) : reducer(N) {
             // Randomly seed hash functions
             std::random_device r;
             std::default_random_engine rng(r());
@@ -232,22 +232,34 @@ namespace exotic_hashing {
    } // namespace support
 
    template<class Data, class Hasher = support::Hasher<Data>, class HyperGraph = support::HyperGraph<Data, Hasher>>
-   struct MWHC;
+   class MWHC;
 
    template<class Data, class Hasher = support::Hasher<Data>, class HyperGraph = support::HyperGraph<Data, Hasher>>
    class CompactedMWHC {
       using MWHC = MWHC<Data, Hasher, HyperGraph>;
       Hasher hasher;
-      hashing::reduction::FastModulo<std::uint64_t> mod_N;
+      hashing::reduction::FastModulo<std::uint64_t> mod_N{1};
 
       sdsl::bit_vector_il<> bit_vec;
       decltype(bit_vec)::rank_1_type bit_vec_rank;
       sdsl::int_vector<> vertex_values;
 
      public:
-      explicit CompactedMWHC(const std::vector<Data>& dataset)
-         : hasher(MWHC::vertices_count(dataset.size())), mod_N(MWHC::vertices_count(dataset.size())) {
-         const MWHC mwhc(dataset);
+      CompactedMWHC() noexcept = default;
+
+      template<class RandomIt>
+      CompactedMWHC(const RandomIt& begin, const RandomIt& end) {
+         construct(begin, end);
+      }
+
+      explicit CompactedMWHC(const std::vector<Data>& dataset) : CompactedMWHC(dataset.begin(), dataset.end()) {}
+
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         hasher = decltype(hasher)(MWHC::vertices_count(std::distance(begin, end)));
+         mod_N = decltype(mod_N)(mod_N.N);
+
+         const MWHC mwhc(begin, end);
 
          // copy unchanged fields
          hasher = mwhc.hasher;
@@ -326,14 +338,25 @@ namespace exotic_hashing {
       using MWHC = MWHC<Data, Hasher, HyperGraph>;
 
       Hasher hasher;
-      hashing::reduction::FastModulo<std::uint64_t> mod_N;
+      hashing::reduction::FastModulo<std::uint64_t> mod_N{1};
       sdsl::int_vector<> vertex_values;
 
      public:
+      CompressedMWHC() noexcept = default;
+
       template<class RandomIt>
-      CompressedMWHC(RandomIt begin, RandomIt end)
-         : hasher(MWHC::vertices_count(std::distance(begin, end))),
-           mod_N(MWHC::vertices_count(std::distance(begin, end))) {
+      CompressedMWHC(RandomIt begin, RandomIt end) {
+         construct(begin, end);
+      }
+
+      explicit CompressedMWHC(const std::vector<Data>& dataset) : CompressedMWHC(dataset.begin(), dataset.end()) {}
+
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         hasher = decltype(hasher)(MWHC::vertices_count(std::distance(begin, end)));
+         mod_N = decltype(mod_N)(MWHC::vertices_count(std::distance(begin, end)));
+
+         // generate mwhc
          const MWHC mwhc(begin, end);
 
          // copy unchanged fields
@@ -356,8 +379,6 @@ namespace exotic_hashing {
          vertex_values = vec;
       }
 
-      explicit CompressedMWHC(const std::vector<Data>& dataset) : CompressedMWHC(dataset.begin(), dataset.end()) {}
-
       forceinline size_t operator()(const Data& key) const {
          const auto [h0, h1, h2] = hasher(key);
          size_t hash = vertex_values[h0];
@@ -378,10 +399,35 @@ namespace exotic_hashing {
    };
 
    template<class Data, class Hasher, class HyperGraph>
-   struct MWHC {
+   class MWHC {
+      hashing::reduction::FastModulo<std::uint64_t> mod_N{1};
+      Hasher hasher;
+
+      std::vector<size_t> vertex_values;
+
+      static forceinline size_t vertices_count(const size_t& dataset_size, const long double& overalloc = 1.23) {
+         return std::ceil(overalloc * dataset_size);
+      }
+
+      friend CompressedMWHC<Data, Hasher, HyperGraph>;
+      friend CompactedMWHC<Data, Hasher, HyperGraph>;
+
+     public:
+      MWHC() noexcept = default;
+
       template<class RandomIt>
-      MWHC(RandomIt begin, RandomIt end)
-         : mod_N(vertices_count(std::distance(begin, end))), hasher(mod_N.N), vertex_values(mod_N.N, mod_N.N) {
+      MWHC(const RandomIt& begin, const RandomIt& end) {
+         construct(begin, end);
+      }
+
+      explicit MWHC(const std::vector<Data>& dataset) : MWHC(dataset.begin(), dataset.end()) {}
+
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         mod_N = decltype(mod_N)(vertices_count(std::distance(begin, end)));
+         hasher = decltype(hasher)(mod_N.N);
+         vertex_values = decltype(vertex_values)(mod_N.N, mod_N.N);
+
          std::vector<size_t> peel_order;
          while (peel_order.empty()) {
             // 1. Generate random Hypergraph
@@ -428,12 +474,6 @@ namespace exotic_hashing {
          }
       }
 
-      explicit MWHC(const std::vector<Data>& dataset) : MWHC(dataset.begin(), dataset.end()) {}
-
-      static std::string name() {
-         return "MWHC";
-      }
-
       forceinline size_t operator()(const Data& key) const {
          const auto [h0, h1, h2] = hasher(key);
          size_t hash = vertex_values[h0];
@@ -444,22 +484,13 @@ namespace exotic_hashing {
          return mod_N(hash);
       }
 
+      static std::string name() {
+         return "MWHC";
+      }
+
       size_t byte_size() const {
          return sizeof(hasher) + sizeof(mod_N) + sizeof(decltype(vertex_values)) +
             sizeof(size_t) * vertex_values.size();
       }
-
-     private:
-      static forceinline size_t vertices_count(const size_t& dataset_size, const long double& overalloc = 1.23) {
-         return std::ceil(overalloc * dataset_size);
-      }
-
-      hashing::reduction::FastModulo<std::uint64_t> mod_N;
-      Hasher hasher;
-
-      std::vector<size_t> vertex_values;
-
-      friend CompressedMWHC<Data, Hasher, HyperGraph>;
-      friend CompactedMWHC<Data, Hasher, HyperGraph>;
    };
 } // namespace exotic_hashing
