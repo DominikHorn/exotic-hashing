@@ -188,6 +188,7 @@ with open(file) as data_file:
           </head>
 
           <body style="display: grid; grid-template-columns: repeat(auto-fit, minmax(1200px, 1fr))">
+            <embed src="functions.html" style="width: 100%; height: 500px;"/>
             {plot_lookup_times()}
             {plot_hashfn_bits_per_key()}
             {plot_build_time()}

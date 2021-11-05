@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+    </style>
+  </head>
+  <body>
+    <table style="width:100%;">
+    <colgroup>
+    <col style="width: 11%" />
+    <col style="width: 5%" />
+    <col style="width: 12%" />
+    <col style="width: 10%" />
+    <col style="width: 14%" />
+    <col style="width: 10%" />
+    <col style="width: 10%" />
+    <col style="width: 7%" />
+    <col style="width: 17%" />
+    </colgroup>
+    <thead>
+    <tr class="header">
+    <th style="text-align: center;">name</th>
+    <th style="text-align: center;">perfect</th>
+    <th style="text-align: center;">minimal</th>
+    <th style="text-align: center;">monotone</th>
+    <th style="text-align: center;">monotone wrt. non-keys</th>
+    <th style="text-align: center;">order preserving</th>
+    <th style="text-align: center;">can recover key</th>
+    <th style="text-align: center;">updateable</th>
+    <th style="text-align: center;">can directly store payloads</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="odd">
+    <td style="text-align: center;">bit mwhc</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">almost (18.7% gaps)</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: center;">do nothing hash</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="odd">
+    <td style="text-align: center;">recsplit</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: center;">fst</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">?</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">?</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="odd">
+    <td style="text-align: center;">compact trie</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: center;">hollow trie</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="odd">
+    <td style="text-align: center;">learned linear</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">possible</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: center;">rank hash</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">half recoverable</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="odd">
+    <td style="text-align: center;">learned rank hash</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">half recoverable</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: center;">la vector</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">?</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="odd">
+    <td style="text-align: center;">adaptive learned</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">undetermined as of yet</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">probably not</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: center;">map omphf</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">depends on order</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">✅</td>
+    </tr>
+    <tr class="odd">
+    <td style="text-align: center;">mwhc</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">depends on order</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: center;">sf mwhc</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;">depends on order</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">✅</td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;"></td>
+    <td style="text-align: center;">✅</td>
+    </tr>
+    </tbody>
+    </table>
+  </body>
+</html>
