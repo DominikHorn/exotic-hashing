@@ -67,7 +67,7 @@ namespace exotic_hashing {
          return "RankHash";
       }
 
-      constexpr forceinline size_t operator()(const Data& key) const {
+      forceinline size_t operator()(const Data& key) const {
          // primitively compute rank of key by:
          // 1. binary searching it in the sorted, compressed dataset
          const auto iter = std::lower_bound(dataset.begin(), dataset.end(), key);

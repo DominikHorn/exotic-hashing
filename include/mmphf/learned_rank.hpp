@@ -229,7 +229,7 @@ namespace exotic_hashing {
       /**
        * Constructs on arbitrarily ordered keyset
        */
-      explicit LearnedRank(std::vector<Data> d) : dataset(d) {
+      explicit LearnedRank(const std::vector<Data>& d) : dataset(d) {
          // ensure dataset is sorted
          std::sort(dataset.begin(), dataset.end());
 
