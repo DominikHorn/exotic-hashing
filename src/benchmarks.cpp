@@ -150,12 +150,18 @@ using MapOMPHF = exotic_hashing::MapOMPHF<Data>;
 BM(MapOMPHF);
 using RecSplit = exotic_hashing::RecSplit<Data>;
 BM(RecSplit);
+
 using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
 BM(CompactTrie);
 using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
 BM(SimpleHollowTrie);
 using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
 BM(HollowTrie);
+using FST = exotic_hashing::FastSuccinctTrie<Data>;
+BM(FST);
+
+using LAVector = exotic_hashing::LAVector<Data>;
+BM(LAVector);
 
 using BitMWHC = exotic_hashing::BitMWHC<Data>;
 BM(BitMWHC);
@@ -165,8 +171,6 @@ using CompressedMWHC = exotic_hashing::CompressedMWHC<Data>;
 BM(CompressedMWHC);
 using CompactedMWHC = exotic_hashing::CompactedMWHC<Data>;
 BM(CompactedMWHC);
-using FST = exotic_hashing::FastSuccinctTrie<Data>;
-BM(FST);
 
 using LearnedRank_RMI = exotic_hashing::LearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>>;
 BM(LearnedRank_RMI);
