@@ -8,7 +8,7 @@ cd "$(dirname "$0")"
 # Parse arguments
 TARGET=${1:-"eh_benchmarks"}
 BUILD_TYPE=${2:-"RELEASE"}
-BUILD_DIR="cmake-build-$(echo "${BUILD_TYPE}" | awk '{print tolower($0)}')/"
+BUILD_DIR="cmake-build-$(echo "${BUILD_TYPE}" | awk '{print tolower($0)}')"
 
 # Build the target
 ./build.sh ${TARGET} ${BUILD_TYPE}
