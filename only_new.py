@@ -5,7 +5,7 @@ with open('results.json') as results_file:
     data = json.load(results_file)
     existing_dp = [dp['name']for dp in data['benchmarks']]
 
-    all_dp = {dp: True for dp in os.popen('cmake-build-release/src/benchmarks --benchmark_list_tests').read().strip().split('\n')}
+    all_dp = {dp: True for dp in os.popen('cmake-build-release/src/eh_benchmarks --benchmark_list_tests').read().strip().split('\n')}
 
     for dp in existing_dp:
         all_dp[dp] = False
