@@ -101,8 +101,7 @@ namespace exotic_hashing {
       }
 
       size_t byte_size() const {
-         return sizeof(hasher) + sizeof(mod_N) + sizeof(decltype(vertex_values)) +
-            sizeof(size_t) * vertex_values.size();
+         return sizeof(hasher) + sizeof(mod_N) + sdsl::size_in_bytes(vertex_values);
       }
    };
 } // namespace exotic_hashing
