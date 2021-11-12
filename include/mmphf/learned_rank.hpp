@@ -182,6 +182,86 @@ namespace exotic_hashing {
 
    template<class Data, class Model = learned_hashing::MonotoneRMIHash<Data, 1000000>,
             class LastLevelSearch = last_level_search::ExponentialRangeLookup<Data>>
+   class UnoptimizedLearnedRank {
+      std::vector<Data> dataset;
+      Model model{};
+      LastLevelSearch lls;
+
+      /// avoid additional copy where possible by assuming in this function
+      /// that dataset has been correctly set
+      void construct() {
+         // nothing to do on empty data
+         if (dataset.empty())
+            return;
+
+         // data must be sorted
+         assert(std::is_sorted(dataset.begin(), dataset.end()));
+
+         // train on full data
+         model.train(dataset.begin(), dataset.end(), dataset.size());
+
+         // train lls using reduced dataset
+         lls = LastLevelSearch(dataset, model);
+      }
+
+     public:
+      UnoptimizedLearnedRank() noexcept = default;
+
+      /**
+       * Constructs on already sorted range of keys
+       */
+      template<class ForwardIt>
+      UnoptimizedLearnedRank(const ForwardIt& begin, const ForwardIt& end) {
+         construct(begin, end);
+      }
+
+      /**
+       * Constructs on arbitrarily ordered keyset
+       */
+      explicit UnoptimizedLearnedRank(const std::vector<Data>& d) : dataset(d) {
+         // ensure dataset is sorted
+         std::sort(dataset.begin(), dataset.end());
+
+         // construct on sorted data
+         construct();
+      }
+
+      /**
+       * Constructs on *already sorted* range of keys
+       */
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         dataset = decltype(dataset)(begin, end);
+         construct();
+      }
+
+      static std::string name() {
+         return "UnoptimizedLearnedRank<" + Model::name() + ">";
+      }
+
+      forceinline size_t operator()(const Data& key) const {
+         // predict using RMI
+         const auto pred_ind = model(key);
+
+         // Last level search to find actual index
+         const auto actual_ind = lls(pred_ind, key, dataset);
+         return actual_ind;
+      }
+
+      size_t byte_size() const {
+         return dataset.size() * sizeof(Data) + sizeof(std::vector<Data>) + model.byte_size() + lls.byte_size();
+      };
+
+#if NDEBUG == 0
+      /// average model prediction error experienced thus far
+      size_t avg_lls_error() const {
+         return lls.avg_error();
+      }
+#endif
+   };
+
+   template<class Data, class Model = learned_hashing::MonotoneRMIHash<Data, 1000000>,
+            class LastLevelSearch = last_level_search::ExponentialRangeLookup<Data>>
    class LearnedRank {
       std::vector<Data> dataset;
       Model model{};

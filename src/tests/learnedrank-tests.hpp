@@ -8,6 +8,113 @@
 #include "common.hpp"
 #include "include/mmphf/learned_rank.hpp"
 
+// ==== UnoptimizedLearnedRankRMI ====
+TEST(UnoptimizedLearnedRankRMI, IsPerfect) {
+   using Data = std::uint64_t;
+   tests::common::run_test<
+      Data, exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>>,
+      tests::common::TestIsPerfect>();
+}
+
+TEST(UnoptimizedLearnedRankRMI, IsMinimal) {
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::UnoptimizedLearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsMinimal>();
+}
+
+TEST(UnoptimizedLearnedRankRMI, IsMonotone) {
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::UnoptimizedLearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsMonotone>();
+}
+
+TEST(UnoptimizedLearnedRankRMI, IsMMPHF) {
+   tests::common::run_test<
+      std::uint64_t,
+      exotic_hashing::UnoptimizedLearnedRank<std::uint64_t, learned_hashing::MonotoneRMIHash<std::uint64_t, 1000000>>,
+      tests::common::TestIsMMPHF>();
+}
+
+TEST(UnoptimizedLearnedRank, ExponentialLLS) {
+   using Data = std::uint64_t;
+
+   // This test is for now dependent on UnoptimizedLearnedRankRMI::*
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::ExponentialRangeLookup<Data>>,
+      tests::common::TestIsPerfect>();
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::ExponentialRangeLookup<Data>>,
+      tests::common::TestIsMinimal>();
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::ExponentialRangeLookup<Data>>,
+      tests::common::TestIsMonotone>();
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::ExponentialRangeLookup<Data>>,
+      tests::common::TestIsMMPHF>();
+}
+
+TEST(UnoptimizedLearnedRank, BinaryLLS) {
+   using Data = std::uint64_t;
+
+   // This test is for now dependent on UnoptimizedLearnedRankRMI::IsMMPHF
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::BinaryRangeLookup<Data>>,
+      tests::common::TestIsPerfect>();
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::BinaryRangeLookup<Data>>,
+      tests::common::TestIsMinimal>();
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::BinaryRangeLookup<Data>>,
+      tests::common::TestIsMonotone>();
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::BinaryRangeLookup<Data>>,
+      tests::common::TestIsMMPHF>();
+}
+
+TEST(UnoptimizedLearnedRank, SequentialLLS) {
+   using Data = std::uint64_t;
+
+   // This test is for now dependent on UnoptimizedLearnedRankRMI::IsMMPHF
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::SequentialRangeLookup<Data>>,
+      tests::common::TestIsPerfect>();
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::SequentialRangeLookup<Data>>,
+      tests::common::TestIsMinimal>();
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::SequentialRangeLookup<Data>>,
+      tests::common::TestIsMonotone>();
+   tests::common::run_test<
+      Data,
+      exotic_hashing::UnoptimizedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>,
+                                             exotic_hashing::last_level_search::SequentialRangeLookup<Data>>,
+      tests::common::TestIsMMPHF>();
+}
+
 // ==== LearnedRankRMI ====
 TEST(LearnedRankRMI, IsPerfect) {
    using Data = std::uint64_t;
