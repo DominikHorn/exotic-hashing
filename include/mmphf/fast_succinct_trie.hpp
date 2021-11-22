@@ -34,24 +34,50 @@ namespace exotic_hashing {
          return std::string(reinterpret_cast<const char*>(&endian_swapped_word), sizeof(Key));
       }
 
+      std::unique_ptr<fst::FST> _fst{};
+      Key _min_key, _max_key;
+
+      // FST internally stores a pointer to the string keys
+      // which is required during lookup. Therefore, we must
+      // keep the string keys in memory!
+      std::vector<std::string> converted_keys;
+
      public:
+      FastSuccinctTrie() noexcept = default;
+
       /**
        * Builds a new fast succinct trie from a dataset
        */
-      explicit FastSuccinctTrie(const std::vector<Key>& dataset) {
+      explicit FastSuccinctTrie(std::vector<Key> dataset) {
+         std::sort(dataset.begin(), dataset.end());
+         construct(dataset.begin(), dataset.end());
+      }
+
+      /**
+       * Constructs on already sorted range of keys
+       */
+      template<class ForwardIt>
+      FastSuccinctTrie(const ForwardIt& begin, const ForwardIt& end) {
+         construct(begin, end);
+      }
+
+      /**
+       * Lazily constructs on *already sorted* range of keys
+       */
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
          // find min and max elements. Assume dataset is not sorted!
-         const auto min_it = std::min_element(dataset.begin(), dataset.end());
-         if (min_it < dataset.end())
+         const auto min_it = std::min_element(begin, end);
+         if (min_it < end)
             _min_key = *min_it;
-         const auto max_it = std::max_element(dataset.begin(), dataset.end());
-         if (max_it < dataset.end())
+         const auto max_it = std::max_element(begin, end);
+         if (max_it < end)
             _max_key = *max_it;
 
          // convert keys to string. IMPORTANT: they must be sorted for fst to work
-         converted_keys.reserve(dataset.size());
-         for (const auto& key : dataset)
-            converted_keys.emplace_back(convert(key));
-         std::sort(converted_keys.begin(), converted_keys.end());
+         converted_keys.reserve(std::distance(begin, end));
+         for (auto it = begin; it < end; it++)
+            converted_keys.emplace_back(convert(*it));
 
          // construct fst. Note that values is never used during construction, hence it is simply left empty
          _fst = std::make_unique<fst::FST>(converted_keys);
@@ -76,14 +102,5 @@ namespace exotic_hashing {
          // in real world implementations.
          return base_size - sizeof(std::vector<std::string>);
       }
-
-     private:
-      std::unique_ptr<fst::FST> _fst;
-      Key _min_key, _max_key;
-
-      // FST internally stores a pointer to the string keys
-      // which is required during lookup. Therefore, we must
-      // keep the string keys in memory!
-      std::vector<std::string> converted_keys;
    };
 }; // namespace exotic_hashing
