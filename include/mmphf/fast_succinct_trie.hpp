@@ -8,7 +8,7 @@
 #include <string>
 #include <type_traits>
 
-#include <fst.hpp>
+#include <mmphf_fst.hpp>
 
 #include "../convenience/builtins.hpp"
 
@@ -34,7 +34,7 @@ namespace exotic_hashing {
          return std::string(reinterpret_cast<const char*>(&endian_swapped_word), sizeof(Key));
       }
 
-      std::unique_ptr<fst::FST> _fst{};
+      std::unique_ptr<mmphf_fst::FST> _fst{};
       Key _min_key, _max_key;
 
       // FST internally stores a pointer to the string keys
@@ -80,7 +80,7 @@ namespace exotic_hashing {
             converted_keys.emplace_back(convert(*it));
 
          // construct fst. Note that values is never used during construction, hence it is simply left empty
-         _fst = std::make_unique<fst::FST>(converted_keys);
+         _fst = std::make_unique<mmphf_fst::FST>(converted_keys);
       }
 
       forceinline size_t operator()(const Key& key) const {
