@@ -236,7 +236,7 @@ namespace exotic_hashing {
 
    template<class Data, class Hasher = support::Hasher<Data>, class HyperGraph = support::HyperGraph<Data, Hasher>>
    class CompactedMWHC {
-      using MWHC = MWHC<Data, Hasher, HyperGraph>;
+      using _MWHC = MWHC<Data, Hasher, HyperGraph>;
       Hasher hasher;
       hashing::reduction::FastModulo<std::uint64_t> mod_N{1};
 
@@ -256,10 +256,10 @@ namespace exotic_hashing {
 
       template<class RandomIt>
       void construct(const RandomIt& begin, const RandomIt& end) {
-         hasher = decltype(hasher)(MWHC::vertices_count(std::distance(begin, end)));
+         hasher = decltype(hasher)(_MWHC::vertices_count(std::distance(begin, end)));
          mod_N = decltype(mod_N)(mod_N.N);
 
-         const MWHC mwhc(begin, end);
+         const _MWHC mwhc(begin, end);
 
          // copy unchanged fields
          hasher = mwhc.hasher;
@@ -335,7 +335,7 @@ namespace exotic_hashing {
 
    template<class Data, class Hasher = support::Hasher<Data>, class HyperGraph = support::HyperGraph<Data, Hasher>>
    class CompressedMWHC {
-      using MWHC = MWHC<Data, Hasher, HyperGraph>;
+      using _MWHC = MWHC<Data, Hasher, HyperGraph>;
 
       Hasher hasher;
       hashing::reduction::FastModulo<std::uint64_t> mod_N{1};
@@ -353,11 +353,11 @@ namespace exotic_hashing {
 
       template<class RandomIt>
       void construct(const RandomIt& begin, const RandomIt& end) {
-         hasher = decltype(hasher)(MWHC::vertices_count(std::distance(begin, end)));
-         mod_N = decltype(mod_N)(MWHC::vertices_count(std::distance(begin, end)));
+         hasher = decltype(hasher)(_MWHC::vertices_count(std::distance(begin, end)));
+         mod_N = decltype(mod_N)(_MWHC::vertices_count(std::distance(begin, end)));
 
          // generate mwhc
-         const MWHC mwhc(begin, end);
+         const _MWHC mwhc(begin, end);
 
          // copy unchanged fields
          hasher = mwhc.hasher;
