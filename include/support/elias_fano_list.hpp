@@ -18,7 +18,7 @@ namespace exotic_hashing::support {
    class EliasFanoList {
       sdsl::bit_vector lower{0};
       sdsl::bit_vector upper{0};
-      decltype(upper)::select_1_type u_select{};
+      typename decltype(upper)::select_1_type u_select{};
       size_t l{}, n{};
       T min;
 

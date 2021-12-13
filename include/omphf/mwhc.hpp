@@ -241,7 +241,7 @@ namespace exotic_hashing {
       hashing::reduction::FastModulo<std::uint64_t> mod_N{1};
 
       sdsl::bit_vector_il<> bit_vec;
-      decltype(bit_vec)::rank_1_type bit_vec_rank;
+      typename decltype(bit_vec)::rank_1_type bit_vec_rank;
       sdsl::int_vector<> vertex_values;
 
      public:

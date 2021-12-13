@@ -27,7 +27,7 @@ TEST(EliasFanoList, Access) {
                                                      {0,   1,   2,   3,   4,   5,   5,   5,   6,   7,
                                                       8,   9,   10,  10,  11,  12,  13,  200, 256, 256,
                                                       257, 258, 259, 260, 300, 511, 511, 512, 1024}};
-   decltype(test_data)::value_type vec(100000, 0);
+   typename decltype(test_data)::value_type vec(100000, 0);
    for (size_t i = 0; i < vec.size(); i++)
       vec[i] = i;
    test_data.push_back(vec);

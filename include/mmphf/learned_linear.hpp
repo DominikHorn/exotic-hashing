@@ -14,7 +14,7 @@ namespace exotic_hashing {
    class LearnedLinear {
       Data neg_intercept = 0;
       sdsl::bit_vector_il<> bitvec{};
-      decltype(bitvec)::rank_1_type rank{};
+      typename decltype(bitvec)::rank_1_type rank{};
 
       forceinline size_t rank_index(const Data& key) const {
          // slope is always 1 since we don't want to produce collisions
