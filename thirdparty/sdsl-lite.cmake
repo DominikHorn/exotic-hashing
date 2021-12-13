@@ -8,7 +8,7 @@ ExternalProject_Add(
         ${SDSL_LIBRARY}_src
         PREFIX external/${SDSL_LIBRARY}
         GIT_REPOSITORY "https://github.com/DominikHorn/sdsl-lite.git"
-        GIT_TAG 3b18ab2
+        GIT_TAG 33ab834
         TIMEOUT 10
         CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX=${PROJECT_BINARY_DIR}/external/${SDSL_LIBRARY}
