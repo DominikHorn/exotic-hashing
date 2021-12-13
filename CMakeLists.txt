@@ -10,7 +10,6 @@ project("exotic-hashing" VERSION 1.0
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
 
 # ==== Dependencies ====
 include(${PROJECT_SOURCE_DIR}/thirdparty/sdsl-lite.cmake)
