@@ -160,6 +160,9 @@ BM(HollowTrie);
 using FST = exotic_hashing::FastSuccinctTrie<Data>;
 BM(FST);
 
+using LAVector = exotic_hashing::LAVector<Data>;
+BM(LAVector);
+
 using BitMWHC = exotic_hashing::BitMWHC<Data>;
 BM(BitMWHC);
 using MWHC = exotic_hashing::MWHC<Data>;

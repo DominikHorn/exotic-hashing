@@ -17,8 +17,9 @@ include(${PROJECT_SOURCE_DIR}/thirdparty/sdsl-lite.cmake)
 include(${PROJECT_SOURCE_DIR}/thirdparty/mmphf_fst.cmake)
 include(${PROJECT_SOURCE_DIR}/thirdparty/hashing.cmake)
 include(${PROJECT_SOURCE_DIR}/thirdparty/learned_hashing.cmake)
+include(${PROJECT_SOURCE_DIR}/thirdparty/la_vector.cmake)
 
-target_link_libraries(${PROJECT_NAME} INTERFACE ${SDSL_LIBRARY} ${HASHING_LIBRARY} ${LEARNED_HASHING_LIBRARY} ${MMPHF_FST_LIBRARY})
+target_link_libraries(${PROJECT_NAME} INTERFACE ${SDSL_LIBRARY} ${HASHING_LIBRARY} ${LEARNED_HASHING_LIBRARY} ${MMPHF_FST_LIBRARY} ${LA_VECTOR_LIBRARY})
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-fconstexpr-steps=999999999 CONSTEXPR_RECURSION_DEPTH_CONFIGURABLE)

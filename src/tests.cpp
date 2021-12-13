@@ -11,6 +11,7 @@
 #include "tests/eliasfanolist-tests.hpp"
 #include "tests/fst-tests.hpp"
 #include "tests/hollowtrie-tests.hpp"
+#include "tests/lavector-tests.hpp"
 #include "tests/learnedlinear-tests.hpp"
 #include "tests/learnedrank-tests.hpp"
 #include "tests/map-omphf-tests.hpp"
