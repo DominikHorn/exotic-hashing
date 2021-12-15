@@ -141,6 +141,29 @@ with open(file) as data_file:
         fig.update_yaxes(range=[-50, 700])
         return convert_to_html(fig)
 
+    def plot_pareto_lookup_space():
+        filtered = lt_df[
+                (lt_df["dataset_elem_count"] > 9 * 10**7)
+                ]
+
+        name = "lookup_time"
+        fig = px.scatter(
+            filtered,
+            x="cpu_time_per_key",
+            y="hashfn_bits_per_key",
+            color="hashfn",
+            facet_row="probe_distribution",
+            facet_col="dataset",
+            category_orders={"dataset": ["seq", "gap_10", "uniform", "normal", "wiki", "osm", "fb"]},
+            #markers=True,
+            #log_x=True,
+            labels=plot_labels,
+            color_discrete_sequence=color_sequence,
+            height=600,
+            title="Pareto - lookup (ns) vs space (bits/key)"
+            )
+        return convert_to_html(fig)
+
     def plot_build_time():
         # copy to enable value changes
         f_bt_df = bt_df.copy(deep=True)
@@ -191,6 +214,7 @@ with open(file) as data_file:
             <embed src="functions.html" style="width: 100%; height: 500px;"/>
             {plot_lookup_times()}
             {plot_hashfn_bits_per_key()}
+            {plot_pareto_lookup_space()}
             {plot_build_time()}
             <div style="margin: 15px">
                 <h3 style="color: rgb(42, 63, 95)">Raw Data</h2>
