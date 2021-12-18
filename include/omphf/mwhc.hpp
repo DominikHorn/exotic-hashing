@@ -316,10 +316,8 @@ namespace exotic_hashing {
          const auto v2 = bit_vec[h2] * vertex_values[bit_vec_rank(h2)];
 
          size_t hash = v0;
-         if (likely(h1 != h0))
-            hash += v1;
-         if (likely(h2 != h1 && h2 != h0))
-            hash += v2;
+         hash += (h1 != h0) * v1;
+         hash += (h2 != h1 && h2 != h0) * v2;
          return mod_N(hash);
       }
 
@@ -382,10 +380,8 @@ namespace exotic_hashing {
       forceinline size_t operator()(const Data& key) const {
          const auto [h0, h1, h2] = hasher(key);
          size_t hash = vertex_values[h0];
-         if (likely(h1 != h0))
-            hash += vertex_values[h1];
-         if (likely(h2 != h1 && h2 != h0))
-            hash += vertex_values[h2];
+         hash += (h1 != h0) * vertex_values[h1];
+         hash += (h2 != h1 && h2 != h0) * vertex_values[h2];
          return mod_N(hash);
       }
 
@@ -477,10 +473,8 @@ namespace exotic_hashing {
       forceinline size_t operator()(const Data& key) const {
          const auto [h0, h1, h2] = hasher(key);
          size_t hash = vertex_values[h0];
-         if (likely(h1 != h0))
-            hash += vertex_values[h1];
-         if (likely(h2 != h1 && h2 != h0))
-            hash += vertex_values[h2];
+         hash += (h1 != h0) * vertex_values[h1];
+         hash += (h2 != h1 && h2 != h0) * vertex_values[h2];
          return mod_N(hash);
       }
 
