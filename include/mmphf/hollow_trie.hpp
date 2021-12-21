@@ -22,7 +22,7 @@ namespace exotic_hashing {
    /**
     * Simple, i.e., space wasting Hollow Trie implementation.
     */
-   template<class Key, class BitConverter, class BitStream = support::FixedBitvector<>>
+   template<class Key, class BitConverter, class BitStream = support::FixedBitvector<sizeof(Key) * 8, Key>>
    struct SimpleHollowTrie {
       SimpleHollowTrie() = default;
 
@@ -252,7 +252,7 @@ namespace exotic_hashing {
       std::vector<Node<>> nodes;
    };
 
-   template<class Key, class BitConverter, class BitStream = support::FixedBitvector<>>
+   template<class Key, class BitConverter, class BitStream = support::FixedBitvector<sizeof(Key) * 8, Key>>
    struct HollowTrie {
      private:
       using IntEncoder = support::EliasDeltaCoder;
