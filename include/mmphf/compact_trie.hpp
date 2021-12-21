@@ -46,6 +46,12 @@ namespace exotic_hashing {
          return struct_size + nodes_size;
       };
 
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         for (auto it = begin; it < end; it++)
+            insert(*it);
+      }
+
       /**
        * Inserts a set of keys into the trie. Each Key's binary encoding
        * mustn't be a prefix of any other previously inserted key's binary

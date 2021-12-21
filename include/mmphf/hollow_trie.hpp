@@ -45,6 +45,20 @@ namespace exotic_hashing {
          nodes = std::vector<Node<>>(encoding_list.begin(), encoding_list.end());
       }
 
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         // 0. Build compact trie on dataset
+         const auto compact_trie = CompactTrie<Key, BitConverter, BitStream>();
+         compact_trie.construct(begin, end);
+
+         // 1. Generate hollow trie representation (implemented as linked list
+         // for representation construction algorithm efficiency)
+         const auto encoding_list = convert(*compact_trie.root);
+
+         // 2. Convert to final, minimal encoding
+         nodes = std::vector<Node<>>(encoding_list.begin(), encoding_list.end());
+      }
+
       forceinline size_t operator()(const Key& key) const {
          const BitConverter converter;
          BitStream key_bits = converter(key);
@@ -258,6 +272,16 @@ namespace exotic_hashing {
        */
       explicit HollowTrie(const CompactTrie<Key, BitConverter, BitStream>& compact_trie)
          : representation(convert(*compact_trie.root)) {}
+
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         // Build CompactTrie on data
+         const auto compact_trie = CompactTrie<Key, BitConverter, BitStream>();
+         compact_trie.construct(begin, end);
+
+         // Derive HollowTrie from CompactTrie
+         representation = convert(*compact_trie.root);
+      }
 
       size_t operator()(const Key& key) const {
          const BitConverter converter;
