@@ -50,7 +50,7 @@ namespace exotic_hashing {
       template<class RandomIt>
       void construct(const RandomIt& begin, const RandomIt& end) {
          // 0. Build compact trie on dataset
-         const auto compact_trie = CompactTrie<Key, BitConverter, BitStream>();
+         auto compact_trie = CompactTrie<Key, BitConverter, BitStream>();
          compact_trie.construct(begin, end);
 
          // 1. Generate hollow trie representation (implemented as linked list
@@ -278,7 +278,7 @@ namespace exotic_hashing {
       template<class RandomIt>
       void construct(const RandomIt& begin, const RandomIt& end) {
          // Build CompactTrie on data
-         const auto compact_trie = CompactTrie<Key, BitConverter, BitStream>();
+         auto compact_trie = CompactTrie<Key, BitConverter, BitStream>();
          compact_trie.construct(begin, end);
 
          // Derive HollowTrie from CompactTrie
