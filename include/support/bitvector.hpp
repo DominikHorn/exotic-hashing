@@ -85,7 +85,7 @@ namespace exotic_hashing::support {
 #if __has_builtin(__builtin_bitreverse64)
          storage.push_back(__builtin_bitreverse64(data));
 #else
-   #warning "using unoptimized bitreverse implementation in Bitvector(std::uint64_t)
+   #warning "using unoptimized bitreverse implementation in Bitvector(std::uint64_t)"
          Storage val = 0x0;
          for (size_t i = 0; i < bitcnt; i++) {
             val <<= 1;
