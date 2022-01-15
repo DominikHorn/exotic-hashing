@@ -425,7 +425,7 @@ namespace exotic_hashing::support {
          size_t first_set = 0;
          for (auto u_ind = unit_index(index); u_ind < storage.size(); u_ind++) {
             const auto val = storage[u_ind] >> l_ind;
-            if (val > 0) // search is done iff there is at least one set bit
+            if (val > 0) // search is done iff there is at least one set bit in this unit
                return first_set + ctz(val);
             else
                first_set += unit_bits() - l_ind;
