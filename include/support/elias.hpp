@@ -79,7 +79,7 @@ namespace exotic_hashing::support {
 
          // x is 0x1 followed by the remaining bits.
          // ternary guards against invalid shift exponent
-         return (N >= sizeof(T) * 8 ? 0x0 : (0x1 << N)) | tail;
+         return (N >= sizeof(T) * 8 ? static_cast<T>(0x0) : (static_cast<T>(0x1) << N)) | tail;
       }
    };
 
@@ -141,7 +141,7 @@ namespace exotic_hashing::support {
          const T tail = stream.extract(start, start + N);
          start += N;
 
-         return (N >= sizeof(T) * 8 ? 0x0 : (0x1 << N)) | tail;
+         return (N >= sizeof(T) * 8 ? static_cast<T>(0x0) : (static_cast<T>(0x1) << N)) | tail;
       }
    };
 } // namespace exotic_hashing::support
