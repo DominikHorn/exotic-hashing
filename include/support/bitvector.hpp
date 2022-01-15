@@ -3,6 +3,7 @@
 #include <array>
 #include <cassert>
 #include <cstdint>
+#include <limits>
 #include <vector>
 
 #include "../convenience/builtins.hpp"
@@ -19,16 +20,13 @@ namespace exotic_hashing::support {
          Bitref(Storage& unit, const size_t n) : unit(unit), n(n) {}
 
          Bitref& operator=(const bool& rhs) {
-            Storage new_bit = !!rhs;
-            unit ^= (-new_bit ^ unit) & (1UL << n);
+            unit ^= ((static_cast<Storage>(!!rhs) * std::numeric_limits<Storage>::max()) ^ unit) & (1UL << n);
             return *this;
          }
 
          Bitref& operator=(const Bitref& rhs) {
-            if (&rhs != this) {
-               Storage new_bit = !!rhs;
-               unit ^= (-new_bit ^ unit) & (1UL << n);
-            }
+            if (&rhs != this)
+               unit ^= ((static_cast<Storage>(!!rhs) * std::numeric_limits<Storage>::max()) ^ unit) & (1UL << n);
 
             return *this;
          }
@@ -315,16 +313,13 @@ namespace exotic_hashing::support {
          Bitref(Storage& unit, const size_t n) : unit(unit), n(n) {}
 
          Bitref& operator=(const bool& rhs) {
-            Storage new_bit = !!rhs;
-            unit ^= (-new_bit ^ unit) & (1UL << n);
+            unit ^= ((static_cast<Storage>(!!rhs) * std::numeric_limits<Storage>::max()) ^ unit) & (1UL << n);
             return *this;
          }
 
          Bitref& operator=(const Bitref& rhs) {
-            if (&rhs != this) {
-               Storage new_bit = !!rhs;
-               unit ^= (-new_bit ^ unit) & (1UL << n);
-            }
+            if (&rhs != this)
+               unit ^= ((static_cast<Storage>(!!rhs) * std::numeric_limits<Storage>::max()) ^ unit) & (1UL << n);
 
             return *this;
          }
