@@ -32,8 +32,7 @@ namespace exotic_hashing {
       }
 
       ~CompactTrie() {
-         if (root != nullptr)
-            delete root;
+         delete root;
       }
 
       static std::string name() {
@@ -170,10 +169,8 @@ namespace exotic_hashing {
          Node& operator=(const Node&& node) = delete;
 
          ~Node() {
-            if (left != nullptr)
-               delete left;
-            if (right != nullptr)
-               delete right;
+            delete left;
+            delete right;
          }
 
          /**
