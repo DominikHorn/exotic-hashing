@@ -383,9 +383,6 @@ namespace exotic_hashing {
 
          support::Bitvector<> rep;
 
-         // Since inner_node_count = leaf_count - 1 for compact tries, this
-         // call elegantly computes inner_node_count + 1, i.e., the required
-         // node_skip
          const auto left_bitrep = convert(*subtrie.left);
          const auto right_bitrep = convert(*subtrie.right);
 
