@@ -7,6 +7,7 @@
 #include <optional>
 
 #include "../support/bitvector.hpp"
+#include "../support/elias.hpp"
 
 // Order important
 #include "../convenience/builtins.hpp"
@@ -17,6 +18,9 @@ namespace exotic_hashing {
 
    template<class Key, class BitConverter, class BitStream>
    struct HollowTrie;
+
+   template<class Key, class BitConverter, class BitStream>
+   class CompactedCompactTrie;
 
    template<class Key, class BitConverter, class BitStream = support::FixedBitvector<sizeof(Key) * 8, Key>>
    struct CompactTrie {
@@ -355,11 +359,164 @@ namespace exotic_hashing {
 
          friend HollowTrie<Key, BitConverter, BitStream>;
          friend SimpleHollowTrie<Key, BitConverter, BitStream>;
+         friend CompactedCompactTrie<Key, BitConverter, BitStream>;
       };
 
       Node* root = nullptr;
 
       friend HollowTrie<Key, BitConverter, BitStream>;
       friend SimpleHollowTrie<Key, BitConverter, BitStream>;
+      friend CompactedCompactTrie<Key, BitConverter, BitStream>;
+   };
+
+   /**
+    * Optimized CompactTrie, i.e., instead of utilizing reference based
+    * nodes, CompactedCompactTrie utilizes a bitvector representation
+    * parallel to HollowTrie
+    */
+   template<class Key, class BitConverter, class BitStream = support::FixedBitvector<sizeof(Key) * 8, Key>>
+   class CompactedCompactTrie {
+      using IntEncoder = support::EliasDeltaCoder;
+      support::Bitvector<> representation;
+
+      support::Bitvector<> convert(const typename CompactTrie<Key, BitConverter, BitStream>::Node& subtrie) const {
+         // prune entire leaf level of original compact trie
+         if (subtrie.is_leaf())
+            return support::Bitvector<>();
+
+         support::Bitvector<> rep;
+
+         // Compute child encoding
+         const auto left_bitrep = convert(*subtrie.left);
+         const auto right_bitrep = convert(*subtrie.right);
+
+         // Encode 'parent | left subtrie | right subtrie', where
+         // each node is encoded as 'prefix_size | prefix | left_bit_size | left_leaf_cnt'
+         rep.append(IntEncoder::encode(subtrie.prefix.size() + 1));
+         rep.append(subtrie.prefix);
+
+         rep.append(IntEncoder::encode(left_bitrep.size() + 1));
+
+         // TODO(dominik): leaf_count() is an O(log(N)) operation where N is the max
+         // length of any Key's bitstream. By also storing right_leaf_count in
+         // CompactTrie::Node, we could make this constant time
+         rep.append(IntEncoder::encode(subtrie.left->leaf_count()));
+
+         rep.append(left_bitrep);
+         rep.append(right_bitrep);
+
+         return rep;
+      }
+
+      /// conceptual Node used during decoding
+      struct Node {
+         const BitStream prefix;
+
+         const size_t left_bitsize;
+         const size_t left_leaf_count;
+      };
+
+      Node read_node(const support::Bitvector<>& stream, size_t& bit_index) const {
+         const auto prefix_len = IntEncoder::decode(stream, bit_index) - 1;
+
+         // TODO(dominik): this likely produces suboptimal performance!
+         BitStream prefix(prefix_len, false);
+         for (size_t i = 0; i < prefix_len; i++)
+            prefix[i] = stream[i + bit_index];
+
+         // advance past prefix
+         bit_index += prefix_len;
+
+         const auto left_bitsize = IntEncoder::decode(stream, bit_index) - 1;
+         const auto left_leaf_count = IntEncoder::decode(stream, bit_index);
+
+         return {.prefix = prefix, .left_bitsize = left_bitsize, .left_leaf_count = left_leaf_count};
+      }
+
+     public:
+      CompactedCompactTrie() = default;
+
+      /**
+       * Constructs from a keyset in any order
+       */
+      explicit CompactedCompactTrie(const std::vector<Key>& keyset) {
+         // overall complexity O(n log n) will not change, but sorting
+         // massively improves hidden constants during construction.
+         auto ds = keyset;
+         std::sort(ds.begin(), ds.end());
+
+         // construct on sorted data
+         construct(ds.begin(), ds.end());
+      }
+
+      /**
+       * Constructs from a **sorted** key range [begin, end)
+       */
+      template<class ForwardIt>
+      explicit CompactedCompactTrie(const ForwardIt& begin, const ForwardIt& end) {
+         construct(begin, end);
+      }
+
+      /**
+       * updates representation to only include keys of **sorted** key range [begin, end)
+       */
+      template<class ForwardIt>
+      void construct(const ForwardIt& begin, const ForwardIt& end) {
+         // for now, simply convert from existing compact trie. For efficiency, we
+         // could definitely implement a better construction algorithm in the future
+         CompactTrie<Key, BitConverter, BitStream> t;
+         t.construct(begin, end);
+
+         representation = convert(*t.root);
+      }
+
+      forceinline size_t operator()(const Key& key) const {
+         const auto not_found_rank = std::numeric_limits<size_t>::max();
+         const BitConverter converter;
+         const BitStream key_bits = converter(key);
+
+         size_t left_leaf_cnt = 0, key_bits_ind = 0, leftmost_right = representation.size(), bit_ind = 0;
+         while (key_bits_ind < key_bits.size()) {
+            const auto node = read_node(representation, bit_ind);
+
+            if (key_bits.size() - key_bits_ind < node.prefix.size())
+               return not_found_rank;
+            if (!key_bits.matches(node.prefix, key_bits_ind))
+               return not_found_rank;
+
+            key_bits_ind += node.prefix.size();
+
+            // Right (if) or Left (else) traversal
+            if (key_bits[key_bits_ind]) {
+               left_leaf_cnt += node.left_leaf_count;
+
+               // Right child is always at i + node_skip
+               bit_ind += node.left_bitsize;
+
+               // We encountered a right leaf
+               if (bit_ind >= leftmost_right)
+                  return left_leaf_cnt;
+            } else {
+               // We encountered a left leaf
+               if (node.left_leaf_count == 1)
+                  return left_leaf_cnt;
+
+               // Keep track of this to be able to detect right leafs
+               leftmost_right = bit_ind + node.left_bitsize;
+
+               // bit_ind is already correctly set to left child start
+            }
+         }
+
+         return not_found_rank;
+      }
+
+      static std::string name() {
+         return "CompactedCompactTrie";
+      }
+
+      size_t byte_size() const {
+         return sizeof(decltype(*this)) + static_cast<size_t>(std::ceil(representation.size() / 8.));
+      }
    };
 } // namespace exotic_hashing

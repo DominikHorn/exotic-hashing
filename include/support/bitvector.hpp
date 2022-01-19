@@ -10,6 +10,9 @@
 #include "support.hpp"
 
 namespace exotic_hashing::support {
+   template<size_t max_bitcnt, class Storage>
+   class FixedBitvector;
+
    template<class Storage = std::uint64_t>
    class Bitvector {
       class Bitref {
@@ -182,6 +185,16 @@ namespace exotic_hashing::support {
        * appends all bits from other bitstream to this bitstream
        */
       forceinline void append(const Bitvector& other) {
+         // TODO(dominik): optimize this operation
+         for (size_t i = 0; i < other.size(); i++)
+            append(other[i]);
+      }
+
+      /**
+       * appends all bits from other bitstream to this bitstream
+       */
+      template<size_t max_bitcnt, class S>
+      forceinline void append(const FixedBitvector<max_bitcnt, S>& other) {
          // TODO(dominik): optimize this operation
          for (size_t i = 0; i < other.size(); i++)
             append(other[i]);
