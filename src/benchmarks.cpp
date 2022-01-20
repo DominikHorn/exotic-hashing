@@ -140,8 +140,8 @@ static void LookupTime(benchmark::State& state) {
 #define BM(Hashfn)                                                                         \
    BENCHMARK_TEMPLATE(PresortedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
    BENCHMARK_TEMPLATE(UnorderedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
-   BENCHMARK_TEMPLATE(LookupTime, Hashfn)                           \
-      ->ArgsProduct({dataset_sizes, datasets, probe_distributions}) \
+   BENCHMARK_TEMPLATE(LookupTime, Hashfn)                                                  \
+      ->ArgsProduct({dataset_sizes, datasets, probe_distributions})                        \
       ->Iterations(50000000);
 
 using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
@@ -155,6 +155,9 @@ BM(RecSplit);
 
 using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
 BM(CompactTrie);
+using CompactedCompactTrie =
+   exotic_hashing::CompactedCompactTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
+BM(CompactedCompactTrie);
 using SimpleHollowTrie = exotic_hashing::SimpleHollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
 BM(SimpleHollowTrie);
 using HollowTrie = exotic_hashing::HollowTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
