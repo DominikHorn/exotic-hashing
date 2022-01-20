@@ -35,7 +35,6 @@ namespace exotic_hashing {
       }
 
       std::unique_ptr<mmphf_fst::FST> _fst{};
-      Key _min_key, _max_key;
 
       // FST internally stores a pointer to the string keys
       // which is required during lookup. Therefore, we must
@@ -66,18 +65,13 @@ namespace exotic_hashing {
        */
       template<class RandomIt>
       void construct(const RandomIt& begin, const RandomIt& end) {
-         // find min and max elements. Assume dataset is not sorted!
-         const auto min_it = std::min_element(begin, end);
-         if (min_it < end)
-            _min_key = *min_it;
-         const auto max_it = std::max_element(begin, end);
-         if (max_it < end)
-            _max_key = *max_it;
-
          // convert keys to string. IMPORTANT: they must be sorted for fst to work
          converted_keys.reserve(std::distance(begin, end));
          for (auto it = begin; it < end; it++)
             converted_keys.emplace_back(convert(*it));
+
+         assert(std::is_sorted(begin, end));
+         assert(std::is_sorted(converted_keys.begin(), converted_keys.end()));
 
          // construct fst. Note that values is never used during construction, hence it is simply left empty
          _fst = std::make_unique<mmphf_fst::FST>(converted_keys);
@@ -87,7 +81,8 @@ namespace exotic_hashing {
          const auto str_key = convert(key);
 
          std::uint64_t rank = 0;
-         _fst->lookupKey(str_key, rank);
+         const auto found = _fst->lookupKey(str_key, rank);
+         assert(found);
          return rank;
       }
 
