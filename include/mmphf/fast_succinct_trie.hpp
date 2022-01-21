@@ -81,8 +81,7 @@ namespace exotic_hashing {
          const auto str_key = convert(key);
 
          std::uint64_t rank = 0;
-         const auto found = _fst->lookupKey(str_key, rank);
-         assert(found);
+         _fst->lookupKey(str_key, rank);
          return rank;
       }
 
