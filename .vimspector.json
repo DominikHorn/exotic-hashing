@@ -27,13 +27,11 @@
         }
       },
       "configuration": {
+        "name": "Tests",
+        "type": "lldb",
         "request": "launch",
-        "program": "cmake-build-debug/src/eh_tests",
-        "args": [],
-        "cwd": "${workspaceRoot}",
-        "environment": [],
-        "externalConsole": true,
-        "MIMode": "lldb"
+        "program": "${workspaceRoot}/cmake-build-debug/src/eh_tests",
+        "args": []
       }
     }
   }
