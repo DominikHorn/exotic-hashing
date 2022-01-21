@@ -32,13 +32,14 @@ namespace exotic_hashing {
        * representation
        */
       explicit SimpleHollowTrie(const std::vector<Key>& dataset)
-         : SimpleHollowTrie(CompactTrie<Key, BitConverter, BitStream>(dataset)) {}
+         : SimpleHollowTrie(CompactTrie<Key, BitConverter, false, BitStream>(dataset)) {}
 
       /**
        * Derives a hollow trie from a given compacted trie by converting it to
        * the space efficient hollow trie representation
        */
-      explicit SimpleHollowTrie(const CompactTrie<Key, BitConverter, BitStream>& compact_trie) {
+      template<bool e>
+      explicit SimpleHollowTrie(const CompactTrie<Key, BitConverter, e, BitStream>& compact_trie) {
          // 1. Generate hollow trie representation (implemented as linked list
          // for representation construction algorithm efficiency)
          const auto encoding_list = convert(*compact_trie.root);
@@ -50,7 +51,7 @@ namespace exotic_hashing {
       template<class RandomIt>
       void construct(const RandomIt& begin, const RandomIt& end) {
          // 0. Build compact trie on dataset
-         auto compact_trie = CompactTrie<Key, BitConverter, BitStream>();
+         auto compact_trie = CompactTrie<Key, BitConverter, false, BitStream>();
          compact_trie.construct(begin, end);
 
          // 1. Generate hollow trie representation (implemented as linked list
@@ -183,7 +184,7 @@ namespace exotic_hashing {
        * of edges along each path are expected to be left child accesses, this
        * should improve real world performance noticeably.
        */
-      std::list<Node<>> convert(const typename CompactTrie<Key, BitConverter, BitStream>::Node& subtrie) const {
+      std::list<Node<>> convert(const typename CompactTrie<Key, BitConverter, false, BitStream>::Node& subtrie) const {
          if (subtrie.is_leaf())
             return {};
 
@@ -266,19 +267,20 @@ namespace exotic_hashing {
        * representation
        */
       explicit HollowTrie(const std::vector<Key>& dataset)
-         : HollowTrie(CompactTrie<Key, BitConverter, BitStream>(dataset)) {}
+         : HollowTrie(CompactTrie<Key, BitConverter, false, BitStream>(dataset)) {}
 
       /**
        * Derives a hollow trie from a given compacted trie by converting it to
        * the space efficient hollow trie representation
        */
-      explicit HollowTrie(const CompactTrie<Key, BitConverter, BitStream>& compact_trie)
+      template<bool e>
+      explicit HollowTrie(const CompactTrie<Key, BitConverter, e, BitStream>& compact_trie)
          : representation(convert(*compact_trie.root)) {}
 
       template<class RandomIt>
       void construct(const RandomIt& begin, const RandomIt& end) {
          // Build CompactTrie on data
-         auto compact_trie = CompactTrie<Key, BitConverter, BitStream>();
+         auto compact_trie = CompactTrie<Key, BitConverter, false, BitStream>();
          compact_trie.construct(begin, end);
 
          // Derive HollowTrie from CompactTrie
@@ -377,7 +379,8 @@ namespace exotic_hashing {
        * of edges along each path are expected to be left child accesses, this
        * should improve real world performance noticeably.
        */
-      support::Bitvector<> convert(const typename CompactTrie<Key, BitConverter, BitStream>::Node& subtrie) const {
+      support::Bitvector<>
+      convert(const typename CompactTrie<Key, BitConverter, false, BitStream>::Node& subtrie) const {
          if (subtrie.is_leaf())
             return support::Bitvector<>();
 

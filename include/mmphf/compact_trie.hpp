@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cmath>
 #include <iostream>
+#include <iterator>
 #include <limits>
 #include <optional>
 
@@ -19,14 +20,16 @@ namespace exotic_hashing {
    template<class Key, class BitConverter, class BitStream>
    struct HollowTrie;
 
-   template<class Key, class BitConverter, class BitStream>
+   template<class Key, class BitConverter, bool estimate_non_key_rank, class BitStream>
    class CompactedCompactTrie;
 
-   template<class Key, class BitConverter, class BitStream = support::FixedBitvector<sizeof(Key) * 8, Key>>
+   template<class Key, class BitConverter, bool estimate_non_key_rank = false,
+            class BitStream = support::FixedBitvector<sizeof(Key) * 8, Key>>
    struct CompactTrie {
       CompactTrie() = default;
 
-      CompactTrie(const CompactTrie<Key, BitConverter, BitStream>& other) : root(new Node(other.root)) {}
+      CompactTrie(const CompactTrie<Key, BitConverter, estimate_non_key_rank, BitStream>& other)
+         : root(new Node(other.root)) {}
       CompactTrie& operator=(const CompactTrie& node) = delete;
       CompactTrie(const CompactTrie&& other) = delete;
       CompactTrie& operator=(const CompactTrie&& node) = delete;
@@ -186,7 +189,11 @@ namespace exotic_hashing {
           * @param left_leaf_cnt: amount of leafs to the left of this node
           */
          size_t rank(const BitStream& key_bits, size_t start, size_t left_leaf_cnt) const {
-            const auto not_found_rank = std::numeric_limits<size_t>::max();
+            const auto not_found_rank = [&] {
+               if constexpr (estimate_non_key_rank)
+                  return left_leaf_cnt;
+               return std::numeric_limits<size_t>::max();
+            };
 
             // Option 1: At least one bit missmatches between prefix and remaining key. This node
             //    would have been split during construction however if this were the case.
@@ -197,11 +204,11 @@ namespace exotic_hashing {
             //    in the keyset, violating the "prefix free code" assumption. Note that this
             //    can never happen for fixed length coding
             if (key_bits.size() - start < prefix.size())
-               return not_found_rank;
+               return not_found_rank();
 
             // If prefix does not match the key is not in this trie
             if (!key_bits.matches(prefix, start))
-               return not_found_rank;
+               return not_found_rank();
 
             // If this node is a leaf node...
             if (this->is_leaf()) {
@@ -211,7 +218,7 @@ namespace exotic_hashing {
                   return left_leaf_cnt;
 
                // ...otherwise the key is not in the keyset
-               return not_found_rank;
+               return not_found_rank();
             }
 
             // This is not a leaf but key has no more bits to check, i.e.,
@@ -359,14 +366,16 @@ namespace exotic_hashing {
 
          friend HollowTrie<Key, BitConverter, BitStream>;
          friend SimpleHollowTrie<Key, BitConverter, BitStream>;
-         friend CompactedCompactTrie<Key, BitConverter, BitStream>;
+         friend CompactedCompactTrie<Key, BitConverter, true, BitStream>;
+         friend CompactedCompactTrie<Key, BitConverter, false, BitStream>;
       };
 
       Node* root = nullptr;
 
       friend HollowTrie<Key, BitConverter, BitStream>;
       friend SimpleHollowTrie<Key, BitConverter, BitStream>;
-      friend CompactedCompactTrie<Key, BitConverter, BitStream>;
+      friend CompactedCompactTrie<Key, BitConverter, true, BitStream>;
+      friend CompactedCompactTrie<Key, BitConverter, false, BitStream>;
    };
 
    /**
@@ -374,12 +383,14 @@ namespace exotic_hashing {
     * nodes, CompactedCompactTrie utilizes a bitvector representation
     * parallel to HollowTrie
     */
-   template<class Key, class BitConverter, class BitStream = support::FixedBitvector<sizeof(Key) * 8, Key>>
+   template<class Key, class BitConverter, bool estimate_non_key_rank = false,
+            class BitStream = support::FixedBitvector<sizeof(Key) * 8, Key>>
    class CompactedCompactTrie {
       using IntEncoder = support::EliasDeltaCoder;
       support::Bitvector<> representation;
 
-      support::Bitvector<> convert(const typename CompactTrie<Key, BitConverter, BitStream>::Node& subtrie) const {
+      support::Bitvector<>
+      convert(const typename CompactTrie<Key, BitConverter, estimate_non_key_rank, BitStream>::Node& subtrie) const {
          // prune entire leaf level of original compact trie
          if (subtrie.is_leaf())
             return support::Bitvector<>();
@@ -464,25 +475,29 @@ namespace exotic_hashing {
       void construct(const ForwardIt& begin, const ForwardIt& end) {
          // for now, simply convert from existing compact trie. For efficiency, we
          // could definitely implement a better construction algorithm in the future
-         CompactTrie<Key, BitConverter, BitStream> t;
+         CompactTrie<Key, BitConverter, estimate_non_key_rank, BitStream> t;
          t.construct(begin, end);
 
          representation = convert(*t.root);
       }
 
       forceinline size_t operator()(const Key& key) const {
-         const auto not_found_rank = std::numeric_limits<size_t>::max();
          const BitConverter converter;
          const BitStream key_bits = converter(key);
 
          size_t left_leaf_cnt = 0, key_bits_ind = 0, leftmost_right = representation.size(), bit_ind = 0;
+         const auto not_found_rank = [&] {
+            if constexpr (estimate_non_key_rank)
+               return left_leaf_cnt;
+            return std::numeric_limits<size_t>::max();
+         };
          while (key_bits_ind < key_bits.size()) {
             const auto node = read_node(representation, bit_ind);
 
             if (key_bits.size() - key_bits_ind < node.prefix.size())
-               return not_found_rank;
+               return not_found_rank();
             if (!key_bits.matches(node.prefix, key_bits_ind))
-               return not_found_rank;
+               return not_found_rank();
 
             key_bits_ind += node.prefix.size();
 
@@ -508,7 +523,7 @@ namespace exotic_hashing {
             }
          }
 
-         return not_found_rank;
+         return not_found_rank();
       }
 
       static std::string name() {
