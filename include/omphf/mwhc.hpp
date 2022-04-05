@@ -245,7 +245,7 @@ namespace exotic_hashing {
       sdsl::int_vector<> vertex_values;
 
      public:
-      CompactedMWHC() noexcept = default;
+      CompactedMWHC() noexcept {};
 
       template<class RandomIt>
       CompactedMWHC(const RandomIt& begin, const RandomIt& end) {
@@ -340,7 +340,7 @@ namespace exotic_hashing {
       sdsl::int_vector<> vertex_values;
 
      public:
-      CompressedMWHC() noexcept = default;
+      CompressedMWHC() noexcept {};
 
       template<class RandomIt>
       CompressedMWHC(RandomIt begin, RandomIt end) {
@@ -409,7 +409,7 @@ namespace exotic_hashing {
       friend CompactedMWHC<Data, Hasher, HyperGraph>;
 
      public:
-      MWHC() noexcept = default;
+      MWHC() noexcept {};
 
       template<class RandomIt>
       MWHC(const RandomIt& begin, const RandomIt& end) {
