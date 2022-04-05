@@ -77,7 +77,7 @@ namespace exotic_hashing::support {
       template<class T>
       explicit Bitvector(const T& data);
 
-      explicit Bitvector(const std::uint64_t& data) : bitcnt(sizeof(std::uint64_t) * 8) {
+      explicit Bitvector(std::uint64_t data) : bitcnt(sizeof(std::uint64_t) * 8) {
          // compatibility with other compilers
          // TODO(dominik): provide optimal bitreverse ourselfs (?)
 #ifndef __has_builtin
@@ -86,11 +86,12 @@ namespace exotic_hashing::support {
 #if __has_builtin(__builtin_bitreverse64)
          storage.push_back(__builtin_bitreverse64(data));
 #else
-   #warning "using unoptimized bitreverse implementation in Bitvector(std::uint64_t)"
+   #warning "using custom bitreverse implementation in Bitvector(std::uint64_t)"
          Storage val = 0x0;
          for (size_t i = 0; i < bitcnt; i++) {
             val <<= 1;
-            val |= (data >> i) & 0x1;
+            val |= data & 0x1;
+            data >>= 1;
          }
          storage.push_back(val);
          storage_size++;
