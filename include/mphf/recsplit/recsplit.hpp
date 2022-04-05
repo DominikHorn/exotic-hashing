@@ -16,35 +16,48 @@
 namespace exotic_hashing {
    template<class Data, size_t BucketSize = 9, size_t LeafSize = 12,
             sux::util::AllocType AllocType = sux::util::AllocType::MALLOC>
-   struct RecSplit : protected sux::function::RecSplit<LeafSize, AllocType> {
-      explicit RecSplit(const std::vector<Data>& d)
-         : sux::function::RecSplit<LeafSize, AllocType>(to_string(d), BucketSize) {}
-
-      static std::string name() {
-         return "RecSplit_leaf" + std::to_string(LeafSize) + "_bucket" + std::to_string(BucketSize);
-      }
-
-      forceinline size_t operator()(const Data& key) const {
-         return sux::function::RecSplit<LeafSize, AllocType>::operator()(reinterpret_to_string(key));
-      }
-
-      size_t byte_size() const {
-         return this->_totalBitSize / 8;
-      };
-
-     private:
-      template<class T>
-      static std::vector<std::string> to_string(const std::vector<T>& v) {
+   class RecSplit {
+      template<class ForwardIt>
+      static std::vector<std::string> to_string(const ForwardIt& begin, const ForwardIt& end) {
          std::vector<std::string> res;
-         for (const auto k : v)
-            res.emplace_back(reinterpret_to_string(k));
+         for (auto it = begin; it < end; it++)
+            res.emplace_back(reinterpret_to_string(*it));
 
          return res;
       }
 
       template<class T>
       static std::string reinterpret_to_string(const T& v) {
-         return std::string(reinterpret_cast<const char*>(&v), sizeof(T));
+         return {reinterpret_cast<const char*>(&v), sizeof(T)};
       }
+
+      sux::function::RecSplit<LeafSize, AllocType> rs_;
+
+     public:
+      RecSplit() noexcept = default;
+
+      template<class ForwardIt>
+      RecSplit(const ForwardIt& begin, const ForwardIt& end) {
+         construct(begin, end);
+      }
+
+      explicit RecSplit(const std::vector<Data>& v) : RecSplit(v.begin(), v.end()) {}
+
+      template<class ForwardIt>
+      void construct(const ForwardIt& begin, const ForwardIt& end) {
+         rs_ = decltype(rs_)(to_string(begin, end), BucketSize);
+      }
+
+      static std::string name() {
+         return "RecSplit_leaf" + std::to_string(LeafSize) + "_bucket" + std::to_string(BucketSize);
+      }
+
+      forceinline size_t operator()(const Data& key) const {
+         return rs_.operator()(reinterpret_to_string(key));
+      }
+
+      size_t byte_size() const {
+         return rs_._totalBitSize / 8;
+      };
    };
 }; // namespace exotic_hashing

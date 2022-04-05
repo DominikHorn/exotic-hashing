@@ -357,10 +357,9 @@ namespace sux::function {
       RiceBitVector<AT> descriptors;
       DoubleEF<AT> ef;
 
-     protected:
+     public:
       size_t _totalBitSize;
 
-     public:
       RecSplit() {}
 
       /** Builds a RecSplit instance using a given list of keys and bucket size.
