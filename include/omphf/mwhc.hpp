@@ -343,7 +343,7 @@ namespace exotic_hashing {
       CompressedMWHC() noexcept {};
 
       template<class RandomIt>
-      CompressedMWHC(RandomIt begin, RandomIt end) {
+      CompressedMWHC(const RandomIt& begin, const RandomIt& end) {
          construct(begin, end);
       }
 
