@@ -31,8 +31,12 @@
 namespace exotic_hashing {
    template<class Data, class Payload = std::uint64_t, class Hasher = support::Hasher<Data>,
             class HyperGraph = support::HyperGraph<Data, Hasher>>
+   class CompressedSFMWHC;
+
+   template<class Data, class Payload = std::uint64_t, class Hasher = support::Hasher<Data>,
+            class HyperGraph = support::HyperGraph<Data, Hasher>>
    class SFMWHC {
-      hashing::reduction::FastModulo<std::uint64_t> mod_N;
+      hashing::reduction::FastModulo<std::uint64_t> mod_N{1};
       Hasher hasher;
 
       std::vector<Payload> vertex_values;
@@ -42,9 +46,23 @@ namespace exotic_hashing {
       }
 
      public:
+      SFMWHC() noexcept {};
+
       template<class ForwardIt>
-      SFMWHC(ForwardIt keys_begin, ForwardIt keys_end, ForwardIt payloads_begin)
-         : mod_N(vertices_count(std::distance(keys_begin, keys_end))), hasher(mod_N.N), vertex_values(mod_N.N, 0) {
+      SFMWHC(ForwardIt keys_begin, ForwardIt keys_end, ForwardIt payloads_begin) {
+         construct(keys_begin, keys_end, payloads_begin);
+      }
+
+      explicit SFMWHC(const std::vector<Data>& keys, const std::vector<Payload>& payloads)
+         : SFMWHC(keys.begin(), keys.end(), payloads.begin()) {}
+
+      template<class KeyIt, class PayloadIt>
+      void construct(const KeyIt& keys_begin, const KeyIt& keys_end, const PayloadIt& payloads_begin) {
+         const auto n = vertices_count(std::distance(keys_begin, keys_end));
+         mod_N = decltype(mod_N)(n);
+         hasher = decltype(hasher)(n);
+         vertex_values = decltype(vertex_values)(n, 0);
+
          // Find suitable peel order
          std::vector<size_t> peel_order;
          while (peel_order.empty()) {
@@ -108,9 +126,6 @@ namespace exotic_hashing {
          }
       }
 
-      explicit SFMWHC(const std::vector<Data>& keys, const std::vector<Payload>& payloads)
-         : SFMWHC(keys.begin(), keys.end(), payloads.begin()) {}
-
       static std::string name() {
          return "SFMWHC";
       }
@@ -128,6 +143,72 @@ namespace exotic_hashing {
       size_t byte_size() const {
          return sizeof(hasher) + sizeof(mod_N) + sizeof(decltype(vertex_values)) +
             sizeof(size_t) * vertex_values.size();
+      }
+
+      friend CompressedSFMWHC<Data, Payload, Hasher, HyperGraph>;
+   };
+
+   template<class Data, class Payload, class Hasher, class HyperGraph>
+   class CompressedSFMWHC {
+      using _SFMWHC = SFMWHC<Data, Payload, Hasher, HyperGraph>;
+
+      hashing::reduction::FastModulo<std::uint64_t> mod_N{1};
+      Hasher hasher;
+      sdsl::int_vector<> vertex_values;
+
+     public:
+      CompressedSFMWHC() noexcept {};
+
+      template<class KeyIt, class PayloadIt>
+      CompressedSFMWHC(const KeyIt& keys_begin, const KeyIt& keys_end, const PayloadIt& payloads_begin) {
+         construct(keys_begin, keys_end, payloads_begin);
+      }
+
+      explicit CompressedSFMWHC(const std::vector<Data>& dataset, const std::vector<Payload>& payloads)
+         : CompressedSFMWHC(dataset.begin(), dataset.end(), payloads.begin()) {
+         assert(dataset.size() == payloads.size());
+      }
+
+      template<class KeyIt, class PayloadIt>
+      void construct(const KeyIt& keys_begin, const KeyIt& keys_end, const PayloadIt& payloads_begin) {
+         // generate mwhc
+         const _SFMWHC mwhc(keys_begin, keys_end, payloads_begin);
+
+         // copy unchanged fields
+         hasher = mwhc.hasher;
+         mod_N = mwhc.mod_N;
+
+         // helper to decide whether or not a value is set
+         const auto is_set = [&](const auto& val) { return val != 0 && val != mod_N.N; };
+
+         // copy & compress vertex values. Bit compression seems to be most efficient
+         // since vertex_values are all < N
+         sdsl::int_vector<> vec(mwhc.vertex_values.size(), 0);
+         assert(vec.size() == mwhc.vertex_values.size());
+         for (size_t i = 0; i < vec.size(); i++) {
+            const auto val = mwhc.vertex_values[i];
+            vec[i] = is_set(val) * val;
+         }
+         sdsl::util::bit_compress(vec);
+         vertex_values = vec;
+      }
+
+      static std::string name() {
+         return "CompressedSFMWHC";
+      }
+
+      forceinline size_t operator()(const Data& key) const {
+         const auto [h0, h1, h2] = hasher(key);
+         size_t hash = vertex_values[h0];
+         if (likely(h1 != h0))
+            hash += vertex_values[h1];
+         if (likely(h2 != h1 && h2 != h0))
+            hash += vertex_values[h2];
+         return hash;
+      }
+
+      size_t byte_size() const {
+         return sizeof(hasher) + sizeof(mod_N) + sdsl::size_in_bytes(vertex_values);
       }
    };
 } // namespace exotic_hashing

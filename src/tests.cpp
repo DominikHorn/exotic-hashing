@@ -8,6 +8,7 @@
 #include "tests/compactedmwhc-tests.hpp"
 #include "tests/compacttrie-tests.hpp"
 #include "tests/compressedmwhc-tests.hpp"
+#include "tests/compressedsfmwhc-tests.hpp"
 #include "tests/elias-tests.hpp"
 #include "tests/eliasfanolist-tests.hpp"
 #include "tests/fst-tests.hpp"
