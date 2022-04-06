@@ -48,8 +48,8 @@ namespace exotic_hashing {
      public:
       SFMWHC() noexcept {};
 
-      template<class ForwardIt>
-      SFMWHC(ForwardIt keys_begin, ForwardIt keys_end, ForwardIt payloads_begin) {
+      template<class KeyIt, class PayloadIt>
+      SFMWHC(const KeyIt& keys_begin, const KeyIt& keys_end, const PayloadIt& payloads_begin) {
          construct(keys_begin, keys_end, payloads_begin);
       }
 
