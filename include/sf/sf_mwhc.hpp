@@ -93,11 +93,11 @@ namespace exotic_hashing {
             const auto v0 = vertex_values[h0], v1 = vertex_values[h1], v2 = vertex_values[h2];
             size_t current_val = v0;
             if (h1 != h0)
-               current_val += v1;
+               current_val ^= v1;
             if (h2 != h0 && h2 != h1)
-               current_val += v2;
-            const Payload x = payload - current_val;
-            assert(current_val + x == payload);
+               current_val ^= v2;
+            const Payload x = payload ^ current_val;
+            assert((current_val ^ x) == payload);
 
             // assign vertex values
             bool assigned = false;
@@ -134,9 +134,9 @@ namespace exotic_hashing {
          const auto [h0, h1, h2] = hasher(key);
          size_t hash = vertex_values[h0];
          if (likely(h1 != h0))
-            hash += vertex_values[h1];
+            hash ^= vertex_values[h1];
          if (likely(h2 != h1 && h2 != h0))
-            hash += vertex_values[h2];
+            hash ^= vertex_values[h2];
          return hash;
       }
 
@@ -201,9 +201,9 @@ namespace exotic_hashing {
          const auto [h0, h1, h2] = hasher(key);
          size_t hash = vertex_values[h0];
          if (likely(h1 != h0))
-            hash += vertex_values[h1];
+            hash ^= vertex_values[h1];
          if (likely(h2 != h1 && h2 != h0))
-            hash += vertex_values[h2];
+            hash ^= vertex_values[h2];
          return hash;
       }
 
