@@ -29,7 +29,7 @@
 namespace exotic_hashing {
    template<class Data, class Hasher = support::Hasher<Data>, class HyperGraph = support::HyperGraph<Data, Hasher>>
    class BitMWHC {
-      hashing::reduction::FastModulo<std::uint64_t> mod_N;
+      hashing::reduction::FastModulo<std::uint64_t> mod_N{1};
       Hasher hasher;
 
       sdsl::int_vector<2> vertex_values;
@@ -39,9 +39,22 @@ namespace exotic_hashing {
       }
 
      public:
+      BitMWHC() noexcept = default;
+
       template<class RandomIt>
-      BitMWHC(RandomIt begin, RandomIt end)
-         : mod_N(vertices_count(std::distance(begin, end))), hasher(mod_N.N), vertex_values(mod_N.N, 3) {
+      BitMWHC(const RandomIt& begin, const RandomIt& end) {
+         construct(begin, end);
+      }
+
+      explicit BitMWHC(const std::vector<Data>& dataset) : BitMWHC(dataset.begin(), dataset.end()) {}
+
+      template<class RandomIt>
+      void construct(const RandomIt& begin, const RandomIt& end) {
+         const auto n = vertices_count(std::distance(begin, end));
+         mod_N = decltype(mod_N)(n);
+         hasher = decltype(hasher)(n);
+         vertex_values = decltype(vertex_values)(n, 3);
+
          // Find suitable peel order
          std::vector<size_t> peel_order;
          while (peel_order.empty()) {
@@ -81,8 +94,6 @@ namespace exotic_hashing {
                vertex_values[h2] = assigned ? 0 : (3 + 2 - curr_value) % 3;
          }
       }
-
-      explicit BitMWHC(const std::vector<Data>& dataset) : BitMWHC(dataset.begin(), dataset.end()) {}
 
       static std::string name() {
          return "BitMWHC";
