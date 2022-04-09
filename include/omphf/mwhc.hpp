@@ -188,7 +188,7 @@ namespace exotic_hashing {
                   // and now the peeling of another vertex might have also
                   // peeled the edge adjacent to this vertex, i.e., reduced
                   // degree to 0. If that is the case, don't peel again and
-                  // remove from peel_order (through override - see bellow).
+                  // remove from peel_order (through override - see below).
                   if (vertex_to_peel.degree != 1)
                      continue;
                   // Obtain edge to peel & adjacent vertices
