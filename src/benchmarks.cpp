@@ -155,6 +155,8 @@ BM(MapOMPHF);
 
 using RecSplit = exotic_hashing::RecSplit<Data>;
 BM(RecSplit);
+using BBHash = exotic_hashing::BBHash<Data>;
+BM(BBHash);
 
 using CompactTrie = exotic_hashing::CompactTrie<Data, exotic_hashing::support::FixedBitConverter<Data>>;
 BM(CompactTrie);
