@@ -57,6 +57,7 @@ SOFTWARE.
 #include <array>
 #include <cassert>
 #include <memory> // for make_shared
+#include <ratio>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -1280,14 +1281,14 @@ we need this 2-functors scheme because HashFunctors won't work with unordered_ma
 
          obw->pthread_processLevel(buffer, startit, until_p, level);
 
-         return NULL;
+         return nullptr;
       }
    } // namespace _
 
    /**
     * Wrapper for BBHash
     */
-   template<class Data>
+   template<class Data, class Overalloc = std::ratio<1, 1>>
    struct BBHash {
       /**
        * Constructs on arbitrarily ordered keyset
@@ -1312,11 +1313,12 @@ we need this 2-functors scheme because HashFunctors won't work with unordered_ma
          std::vector<typename RandomIt::value_type> input_keys(begin, end);
          const auto n_threads = 1;
 
-         _bbhash = std::make_unique<boophf_t>(input_keys.size(), input_keys, n_threads);
+         _bbhash = std::make_unique<boophf_t>(input_keys.size(), input_keys, n_threads,
+                                              static_cast<double>(Overalloc::num) / Overalloc::den);
       }
 
       static std::string name() {
-         return "BBHash";
+         return "BBHash" + std::to_string(static_cast<double>(Overalloc::num) / Overalloc::den);
       }
 
       constexpr forceinline size_t operator()(const Data& key) const {
