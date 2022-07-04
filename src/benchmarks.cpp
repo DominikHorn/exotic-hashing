@@ -18,10 +18,11 @@
 #include "../include/convenience/builtins.hpp"
 
 using Data = std::uint64_t;
-const std::vector<std::int64_t> dataset_sizes{100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
+const std::vector<std::int64_t> dataset_sizes{1'000, 100'000, 1'000'000, 10'000'000, 200'000'000};
 const std::vector<std::int64_t> datasets{static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
                                          static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10),
                                          static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::UNIFORM),
+                                         static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::BOOKS),
                                          static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::FB),
                                          static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::NORMAL),
                                          static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::OSM),
@@ -142,7 +143,8 @@ static void LookupTime(benchmark::State& state) {
    BENCHMARK_TEMPLATE(UnorderedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
    BENCHMARK_TEMPLATE(LookupTime, Hashfn)                                                  \
       ->ArgsProduct({dataset_sizes, datasets, probe_distributions})                        \
-      ->Iterations(50000000);
+      ->Iterations(50000000)                                                               \
+      ->Repetitions(3);
 
 using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
 BM(DoNothingHash);
@@ -181,32 +183,32 @@ BM(CompressedMWHC);
 using CompactedMWHC = exotic_hashing::CompactedMWHC<Data>;
 BM(CompactedMWHC);
 
-using LearnedRank_RMI = exotic_hashing::LearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>>;
-BM(LearnedRank_RMI);
-using LearnedRank_RadixSpline = exotic_hashing::LearnedRank<Data, learned_hashing::RadixSplineHash<Data>>;
-BM(LearnedRank_RadixSpline);
-using CompressedLearnedRank_RMI =
-   exotic_hashing::CompressedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>>;
-BM(CompressedLearnedRank_RMI);
-using CompressedLearnedRank_RadixSpline =
-   exotic_hashing::CompressedLearnedRank<Data, learned_hashing::RadixSplineHash<Data>>;
-BM(CompressedLearnedRank_RadixSpline);
-
-using LearnedLinear = exotic_hashing::LearnedLinear<Data>;
-BENCHMARK_TEMPLATE(LookupTime, LearnedLinear)
-   ->ArgsProduct({dataset_sizes,
-                  {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
-                   static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)},
-                  probe_distributions});
-BENCHMARK_TEMPLATE(PresortedBuildTime, LearnedLinear)
-   ->ArgsProduct({dataset_sizes,
-                  {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
-                   static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)}});
-BENCHMARK_TEMPLATE(UnorderedBuildTime, LearnedLinear)
-   ->ArgsProduct({dataset_sizes,
-                  {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
-                   static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)}});
-using AdaptiveLearnedMMPHF = exotic_hashing::AdaptiveLearnedMMPHF<Data>;
-BM(AdaptiveLearnedMMPHF);
+// using LearnedRank_RMI = exotic_hashing::LearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>>;
+// BM(LearnedRank_RMI);
+// using LearnedRank_RadixSpline = exotic_hashing::LearnedRank<Data, learned_hashing::RadixSplineHash<Data>>;
+// BM(LearnedRank_RadixSpline);
+// using CompressedLearnedRank_RMI =
+//    exotic_hashing::CompressedLearnedRank<Data, learned_hashing::MonotoneRMIHash<Data, 1000000>>;
+// BM(CompressedLearnedRank_RMI);
+// using CompressedLearnedRank_RadixSpline =
+//    exotic_hashing::CompressedLearnedRank<Data, learned_hashing::RadixSplineHash<Data>>;
+// BM(CompressedLearnedRank_RadixSpline);
+//
+// using LearnedLinear = exotic_hashing::LearnedLinear<Data>;
+// BENCHMARK_TEMPLATE(LookupTime, LearnedLinear)
+//    ->ArgsProduct({dataset_sizes,
+//                   {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
+//                    static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)},
+//                   probe_distributions});
+// BENCHMARK_TEMPLATE(PresortedBuildTime, LearnedLinear)
+//    ->ArgsProduct({dataset_sizes,
+//                   {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
+//                    static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)}});
+// BENCHMARK_TEMPLATE(UnorderedBuildTime, LearnedLinear)
+//    ->ArgsProduct({dataset_sizes,
+//                   {static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::SEQUENTIAL),
+//                    static_cast<std::underlying_type_t<dataset::ID>>(dataset::ID::GAPPED_10)}});
+// using AdaptiveLearnedMMPHF = exotic_hashing::AdaptiveLearnedMMPHF<Data>;
+// BM(AdaptiveLearnedMMPHF);
 
 BENCHMARK_MAIN();
