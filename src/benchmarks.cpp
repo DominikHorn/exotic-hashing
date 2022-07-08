@@ -143,8 +143,7 @@ static void LookupTime(benchmark::State& state) {
    BENCHMARK_TEMPLATE(UnorderedBuildTime, Hashfn)->ArgsProduct({dataset_sizes, datasets}); \
    BENCHMARK_TEMPLATE(LookupTime, Hashfn)                                                  \
       ->ArgsProduct({dataset_sizes, datasets, probe_distributions})                        \
-      ->Iterations(50000000)                                                               \
-      ->Repetitions(3);
+      ->Iterations(50000000);
 
 using DoNothingHash = exotic_hashing::DoNothingHash<Data>;
 BM(DoNothingHash);
