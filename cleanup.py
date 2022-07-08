@@ -12,6 +12,9 @@ with open(in_file_path, 'r', encoding='utf-8') as in_file:
     methods = {}
     for new_dp in raw_json["benchmarks"]:
         name = new_dp["name"]
+        run_type = new_dp["run_type"]
+        if run_type != "iteration":
+            continue
 
         if name not in methods or float(methods[name]["cpu_time"]) > float(new_dp["cpu_time"]):
             methods[name] = new_dp
