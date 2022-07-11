@@ -53,7 +53,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:seq:uniform",
+      "label": "BBHash1:seq:uniform",
       "items_per_second": null
     },
     {
@@ -73,7 +73,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:seq:exponential",
+      "label": "BBHash1:seq:exponential",
       "items_per_second": null
     },
     {
@@ -93,7 +93,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:gap_10:uniform",
+      "label": "BBHash1:gap_10:uniform",
       "items_per_second": null
     },
     {
@@ -113,7 +113,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:gap_10:exponential",
+      "label": "BBHash1:gap_10:exponential",
       "items_per_second": null
     },
     {
@@ -133,7 +133,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:uniform:uniform",
+      "label": "BBHash1:uniform:uniform",
       "items_per_second": null
     },
     {
@@ -153,7 +153,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:uniform:exponential",
+      "label": "BBHash1:uniform:exponential",
       "items_per_second": null
     },
     {
@@ -173,7 +173,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:fb:uniform",
+      "label": "BBHash1:fb:uniform",
       "items_per_second": null
     },
     {
@@ -193,7 +193,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:fb:exponential",
+      "label": "BBHash1:fb:exponential",
       "items_per_second": null
     },
     {
@@ -213,7 +213,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:osm:uniform",
+      "label": "BBHash1:osm:uniform",
       "items_per_second": null
     },
     {
@@ -233,7 +233,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:osm:exponential",
+      "label": "BBHash1:osm:exponential",
       "items_per_second": null
     },
     {
@@ -253,7 +253,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:wiki:uniform",
+      "label": "BBHash1:wiki:uniform",
       "items_per_second": null
     },
     {
@@ -273,7 +273,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:wiki:exponential",
+      "label": "BBHash1:wiki:exponential",
       "items_per_second": null
     },
     {
@@ -293,7 +293,7 @@
       "dataset_elem_count": 998.0,
       "hashfn_bits_per_key": 8.9138276553,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:normal:uniform",
+      "label": "BBHash1:normal:uniform",
       "items_per_second": null
     },
     {
@@ -313,7 +313,7 @@
       "dataset_elem_count": 998.0,
       "hashfn_bits_per_key": 8.9138276553,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:normal:exponential",
+      "label": "BBHash1:normal:exponential",
       "items_per_second": null
     },
     {
@@ -333,7 +333,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:seq:uniform",
+      "label": "BBHash1:seq:uniform",
       "items_per_second": null
     },
     {
@@ -353,7 +353,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:seq:exponential",
+      "label": "BBHash1:seq:exponential",
       "items_per_second": null
     },
     {
@@ -373,7 +373,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:gap_10:uniform",
+      "label": "BBHash1:gap_10:uniform",
       "items_per_second": null
     },
     {
@@ -393,7 +393,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:gap_10:exponential",
+      "label": "BBHash1:gap_10:exponential",
       "items_per_second": null
     },
     {
@@ -413,7 +413,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 5.09344,
       "hashfn_bytes": 63668.0,
-      "label": "BBHash1.000000:uniform:uniform",
+      "label": "BBHash1:uniform:uniform",
       "items_per_second": null
     },
     {
@@ -433,7 +433,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 5.09344,
       "hashfn_bytes": 63668.0,
-      "label": "BBHash1.000000:uniform:exponential",
+      "label": "BBHash1:uniform:exponential",
       "items_per_second": null
     },
     {
@@ -453,7 +453,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.4672,
       "hashfn_bytes": 43340.0,
-      "label": "BBHash1.000000:fb:uniform",
+      "label": "BBHash1:fb:uniform",
       "items_per_second": null
     },
     {
@@ -473,7 +473,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.4672,
       "hashfn_bytes": 43340.0,
-      "label": "BBHash1.000000:fb:exponential",
+      "label": "BBHash1:fb:exponential",
       "items_per_second": null
     },
     {
@@ -493,7 +493,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:osm:uniform",
+      "label": "BBHash1:osm:uniform",
       "items_per_second": null
     },
     {
@@ -513,7 +513,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:osm:exponential",
+      "label": "BBHash1:osm:exponential",
       "items_per_second": null
     },
     {
@@ -533,7 +533,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:wiki:uniform",
+      "label": "BBHash1:wiki:uniform",
       "items_per_second": null
     },
     {
@@ -553,7 +553,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:wiki:exponential",
+      "label": "BBHash1:wiki:exponential",
       "items_per_second": null
     },
     {
@@ -573,7 +573,7 @@
       "dataset_elem_count": 99744.0,
       "hashfn_bits_per_key": 3.1106833494,
       "hashfn_bytes": 38784.0,
-      "label": "BBHash1.000000:normal:uniform",
+      "label": "BBHash1:normal:uniform",
       "items_per_second": null
     },
     {
@@ -593,7 +593,7 @@
       "dataset_elem_count": 99744.0,
       "hashfn_bits_per_key": 3.1106833494,
       "hashfn_bytes": 38784.0,
-      "label": "BBHash1.000000:normal:exponential",
+      "label": "BBHash1:normal:exponential",
       "items_per_second": null
     },
     {
@@ -613,7 +613,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.199248,
       "hashfn_bytes": 399906.0,
-      "label": "BBHash1.000000:seq:uniform",
+      "label": "BBHash1:seq:uniform",
       "items_per_second": null
     },
     {
@@ -633,7 +633,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.199248,
       "hashfn_bytes": 399906.0,
-      "label": "BBHash1.000000:seq:exponential",
+      "label": "BBHash1:seq:exponential",
       "items_per_second": null
     },
     {
@@ -653,7 +653,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.237552,
       "hashfn_bytes": 404694.0,
-      "label": "BBHash1.000000:gap_10:uniform",
+      "label": "BBHash1:gap_10:uniform",
       "items_per_second": null
     },
     {
@@ -673,7 +673,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.237552,
       "hashfn_bytes": 404694.0,
-      "label": "BBHash1.000000:gap_10:exponential",
+      "label": "BBHash1:gap_10:exponential",
       "items_per_second": null
     },
     {
@@ -693,7 +693,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:uniform:uniform",
+      "label": "BBHash1:uniform:uniform",
       "items_per_second": null
     },
     {
@@ -713,7 +713,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:uniform:exponential",
+      "label": "BBHash1:uniform:exponential",
       "items_per_second": null
     },
     {
@@ -733,7 +733,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:fb:uniform",
+      "label": "BBHash1:fb:uniform",
       "items_per_second": null
     },
     {
@@ -753,7 +753,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:fb:exponential",
+      "label": "BBHash1:fb:exponential",
       "items_per_second": null
     },
     {
@@ -773,7 +773,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:osm:uniform",
+      "label": "BBHash1:osm:uniform",
       "items_per_second": null
     },
     {
@@ -793,7 +793,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:osm:exponential",
+      "label": "BBHash1:osm:exponential",
       "items_per_second": null
     },
     {
@@ -813,7 +813,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:wiki:uniform",
+      "label": "BBHash1:wiki:uniform",
       "items_per_second": null
     },
     {
@@ -833,7 +833,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:wiki:exponential",
+      "label": "BBHash1:wiki:exponential",
       "items_per_second": null
     },
     {
@@ -853,7 +853,7 @@
       "dataset_elem_count": 997335.0,
       "hashfn_bits_per_key": 3.0634601212,
       "hashfn_bytes": 381912.0,
-      "label": "BBHash1.000000:normal:uniform",
+      "label": "BBHash1:normal:uniform",
       "items_per_second": null
     },
     {
@@ -873,7 +873,7 @@
       "dataset_elem_count": 997335.0,
       "hashfn_bits_per_key": 3.0634601212,
       "hashfn_bytes": 381912.0,
-      "label": "BBHash1.000000:normal:exponential",
+      "label": "BBHash1:normal:exponential",
       "items_per_second": null
     },
     {
@@ -893,7 +893,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:seq:uniform",
+      "label": "BBHash1:seq:uniform",
       "items_per_second": null
     },
     {
@@ -913,7 +913,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:seq:exponential",
+      "label": "BBHash1:seq:exponential",
       "items_per_second": null
     },
     {
@@ -933,7 +933,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:gap_10:uniform",
+      "label": "BBHash1:gap_10:uniform",
       "items_per_second": null
     },
     {
@@ -953,7 +953,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:gap_10:exponential",
+      "label": "BBHash1:gap_10:exponential",
       "items_per_second": null
     },
     {
@@ -973,7 +973,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.1131808,
       "hashfn_bytes": 3891476.0,
-      "label": "BBHash1.000000:uniform:uniform",
+      "label": "BBHash1:uniform:uniform",
       "items_per_second": null
     },
     {
@@ -993,7 +993,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.1131808,
       "hashfn_bytes": 3891476.0,
-      "label": "BBHash1.000000:uniform:exponential",
+      "label": "BBHash1:uniform:exponential",
       "items_per_second": null
     },
     {
@@ -1013,7 +1013,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:fb:uniform",
+      "label": "BBHash1:fb:uniform",
       "items_per_second": null
     },
     {
@@ -1033,7 +1033,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:fb:exponential",
+      "label": "BBHash1:fb:exponential",
       "items_per_second": null
     },
     {
@@ -1053,7 +1053,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:osm:uniform",
+      "label": "BBHash1:osm:uniform",
       "items_per_second": null
     },
     {
@@ -1073,7 +1073,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:osm:exponential",
+      "label": "BBHash1:osm:exponential",
       "items_per_second": null
     },
     {
@@ -1093,7 +1093,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:wiki:uniform",
+      "label": "BBHash1:wiki:uniform",
       "items_per_second": null
     },
     {
@@ -1113,7 +1113,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:wiki:exponential",
+      "label": "BBHash1:wiki:exponential",
       "items_per_second": null
     },
     {
@@ -1133,7 +1133,7 @@
       "dataset_elem_count": 9973088.0,
       "hashfn_bits_per_key": 3.1873538066,
       "hashfn_bytes": 3973470.0,
-      "label": "BBHash1.000000:normal:uniform",
+      "label": "BBHash1:normal:uniform",
       "items_per_second": null
     },
     {
@@ -1153,7 +1153,7 @@
       "dataset_elem_count": 9973088.0,
       "hashfn_bits_per_key": 3.1873538066,
       "hashfn_bytes": 3973470.0,
-      "label": "BBHash1.000000:normal:exponential",
+      "label": "BBHash1:normal:exponential",
       "items_per_second": null
     },
     {
@@ -1173,7 +1173,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.05805824,
       "hashfn_bytes": 76451456.0,
-      "label": "BBHash1.000000:seq:uniform",
+      "label": "BBHash1:seq:uniform",
       "items_per_second": null
     },
     {
@@ -1193,7 +1193,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.05805824,
       "hashfn_bytes": 76451456.0,
-      "label": "BBHash1.000000:seq:exponential",
+      "label": "BBHash1:seq:exponential",
       "items_per_second": null
     },
     {
@@ -1213,7 +1213,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.06321248,
       "hashfn_bytes": 76580312.0,
-      "label": "BBHash1.000000:gap_10:uniform",
+      "label": "BBHash1:gap_10:uniform",
       "items_per_second": null
     },
     {
@@ -1233,7 +1233,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.06321248,
       "hashfn_bytes": 76580312.0,
-      "label": "BBHash1.000000:gap_10:exponential",
+      "label": "BBHash1:gap_10:exponential",
       "items_per_second": null
     },
     {
@@ -1253,7 +1253,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.0598508,
       "hashfn_bytes": 76496270.0,
-      "label": "BBHash1.000000:uniform:uniform",
+      "label": "BBHash1:uniform:uniform",
       "items_per_second": null
     },
     {
@@ -1273,7 +1273,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.0598508,
       "hashfn_bytes": 76496270.0,
-      "label": "BBHash1.000000:uniform:exponential",
+      "label": "BBHash1:uniform:exponential",
       "items_per_second": null
     },
     {
@@ -1293,7 +1293,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.07612664,
       "hashfn_bytes": 76903166.0,
-      "label": "BBHash1.000000:fb:uniform",
+      "label": "BBHash1:fb:uniform",
       "items_per_second": null
     },
     {
@@ -1313,7 +1313,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.07612664,
       "hashfn_bytes": 76903166.0,
-      "label": "BBHash1.000000:fb:exponential",
+      "label": "BBHash1:fb:exponential",
       "items_per_second": null
     },
     {
@@ -1333,7 +1333,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.05880752,
       "hashfn_bytes": 76470188.0,
-      "label": "BBHash1.000000:osm:uniform",
+      "label": "BBHash1:osm:uniform",
       "items_per_second": null
     },
     {
@@ -1353,7 +1353,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.05880752,
       "hashfn_bytes": 76470188.0,
-      "label": "BBHash1.000000:osm:exponential",
+      "label": "BBHash1:osm:exponential",
       "items_per_second": null
     },
     {
@@ -1373,7 +1373,7 @@
       "dataset_elem_count": 90437012.0,
       "hashfn_bits_per_key": 3.0688371703,
       "hashfn_bytes": 34692058.0,
-      "label": "BBHash1.000000:wiki:uniform",
+      "label": "BBHash1:wiki:uniform",
       "items_per_second": null
     },
     {
@@ -1393,7 +1393,7 @@
       "dataset_elem_count": 90437012.0,
       "hashfn_bits_per_key": 3.0688371703,
       "hashfn_bytes": 34692058.0,
-      "label": "BBHash1.000000:wiki:exponential",
+      "label": "BBHash1:wiki:exponential",
       "items_per_second": null
     },
     {
@@ -1413,7 +1413,7 @@
       "dataset_elem_count": 199460620.0,
       "hashfn_bits_per_key": 3.0687266088,
       "hashfn_bytes": 76511264.0,
-      "label": "BBHash1.000000:normal:uniform",
+      "label": "BBHash1:normal:uniform",
       "items_per_second": null
     },
     {
@@ -1433,7 +1433,7 @@
       "dataset_elem_count": 199460620.0,
       "hashfn_bits_per_key": 3.0687266088,
       "hashfn_bytes": 76511264.0,
-      "label": "BBHash1.000000:normal:exponential",
+      "label": "BBHash1:normal:exponential",
       "items_per_second": null
     },
     {
@@ -1453,7 +1453,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:seq:uniform"
+      "label": "BBHash2:seq:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000/0/1/iterations:50000000",
@@ -1472,7 +1472,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:seq:exponential"
+      "label": "BBHash2:seq:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000/1/0/iterations:50000000",
@@ -1491,7 +1491,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:gap_10:uniform"
+      "label": "BBHash2:gap_10:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000/1/1/iterations:50000000",
@@ -1510,7 +1510,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:gap_10:exponential"
+      "label": "BBHash2:gap_10:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000/2/0/iterations:50000000",
@@ -1529,7 +1529,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:uniform:uniform"
+      "label": "BBHash2:uniform:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000/2/1/iterations:50000000",
@@ -1548,7 +1548,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:uniform:exponential"
+      "label": "BBHash2:uniform:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000/4/0/iterations:50000000",
@@ -1567,7 +1567,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:fb:uniform"
+      "label": "BBHash2:fb:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000/4/1/iterations:50000000",
@@ -1586,7 +1586,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:fb:exponential"
+      "label": "BBHash2:fb:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000/5/0/iterations:50000000",
@@ -1605,7 +1605,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:osm:uniform"
+      "label": "BBHash2:osm:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000/5/1/iterations:50000000",
@@ -1624,7 +1624,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:osm:exponential"
+      "label": "BBHash2:osm:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000/6/0/iterations:50000000",
@@ -1643,7 +1643,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:wiki:uniform"
+      "label": "BBHash2:wiki:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000/6/1/iterations:50000000",
@@ -1662,7 +1662,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:wiki:exponential"
+      "label": "BBHash2:wiki:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000/7/0/iterations:50000000",
@@ -1681,7 +1681,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:normal:uniform"
+      "label": "BBHash2:normal:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000/7/1/iterations:50000000",
@@ -1700,7 +1700,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:normal:exponential"
+      "label": "BBHash2:normal:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/100000/0/0/iterations:50000000",
@@ -1719,7 +1719,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:seq:uniform"
+      "label": "BBHash2:seq:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/100000/0/1/iterations:50000000",
@@ -1738,7 +1738,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:seq:exponential"
+      "label": "BBHash2:seq:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/100000/1/0/iterations:50000000",
@@ -1757,7 +1757,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:gap_10:uniform"
+      "label": "BBHash2:gap_10:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/100000/1/1/iterations:50000000",
@@ -1776,7 +1776,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:gap_10:exponential"
+      "label": "BBHash2:gap_10:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/100000/2/0/iterations:50000000",
@@ -1795,7 +1795,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:uniform:uniform"
+      "label": "BBHash2:uniform:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/100000/2/1/iterations:50000000",
@@ -1814,7 +1814,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:uniform:exponential"
+      "label": "BBHash2:uniform:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/100000/4/0/iterations:50000000",
@@ -1833,7 +1833,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:fb:uniform"
+      "label": "BBHash2:fb:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/100000/4/1/iterations:50000000",
@@ -1852,7 +1852,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:fb:exponential"
+      "label": "BBHash2:fb:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/100000/5/0/iterations:50000000",
@@ -1871,7 +1871,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:osm:uniform"
+      "label": "BBHash2:osm:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/100000/5/1/iterations:50000000",
@@ -1890,7 +1890,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:osm:exponential"
+      "label": "BBHash2:osm:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/100000/6/0/iterations:50000000",
@@ -1909,7 +1909,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:wiki:uniform"
+      "label": "BBHash2:wiki:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/100000/6/1/iterations:50000000",
@@ -1928,7 +1928,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:wiki:exponential"
+      "label": "BBHash2:wiki:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/100000/7/0/iterations:50000000",
@@ -1947,7 +1947,7 @@
       "dataset_elem_count": 99723.0,
       "hashfn_bits_per_key": 3.7672352416192854,
       "hashfn_bytes": 46960.0,
-      "label": "BBHash2.000000:normal:uniform"
+      "label": "BBHash2:normal:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/100000/7/1/iterations:50000000",
@@ -1966,7 +1966,7 @@
       "dataset_elem_count": 99723.0,
       "hashfn_bits_per_key": 3.7672352416192854,
       "hashfn_bytes": 46960.0,
-      "label": "BBHash2.000000:normal:exponential"
+      "label": "BBHash2:normal:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/0/0/iterations:50000000",
@@ -1985,7 +1985,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:seq:uniform"
+      "label": "BBHash2:seq:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/0/1/iterations:50000000",
@@ -2004,7 +2004,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:seq:exponential"
+      "label": "BBHash2:seq:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/1/0/iterations:50000000",
@@ -2023,7 +2023,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:gap_10:uniform"
+      "label": "BBHash2:gap_10:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/1/1/iterations:50000000",
@@ -2042,7 +2042,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:gap_10:exponential"
+      "label": "BBHash2:gap_10:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/2/0/iterations:50000000",
@@ -2061,7 +2061,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:uniform:uniform"
+      "label": "BBHash2:uniform:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/2/1/iterations:50000000",
@@ -2080,7 +2080,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:uniform:exponential"
+      "label": "BBHash2:uniform:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/4/0/iterations:50000000",
@@ -2099,7 +2099,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:fb:uniform"
+      "label": "BBHash2:fb:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/4/1/iterations:50000000",
@@ -2118,7 +2118,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:fb:exponential"
+      "label": "BBHash2:fb:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/5/0/iterations:50000000",
@@ -2137,7 +2137,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:osm:uniform"
+      "label": "BBHash2:osm:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/5/1/iterations:50000000",
@@ -2156,7 +2156,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:osm:exponential"
+      "label": "BBHash2:osm:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/6/0/iterations:50000000",
@@ -2175,7 +2175,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:wiki:uniform"
+      "label": "BBHash2:wiki:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/6/1/iterations:50000000",
@@ -2194,7 +2194,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:wiki:exponential"
+      "label": "BBHash2:wiki:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/7/0/iterations:50000000",
@@ -2213,7 +2213,7 @@
       "dataset_elem_count": 997321.0,
       "hashfn_bits_per_key": 3.7152331095003515,
       "hashfn_bytes": 463160.0,
-      "label": "BBHash2.000000:normal:uniform"
+      "label": "BBHash2:normal:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/7/1/iterations:50000000",
@@ -2232,7 +2232,7 @@
       "dataset_elem_count": 997321.0,
       "hashfn_bits_per_key": 3.7152331095003515,
       "hashfn_bytes": 463160.0,
-      "label": "BBHash2.000000:normal:exponential"
+      "label": "BBHash2:normal:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/0/0/iterations:50000000",
@@ -2251,7 +2251,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:seq:uniform"
+      "label": "BBHash2:seq:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/0/1/iterations:50000000",
@@ -2270,7 +2270,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:seq:exponential"
+      "label": "BBHash2:seq:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/1/0/iterations:50000000",
@@ -2289,7 +2289,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:gap_10:uniform"
+      "label": "BBHash2:gap_10:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/1/1/iterations:50000000",
@@ -2308,7 +2308,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:gap_10:exponential"
+      "label": "BBHash2:gap_10:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/2/0/iterations:50000000",
@@ -2327,7 +2327,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:uniform:uniform"
+      "label": "BBHash2:uniform:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/2/1/iterations:50000000",
@@ -2346,7 +2346,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:uniform:exponential"
+      "label": "BBHash2:uniform:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/4/0/iterations:50000000",
@@ -2365,7 +2365,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:fb:uniform"
+      "label": "BBHash2:fb:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/4/1/iterations:50000000",
@@ -2384,7 +2384,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:fb:exponential"
+      "label": "BBHash2:fb:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/5/0/iterations:50000000",
@@ -2403,7 +2403,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:osm:uniform"
+      "label": "BBHash2:osm:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/5/1/iterations:50000000",
@@ -2422,7 +2422,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:osm:exponential"
+      "label": "BBHash2:osm:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/6/0/iterations:50000000",
@@ -2441,7 +2441,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:wiki:uniform"
+      "label": "BBHash2:wiki:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/6/1/iterations:50000000",
@@ -2460,7 +2460,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:wiki:exponential"
+      "label": "BBHash2:wiki:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/7/0/iterations:50000000",
@@ -2479,7 +2479,7 @@
       "dataset_elem_count": 9972672.0,
       "hashfn_bits_per_key": 3.7101839908100858,
       "hashfn_bytes": 4625056.0,
-      "label": "BBHash2.000000:normal:uniform"
+      "label": "BBHash2:normal:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/7/1/iterations:50000000",
@@ -2498,7 +2498,7 @@
       "dataset_elem_count": 9972672.0,
       "hashfn_bits_per_key": 3.7101839908100858,
       "hashfn_bytes": 4625056.0,
-      "label": "BBHash2.000000:normal:exponential"
+      "label": "BBHash2:normal:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/0/0/iterations:50000000",
@@ -2517,7 +2517,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:seq:uniform"
+      "label": "BBHash2:seq:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/0/1/iterations:50000000",
@@ -2536,7 +2536,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:seq:exponential"
+      "label": "BBHash2:seq:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/1/0/iterations:50000000",
@@ -2555,7 +2555,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:gap_10:uniform"
+      "label": "BBHash2:gap_10:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/1/1/iterations:50000000",
@@ -2574,7 +2574,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:gap_10:exponential"
+      "label": "BBHash2:gap_10:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/2/0/iterations:50000000",
@@ -2593,7 +2593,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:uniform:uniform"
+      "label": "BBHash2:uniform:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/2/1/iterations:50000000",
@@ -2612,7 +2612,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:uniform:exponential"
+      "label": "BBHash2:uniform:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/4/0/iterations:50000000",
@@ -2631,7 +2631,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:fb:uniform"
+      "label": "BBHash2:fb:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/4/1/iterations:50000000",
@@ -2650,7 +2650,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:fb:exponential"
+      "label": "BBHash2:fb:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/5/0/iterations:50000000",
@@ -2669,7 +2669,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:osm:uniform"
+      "label": "BBHash2:osm:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/5/1/iterations:50000000",
@@ -2688,7 +2688,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:osm:exponential"
+      "label": "BBHash2:osm:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/6/0/iterations:50000000",
@@ -2707,7 +2707,7 @@
       "dataset_elem_count": 90437012.0,
       "hashfn_bits_per_key": 3.7096811646099055,
       "hashfn_bytes": 41936560.0,
-      "label": "BBHash2.000000:wiki:uniform"
+      "label": "BBHash2:wiki:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/6/1/iterations:50000000",
@@ -2726,7 +2726,7 @@
       "dataset_elem_count": 90437012.0,
       "hashfn_bits_per_key": 3.7096811646099055,
       "hashfn_bytes": 41936560.0,
-      "label": "BBHash2.000000:wiki:exponential"
+      "label": "BBHash2:wiki:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/7/0/iterations:50000000",
@@ -2745,7 +2745,7 @@
       "dataset_elem_count": 199460553.0,
       "hashfn_bits_per_key": 3.7096493159727677,
       "hashfn_bytes": 92491088.0,
-      "label": "BBHash2.000000:normal:uniform"
+      "label": "BBHash2:normal:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/7/1/iterations:50000000",
@@ -2764,7 +2764,7 @@
       "dataset_elem_count": 199460553.0,
       "hashfn_bits_per_key": 3.7096493159727677,
       "hashfn_bytes": 92491088.0,
-      "label": "BBHash2.000000:normal:exponential"
+      "label": "BBHash2:normal:exponential"
     },
     {
       "name": "LookupTime<BitMWHC>/100/0/0/iterations:50000000",
@@ -23293,26 +23293,6 @@
       "items_per_second": null
     },
     {
-      "name": "LookupTime<RankHash>/100000/7/1/iterations:50000000",
-      "family_index": 5,
-      "per_family_instance_index": 66,
-      "run_name": "LookupTime<RankHash>/100000/7/1/iterations:50000000",
-      "run_type": "iteration",
-      "repetitions": 3,
-      "repetition_index": 2,
-      "threads": 1,
-      "iterations": 50000000,
-      "real_time": 94.4253419712,
-      "cpu_time": 94.38811982,
-      "time_unit": "ns",
-      "dataset_bytes": 797952.0,
-      "dataset_elem_count": 99744.0,
-      "hashfn_bits_per_key": 32.0019249278,
-      "hashfn_bytes": 399000.0,
-      "label": "RankHash:normal:exponential",
-      "items_per_second": null
-    },
-    {
       "name": "LookupTime<RankHash>/1000000/0/0/iterations:50000000",
       "family_index": 5,
       "per_family_instance_index": 2,
@@ -23593,26 +23573,6 @@
       "items_per_second": null
     },
     {
-      "name": "LookupTime<RankHash>/1000000/7/1/iterations:50000000",
-      "family_index": 5,
-      "per_family_instance_index": 67,
-      "run_name": "LookupTime<RankHash>/1000000/7/1/iterations:50000000",
-      "run_type": "iteration",
-      "repetitions": 3,
-      "repetition_index": 2,
-      "threads": 1,
-      "iterations": 50000000,
-      "real_time": 149.257096462,
-      "cpu_time": 149.1748833,
-      "time_unit": "ns",
-      "dataset_bytes": 7978680.0,
-      "dataset_elem_count": 997335.0,
-      "hashfn_bits_per_key": 32.0002245986,
-      "hashfn_bytes": 3989368.0,
-      "label": "RankHash:normal:exponential",
-      "items_per_second": null
-    },
-    {
       "name": "LookupTime<RankHash>/10000000/0/0/iterations:50000000",
       "family_index": 5,
       "per_family_instance_index": 3,
@@ -23890,26 +23850,6 @@
       "hashfn_bits_per_key": 32.0000192518,
       "hashfn_bytes": 39892376.0,
       "label": "RankHash:normal:uniform",
-      "items_per_second": null
-    },
-    {
-      "name": "LookupTime<RankHash>/10000000/7/1/iterations:50000000",
-      "family_index": 5,
-      "per_family_instance_index": 68,
-      "run_name": "LookupTime<RankHash>/10000000/7/1/iterations:50000000",
-      "run_type": "iteration",
-      "repetitions": 3,
-      "repetition_index": 0,
-      "threads": 1,
-      "iterations": 50000000,
-      "real_time": 298.8644374534,
-      "cpu_time": 298.60236396,
-      "time_unit": "ns",
-      "dataset_bytes": 79784704.0,
-      "dataset_elem_count": 9973088.0,
-      "hashfn_bits_per_key": 32.0000192518,
-      "hashfn_bytes": 39892376.0,
-      "label": "RankHash:normal:exponential",
       "items_per_second": null
     },
     {
@@ -28468,7 +28408,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:seq",
+      "label": "BBHash1:seq",
       "items_per_second": 1454.6576842956
     },
     {
@@ -28488,7 +28428,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:gap_10",
+      "label": "BBHash1:gap_10",
       "items_per_second": 1832.5454627838
     },
     {
@@ -28508,7 +28448,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:uniform",
+      "label": "BBHash1:uniform",
       "items_per_second": 1072.7980513954
     },
     {
@@ -28528,7 +28468,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:fb",
+      "label": "BBHash1:fb",
       "items_per_second": 1537.4304831837
     },
     {
@@ -28548,7 +28488,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:osm",
+      "label": "BBHash1:osm",
       "items_per_second": 1189.7832847709
     },
     {
@@ -28568,7 +28508,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:wiki",
+      "label": "BBHash1:wiki",
       "items_per_second": 1817.2181606124
     },
     {
@@ -28588,7 +28528,7 @@
       "dataset_elem_count": 998.0,
       "hashfn_bits_per_key": 8.9138276553,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:normal",
+      "label": "BBHash1:normal",
       "items_per_second": 1691.6779815447
     },
     {
@@ -28608,7 +28548,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:seq",
+      "label": "BBHash1:seq",
       "items_per_second": 411812.2750345825
     },
     {
@@ -28628,7 +28568,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:gap_10",
+      "label": "BBHash1:gap_10",
       "items_per_second": 587861.0617572445
     },
     {
@@ -28648,7 +28588,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 5.09344,
       "hashfn_bytes": 63668.0,
-      "label": "BBHash1.000000:uniform",
+      "label": "BBHash1:uniform",
       "items_per_second": 258497.3955360873
     },
     {
@@ -28668,7 +28608,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.4672,
       "hashfn_bytes": 43340.0,
-      "label": "BBHash1.000000:fb",
+      "label": "BBHash1:fb",
       "items_per_second": 245792.693949838
     },
     {
@@ -28688,7 +28628,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:osm",
+      "label": "BBHash1:osm",
       "items_per_second": 355876.6214365992
     },
     {
@@ -28708,7 +28648,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:wiki",
+      "label": "BBHash1:wiki",
       "items_per_second": 245628.6205175804
     },
     {
@@ -28728,7 +28668,7 @@
       "dataset_elem_count": 99744.0,
       "hashfn_bits_per_key": 3.1106833494,
       "hashfn_bytes": 38784.0,
-      "label": "BBHash1.000000:normal",
+      "label": "BBHash1:normal",
       "items_per_second": 269713.4282652443
     },
     {
@@ -28748,7 +28688,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.199248,
       "hashfn_bytes": 399906.0,
-      "label": "BBHash1.000000:seq",
+      "label": "BBHash1:seq",
       "items_per_second": 16483209.914427293
     },
     {
@@ -28768,7 +28708,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.237552,
       "hashfn_bytes": 404694.0,
-      "label": "BBHash1.000000:gap_10",
+      "label": "BBHash1:gap_10",
       "items_per_second": 15447506.938836586
     },
     {
@@ -28788,7 +28728,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:uniform",
+      "label": "BBHash1:uniform",
       "items_per_second": 16158354.198033685
     },
     {
@@ -28808,7 +28748,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:fb",
+      "label": "BBHash1:fb",
       "items_per_second": 16235978.912768327
     },
     {
@@ -28828,7 +28768,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:osm",
+      "label": "BBHash1:osm",
       "items_per_second": 16687865.539837148
     },
     {
@@ -28848,7 +28788,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:wiki",
+      "label": "BBHash1:wiki",
       "items_per_second": 22573078.59321408
     },
     {
@@ -28868,7 +28808,7 @@
       "dataset_elem_count": 997335.0,
       "hashfn_bits_per_key": 3.0634601212,
       "hashfn_bytes": 381912.0,
-      "label": "BBHash1.000000:normal",
+      "label": "BBHash1:normal",
       "items_per_second": 16554073.703819245
     },
     {
@@ -28888,7 +28828,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:seq",
+      "label": "BBHash1:seq",
       "items_per_second": 417735285.843494
     },
     {
@@ -28908,7 +28848,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:gap_10",
+      "label": "BBHash1:gap_10",
       "items_per_second": 148029798.87098178
     },
     {
@@ -28928,7 +28868,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.1131808,
       "hashfn_bytes": 3891476.0,
-      "label": "BBHash1.000000:uniform",
+      "label": "BBHash1:uniform",
       "items_per_second": 145757135.14707893
     },
     {
@@ -28948,7 +28888,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:fb",
+      "label": "BBHash1:fb",
       "items_per_second": 129439307.10053767
     },
     {
@@ -28968,7 +28908,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:osm",
+      "label": "BBHash1:osm",
       "items_per_second": 140168958.5382071
     },
     {
@@ -28988,7 +28928,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:wiki",
+      "label": "BBHash1:wiki",
       "items_per_second": 157600172.99622008
     },
     {
@@ -29008,7 +28948,7 @@
       "dataset_elem_count": 9973088.0,
       "hashfn_bits_per_key": 3.1873538066,
       "hashfn_bytes": 3973470.0,
-      "label": "BBHash1.000000:normal",
+      "label": "BBHash1:normal",
       "items_per_second": 129443863.17063726
     },
     {
@@ -29028,7 +28968,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.05805824,
       "hashfn_bytes": 76451456.0,
-      "label": "BBHash1.000000:seq",
+      "label": "BBHash1:seq",
       "items_per_second": 197000754.3329915
     },
     {
@@ -29048,7 +28988,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.06321248,
       "hashfn_bytes": 76580312.0,
-      "label": "BBHash1.000000:gap_10",
+      "label": "BBHash1:gap_10",
       "items_per_second": 237826780.92372873
     },
     {
@@ -29068,7 +29008,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.0598508,
       "hashfn_bytes": 76496270.0,
-      "label": "BBHash1.000000:uniform",
+      "label": "BBHash1:uniform",
       "items_per_second": 235772352.18311238
     },
     {
@@ -29088,7 +29028,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.07612664,
       "hashfn_bytes": 76903166.0,
-      "label": "BBHash1.000000:fb",
+      "label": "BBHash1:fb",
       "items_per_second": 241217232.61870447
     },
     {
@@ -29108,7 +29048,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.05880752,
       "hashfn_bytes": 76470188.0,
-      "label": "BBHash1.000000:osm",
+      "label": "BBHash1:osm",
       "items_per_second": 238823452.311786
     },
     {
@@ -29128,7 +29068,7 @@
       "dataset_elem_count": 90437012.0,
       "hashfn_bits_per_key": 3.0688371703,
       "hashfn_bytes": 34692058.0,
-      "label": "BBHash1.000000:wiki",
+      "label": "BBHash1:wiki",
       "items_per_second": 217719350.75215283
     },
     {
@@ -29148,7 +29088,7 @@
       "dataset_elem_count": 199460620.0,
       "hashfn_bits_per_key": 3.0687266088,
       "hashfn_bytes": 76511264.0,
-      "label": "BBHash1.000000:normal",
+      "label": "BBHash1:normal",
       "items_per_second": 238436916.57882303
     },
     {
@@ -29168,7 +29108,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:seq",
+      "label": "BBHash2:seq",
       "items_per_second": 1379.5891417131
     },
     {
@@ -29188,7 +29128,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:gap_10",
+      "label": "BBHash2:gap_10",
       "items_per_second": 1295.3972383251
     },
     {
@@ -29208,7 +29148,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:uniform",
+      "label": "BBHash2:uniform",
       "items_per_second": 1416.040892821
     },
     {
@@ -29228,7 +29168,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:fb",
+      "label": "BBHash2:fb",
       "items_per_second": 1456.1888510442
     },
     {
@@ -29248,7 +29188,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:osm",
+      "label": "BBHash2:osm",
       "items_per_second": 1279.0330575588
     },
     {
@@ -29268,7 +29208,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:wiki",
+      "label": "BBHash2:wiki",
       "items_per_second": 1873.5211746799
     },
     {
@@ -29288,7 +29228,7 @@
       "dataset_elem_count": 998.0,
       "hashfn_bits_per_key": 9.8116232465,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:normal",
+      "label": "BBHash2:normal",
       "items_per_second": 1566.7832555328
     },
     {
@@ -29308,7 +29248,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:seq",
+      "label": "BBHash2:seq",
       "items_per_second": 346612.1403244589
     },
     {
@@ -29328,7 +29268,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:gap_10",
+      "label": "BBHash2:gap_10",
       "items_per_second": 241832.7283632827
     },
     {
@@ -29348,7 +29288,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:uniform",
+      "label": "BBHash2:uniform",
       "items_per_second": 244461.817749019
     },
     {
@@ -29368,7 +29308,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:fb",
+      "label": "BBHash2:fb",
       "items_per_second": 243517.6164521836
     },
     {
@@ -29388,7 +29328,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:osm",
+      "label": "BBHash2:osm",
       "items_per_second": 346021.68077988
     },
     {
@@ -29408,7 +29348,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:wiki",
+      "label": "BBHash2:wiki",
       "items_per_second": 340006.3524090199
     },
     {
@@ -29428,7 +29368,7 @@
       "dataset_elem_count": 99744.0,
       "hashfn_bits_per_key": 3.7664420918,
       "hashfn_bytes": 46960.0,
-      "label": "BBHash2.000000:normal",
+      "label": "BBHash2:normal",
       "items_per_second": 243767.6716052133
     },
     {
@@ -29448,7 +29388,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:seq",
+      "label": "BBHash2:seq",
       "items_per_second": 21822593.792239144
     },
     {
@@ -29468,7 +29408,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:gap_10",
+      "label": "BBHash2:gap_10",
       "items_per_second": 16233456.059805889
     },
     {
@@ -29488,7 +29428,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:uniform",
+      "label": "BBHash2:uniform",
       "items_per_second": 16103647.714663457
     },
     {
@@ -29508,7 +29448,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:fb",
+      "label": "BBHash2:fb",
       "items_per_second": 15879330.3014479
     },
     {
@@ -29528,7 +29468,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:osm",
+      "label": "BBHash2:osm",
       "items_per_second": 17894556.540329423
     },
     {
@@ -29548,7 +29488,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:wiki",
+      "label": "BBHash2:wiki",
       "items_per_second": 22386305.383269005
     },
     {
@@ -29568,7 +29508,7 @@
       "dataset_elem_count": 997335.0,
       "hashfn_bits_per_key": 3.7153734703,
       "hashfn_bytes": 463184.0,
-      "label": "BBHash2.000000:normal",
+      "label": "BBHash2:normal",
       "items_per_second": 15894775.783010572
     },
     {
@@ -29588,7 +29528,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:seq",
+      "label": "BBHash2:seq",
       "items_per_second": 163849796.46463
     },
     {
@@ -29608,7 +29548,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:gap_10",
+      "label": "BBHash2:gap_10",
       "items_per_second": 142744588.75005424
     },
     {
@@ -29628,7 +29568,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:uniform",
+      "label": "BBHash2:uniform",
       "items_per_second": 138642601.86038783
     },
     {
@@ -29648,7 +29588,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:fb",
+      "label": "BBHash2:fb",
       "items_per_second": 133966214.73930219
     },
     {
@@ -29668,7 +29608,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:osm",
+      "label": "BBHash2:osm",
       "items_per_second": 130209103.05118394
     },
     {
@@ -29688,7 +29628,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:wiki",
+      "label": "BBHash2:wiki",
       "items_per_second": 165207348.8417995
     },
     {
@@ -29708,7 +29648,7 @@
       "dataset_elem_count": 9973088.0,
       "hashfn_bits_per_key": 3.7101832451,
       "hashfn_bytes": 4625248.0,
-      "label": "BBHash2.000000:normal",
+      "label": "BBHash2:normal",
       "items_per_second": 131201596.97243923
     },
     {
@@ -29728,7 +29668,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:seq",
+      "label": "BBHash2:seq",
       "items_per_second": 240869978.81457502
     },
     {
@@ -29748,7 +29688,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:gap_10",
+      "label": "BBHash2:gap_10",
       "items_per_second": 234466373.01048827
     },
     {
@@ -29768,7 +29708,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:uniform",
+      "label": "BBHash2:uniform",
       "items_per_second": 235558488.2641168
     },
     {
@@ -29788,7 +29728,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:fb",
+      "label": "BBHash2:fb",
       "items_per_second": 233977105.66298264
     },
     {
@@ -29808,7 +29748,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:osm",
+      "label": "BBHash2:osm",
       "items_per_second": 236963303.8861389
     },
     {
@@ -29828,7 +29768,7 @@
       "dataset_elem_count": 90437012.0,
       "hashfn_bits_per_key": 3.7096811646,
       "hashfn_bytes": 41936560.0,
-      "label": "BBHash2.000000:wiki",
+      "label": "BBHash2:wiki",
       "items_per_second": 217946590.9118535
     },
     {
@@ -29848,7 +29788,7 @@
       "dataset_elem_count": 199460620.0,
       "hashfn_bits_per_key": 3.7096499951,
       "hashfn_bytes": 92491136.0,
-      "label": "BBHash2.000000:normal",
+      "label": "BBHash2:normal",
       "items_per_second": 235915867.38388464
     },
     {
@@ -42568,7 +42508,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:seq",
+      "label": "BBHash1:seq",
       "items_per_second": 1475.7772308066
     },
     {
@@ -42588,7 +42528,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:gap_10",
+      "label": "BBHash1:gap_10",
       "items_per_second": 1891.3038405395
     },
     {
@@ -42608,7 +42548,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:uniform",
+      "label": "BBHash1:uniform",
       "items_per_second": 1458.9911778675
     },
     {
@@ -42628,7 +42568,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:fb",
+      "label": "BBHash1:fb",
       "items_per_second": 1832.935311116
     },
     {
@@ -42648,7 +42588,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:osm",
+      "label": "BBHash1:osm",
       "items_per_second": 1333.3413422641
     },
     {
@@ -42668,7 +42608,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:wiki",
+      "label": "BBHash1:wiki",
       "items_per_second": 1976.8550991239
     },
     {
@@ -42688,7 +42628,7 @@
       "dataset_elem_count": 998.0,
       "hashfn_bits_per_key": 8.9138276553,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:normal",
+      "label": "BBHash1:normal",
       "items_per_second": 1262.7165408874
     },
     {
@@ -42708,7 +42648,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:seq",
+      "label": "BBHash1:seq",
       "items_per_second": 247523.9639548936
     },
     {
@@ -42728,7 +42668,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:gap_10",
+      "label": "BBHash1:gap_10",
       "items_per_second": 255187.3593237452
     },
     {
@@ -42748,7 +42688,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 5.09344,
       "hashfn_bytes": 63668.0,
-      "label": "BBHash1.000000:uniform",
+      "label": "BBHash1:uniform",
       "items_per_second": 231444.5119705172
     },
     {
@@ -42768,7 +42708,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.4672,
       "hashfn_bytes": 43340.0,
-      "label": "BBHash1.000000:fb",
+      "label": "BBHash1:fb",
       "items_per_second": 240464.164514137
     },
     {
@@ -42788,7 +42728,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:osm",
+      "label": "BBHash1:osm",
       "items_per_second": 239340.2696515335
     },
     {
@@ -42808,7 +42748,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:wiki",
+      "label": "BBHash1:wiki",
       "items_per_second": 244647.7237084002
     },
     {
@@ -42828,7 +42768,7 @@
       "dataset_elem_count": 99744.0,
       "hashfn_bits_per_key": 3.1106833494,
       "hashfn_bytes": 38784.0,
-      "label": "BBHash1.000000:normal",
+      "label": "BBHash1:normal",
       "items_per_second": 245107.811475353
     },
     {
@@ -42848,7 +42788,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.199248,
       "hashfn_bytes": 399906.0,
-      "label": "BBHash1.000000:seq",
+      "label": "BBHash1:seq",
       "items_per_second": 16165366.526465742
     },
     {
@@ -42868,7 +42808,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.237552,
       "hashfn_bytes": 404694.0,
-      "label": "BBHash1.000000:gap_10",
+      "label": "BBHash1:gap_10",
       "items_per_second": 17140633.756968707
     },
     {
@@ -42888,7 +42828,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:uniform",
+      "label": "BBHash1:uniform",
       "items_per_second": 16002759.388549153
     },
     {
@@ -42908,7 +42848,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:fb",
+      "label": "BBHash1:fb",
       "items_per_second": 16112155.03489281
     },
     {
@@ -42928,7 +42868,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:osm",
+      "label": "BBHash1:osm",
       "items_per_second": 16776750.107273906
     },
     {
@@ -42948,7 +42888,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:wiki",
+      "label": "BBHash1:wiki",
       "items_per_second": 16322289.482045788
     },
     {
@@ -42968,7 +42908,7 @@
       "dataset_elem_count": 997335.0,
       "hashfn_bits_per_key": 3.0634601212,
       "hashfn_bytes": 381912.0,
-      "label": "BBHash1.000000:normal",
+      "label": "BBHash1:normal",
       "items_per_second": 16411131.46174795
     },
     {
@@ -42988,7 +42928,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:seq",
+      "label": "BBHash1:seq",
       "items_per_second": 150015460.5916824
     },
     {
@@ -43008,7 +42948,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:gap_10",
+      "label": "BBHash1:gap_10",
       "items_per_second": 148522757.75006816
     },
     {
@@ -43028,7 +42968,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.1131808,
       "hashfn_bytes": 3891476.0,
-      "label": "BBHash1.000000:uniform",
+      "label": "BBHash1:uniform",
       "items_per_second": 149614715.93370065
     },
     {
@@ -43048,7 +42988,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:fb",
+      "label": "BBHash1:fb",
       "items_per_second": 160437220.96043146
     },
     {
@@ -43068,7 +43008,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:osm",
+      "label": "BBHash1:osm",
       "items_per_second": 150651430.35189
     },
     {
@@ -43088,7 +43028,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0585472,
       "hashfn_bytes": 3823184.0,
-      "label": "BBHash1.000000:wiki",
+      "label": "BBHash1:wiki",
       "items_per_second": 156942077.78982317
     },
     {
@@ -43108,7 +43048,7 @@
       "dataset_elem_count": 9973088.0,
       "hashfn_bits_per_key": 3.1873538066,
       "hashfn_bytes": 3973470.0,
-      "label": "BBHash1.000000:normal",
+      "label": "BBHash1:normal",
       "items_per_second": 149278251.33660835
     },
     {
@@ -43128,7 +43068,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.05805824,
       "hashfn_bytes": 76451456.0,
-      "label": "BBHash1.000000:seq",
+      "label": "BBHash1:seq",
       "items_per_second": 243511175.06837744
     },
     {
@@ -43148,7 +43088,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.06321248,
       "hashfn_bytes": 76580312.0,
-      "label": "BBHash1.000000:gap_10",
+      "label": "BBHash1:gap_10",
       "items_per_second": 245037877.91317606
     },
     {
@@ -43168,7 +43108,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.0598508,
       "hashfn_bytes": 76496270.0,
-      "label": "BBHash1.000000:uniform",
+      "label": "BBHash1:uniform",
       "items_per_second": 244403191.0607025
     },
     {
@@ -43188,7 +43128,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.07612664,
       "hashfn_bytes": 76903166.0,
-      "label": "BBHash1.000000:fb",
+      "label": "BBHash1:fb",
       "items_per_second": 245503086.81500918
     },
     {
@@ -43208,7 +43148,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.05880752,
       "hashfn_bytes": 76470188.0,
-      "label": "BBHash1.000000:osm",
+      "label": "BBHash1:osm",
       "items_per_second": 246665739.34227625
     },
     {
@@ -43228,7 +43168,7 @@
       "dataset_elem_count": 90437012.0,
       "hashfn_bits_per_key": 3.0688371703,
       "hashfn_bytes": 34692058.0,
-      "label": "BBHash1.000000:wiki",
+      "label": "BBHash1:wiki",
       "items_per_second": 224338661.56214026
     },
     {
@@ -43248,7 +43188,7 @@
       "dataset_elem_count": 199460620.0,
       "hashfn_bits_per_key": 3.0687266088,
       "hashfn_bytes": 76511264.0,
-      "label": "BBHash1.000000:normal",
+      "label": "BBHash1:normal",
       "items_per_second": 242636193.53896216
     },
     {
@@ -43268,7 +43208,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:seq",
+      "label": "BBHash2:seq",
       "items_per_second": 783.720564584
     },
     {
@@ -43289,7 +43229,7 @@
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
       "items_per_second": 1088.8021799012954,
-      "label": "BBHash2.000000:gap_10"
+      "label": "BBHash2:gap_10"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000/2",
@@ -43309,7 +43249,7 @@
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
       "items_per_second": 1390.5296288741492,
-      "label": "BBHash2.000000:uniform"
+      "label": "BBHash2:uniform"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000/4",
@@ -43329,7 +43269,7 @@
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
       "items_per_second": 952.2571117970209,
-      "label": "BBHash2.000000:fb"
+      "label": "BBHash2:fb"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000/5",
@@ -43349,7 +43289,7 @@
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
       "items_per_second": 989.7069556188302,
-      "label": "BBHash2.000000:osm"
+      "label": "BBHash2:osm"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000/6",
@@ -43369,7 +43309,7 @@
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
       "items_per_second": 988.2543646365529,
-      "label": "BBHash2.000000:wiki"
+      "label": "BBHash2:wiki"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000/7",
@@ -43389,7 +43329,7 @@
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
       "items_per_second": 1307.5564599185323,
-      "label": "BBHash2.000000:normal"
+      "label": "BBHash2:normal"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/100000/0",
@@ -43408,7 +43348,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:seq",
+      "label": "BBHash2:seq",
       "items_per_second": 393611.6235144389
     },
     {
@@ -43429,7 +43369,7 @@
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
       "items_per_second": 217830.34329892215,
-      "label": "BBHash2.000000:gap_10"
+      "label": "BBHash2:gap_10"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/100000/2",
@@ -43449,7 +43389,7 @@
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
       "items_per_second": 217779.51432258898,
-      "label": "BBHash2.000000:uniform"
+      "label": "BBHash2:uniform"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/100000/4",
@@ -43469,7 +43409,7 @@
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
       "items_per_second": 215260.6372459195,
-      "label": "BBHash2.000000:fb"
+      "label": "BBHash2:fb"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/100000/5",
@@ -43489,7 +43429,7 @@
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
       "items_per_second": 218687.4405622743,
-      "label": "BBHash2.000000:osm"
+      "label": "BBHash2:osm"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/100000/6",
@@ -43509,7 +43449,7 @@
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
       "items_per_second": 217600.5296222769,
-      "label": "BBHash2.000000:wiki"
+      "label": "BBHash2:wiki"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/100000/7",
@@ -43529,7 +43469,7 @@
       "hashfn_bits_per_key": 3.7672352416192854,
       "hashfn_bytes": 46960.0,
       "items_per_second": 214816.36666645698,
-      "label": "BBHash2.000000:normal"
+      "label": "BBHash2:normal"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000000/0",
@@ -43549,7 +43489,7 @@
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
       "items_per_second": 16928301.752260357,
-      "label": "BBHash2.000000:seq"
+      "label": "BBHash2:seq"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000000/1",
@@ -43569,7 +43509,7 @@
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
       "items_per_second": 14263456.365819039,
-      "label": "BBHash2.000000:gap_10"
+      "label": "BBHash2:gap_10"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000000/2",
@@ -43589,7 +43529,7 @@
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
       "items_per_second": 14852125.333936596,
-      "label": "BBHash2.000000:uniform"
+      "label": "BBHash2:uniform"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000000/4",
@@ -43609,7 +43549,7 @@
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
       "items_per_second": 14383249.152965244,
-      "label": "BBHash2.000000:fb"
+      "label": "BBHash2:fb"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000000/5",
@@ -43629,7 +43569,7 @@
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
       "items_per_second": 14838840.76661197,
-      "label": "BBHash2.000000:osm"
+      "label": "BBHash2:osm"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000000/6",
@@ -43649,7 +43589,7 @@
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
       "items_per_second": 14424247.228827426,
-      "label": "BBHash2.000000:wiki"
+      "label": "BBHash2:wiki"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000000/7",
@@ -43669,7 +43609,7 @@
       "hashfn_bits_per_key": 3.7152331095003515,
       "hashfn_bytes": 463160.0,
       "items_per_second": 14170703.03436662,
-      "label": "BBHash2.000000:normal"
+      "label": "BBHash2:normal"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/10000000/0",
@@ -43689,7 +43629,7 @@
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
       "items_per_second": 135939568.5541815,
-      "label": "BBHash2.000000:seq"
+      "label": "BBHash2:seq"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/10000000/1",
@@ -43709,7 +43649,7 @@
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
       "items_per_second": 135827820.30848327,
-      "label": "BBHash2.000000:gap_10"
+      "label": "BBHash2:gap_10"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/10000000/2",
@@ -43729,7 +43669,7 @@
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
       "items_per_second": 133883157.54430412,
-      "label": "BBHash2.000000:uniform"
+      "label": "BBHash2:uniform"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/10000000/4",
@@ -43749,7 +43689,7 @@
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
       "items_per_second": 143908536.56947982,
-      "label": "BBHash2.000000:fb"
+      "label": "BBHash2:fb"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/10000000/5",
@@ -43769,7 +43709,7 @@
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
       "items_per_second": 146484558.82097888,
-      "label": "BBHash2.000000:osm"
+      "label": "BBHash2:osm"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/10000000/6",
@@ -43789,7 +43729,7 @@
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
       "items_per_second": 142458164.34655663,
-      "label": "BBHash2.000000:wiki"
+      "label": "BBHash2:wiki"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/10000000/7",
@@ -43809,7 +43749,7 @@
       "hashfn_bits_per_key": 3.7101839908100858,
       "hashfn_bytes": 4625056.0,
       "items_per_second": 132916868.99293964,
-      "label": "BBHash2.000000:normal"
+      "label": "BBHash2:normal"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/200000000/0",
@@ -43829,7 +43769,7 @@
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
       "items_per_second": 151520255.33720705,
-      "label": "BBHash2.000000:seq"
+      "label": "BBHash2:seq"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/200000000/1",
@@ -43849,7 +43789,7 @@
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
       "items_per_second": 163908539.1597198,
-      "label": "BBHash2.000000:gap_10"
+      "label": "BBHash2:gap_10"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/200000000/2",
@@ -43869,7 +43809,7 @@
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
       "items_per_second": 163213686.4965116,
-      "label": "BBHash2.000000:uniform"
+      "label": "BBHash2:uniform"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/200000000/4",
@@ -43889,7 +43829,7 @@
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
       "items_per_second": 97510474.93478799,
-      "label": "BBHash2.000000:fb"
+      "label": "BBHash2:fb"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/200000000/5",
@@ -43909,7 +43849,7 @@
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
       "items_per_second": 163647669.36949784,
-      "label": "BBHash2.000000:osm"
+      "label": "BBHash2:osm"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/200000000/6",
@@ -43929,7 +43869,7 @@
       "hashfn_bits_per_key": 3.7096811646099055,
       "hashfn_bytes": 41936560.0,
       "items_per_second": 153512598.27975577,
-      "label": "BBHash2.000000:wiki"
+      "label": "BBHash2:wiki"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/200000000/7",
@@ -43949,7 +43889,7 @@
       "hashfn_bits_per_key": 3.7096493159727677,
       "hashfn_bytes": 92491088.0,
       "items_per_second": 161685715.42060226,
-      "label": "BBHash2.000000:normal"
+      "label": "BBHash2:normal"
     },
     {
       "name": "UnorderedBuildTime<BitMWHC>/100/0",
