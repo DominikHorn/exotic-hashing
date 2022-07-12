@@ -11,7 +11,7 @@ with open(in_file_path, 'r', encoding='utf-8') as in_file:
     # filter out duplicates, keeping best datapoint
     methods = {}
     for new_dp in raw_json["benchmarks"]:
-        name = new_dp["name"]
+        name = new_dp["name"] + new_dp["label"]
         run_type = new_dp["run_type"]
         if run_type != "iteration":
             continue
