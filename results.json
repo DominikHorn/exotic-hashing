@@ -32,11 +32,7 @@
         "num_sharing": 40
       }
     ],
-    "load_avg": [
-      0.354004,
-      0.412598,
-      0.209961
-    ],
+    "load_avg": [0.354004, 0.412598, 0.209961],
     "library_build_type": "release"
   },
   "benchmarks": [
@@ -177,7 +173,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:amzn:uniform"
+      "label": "BBHash1:amzn:uniform"
     },
     {
       "name": "LookupTime<BBHash1>/1000/3/1/iterations:50000000",
@@ -196,7 +192,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
-      "label": "BBHash1.000000:amzn:exponential"
+      "label": "BBHash1:amzn:exponential"
     },
     {
       "name": "LookupTime<BBHash1>/1000/4/0/iterations:50000000",
@@ -495,7 +491,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:amzn:uniform"
+      "label": "BBHash1:amzn:uniform"
     },
     {
       "name": "LookupTime<BBHash1>/100000/3/1/iterations:50000000",
@@ -514,7 +510,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
-      "label": "BBHash1.000000:amzn:exponential"
+      "label": "BBHash1:amzn:exponential"
     },
     {
       "name": "LookupTime<BBHash1>/100000/4/0/iterations:50000000",
@@ -813,7 +809,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:amzn:uniform"
+      "label": "BBHash1:amzn:uniform"
     },
     {
       "name": "LookupTime<BBHash1>/1000000/3/1/iterations:50000000",
@@ -832,7 +828,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
-      "label": "BBHash1.000000:amzn:exponential"
+      "label": "BBHash1:amzn:exponential"
     },
     {
       "name": "LookupTime<BBHash1>/1000000/4/0/iterations:50000000",
@@ -1131,7 +1127,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0949696,
       "hashfn_bytes": 3868712.0,
-      "label": "BBHash1.000000:amzn:uniform"
+      "label": "BBHash1:amzn:uniform"
     },
     {
       "name": "LookupTime<BBHash1>/10000000/3/1/iterations:50000000",
@@ -1150,7 +1146,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.0949696,
       "hashfn_bytes": 3868712.0,
-      "label": "BBHash1.000000:amzn:exponential"
+      "label": "BBHash1:amzn:exponential"
     },
     {
       "name": "LookupTime<BBHash1>/10000000/4/0/iterations:50000000",
@@ -1449,7 +1445,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.0955508,
       "hashfn_bytes": 77388770.0,
-      "label": "BBHash1.000000:amzn:uniform"
+      "label": "BBHash1:amzn:uniform"
     },
     {
       "name": "LookupTime<BBHash1>/200000000/3/1/iterations:50000000",
@@ -1468,7 +1464,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.0955508,
       "hashfn_bytes": 77388770.0,
-      "label": "BBHash1.000000:amzn:exponential"
+      "label": "BBHash1:amzn:exponential"
     },
     {
       "name": "LookupTime<BBHash1>/200000000/4/0/iterations:50000000",
@@ -1761,7 +1757,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:amzn:uniform"
+      "label": "BBHash2:amzn:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000/3/1/iterations:50000000",
@@ -1780,7 +1776,7 @@
       "dataset_elem_count": 1000.0,
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
-      "label": "BBHash2.000000:amzn:exponential"
+      "label": "BBHash2:amzn:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000/4/0/iterations:50000000",
@@ -2065,7 +2061,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:amzn:uniform"
+      "label": "BBHash2:amzn:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/100000/3/1/iterations:50000000",
@@ -2084,7 +2080,7 @@
       "dataset_elem_count": 100000.0,
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
-      "label": "BBHash2.000000:amzn:exponential"
+      "label": "BBHash2:amzn:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/100000/4/0/iterations:50000000",
@@ -2369,7 +2365,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:amzn:uniform"
+      "label": "BBHash2:amzn:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/3/1/iterations:50000000",
@@ -2388,7 +2384,7 @@
       "dataset_elem_count": 1000000.0,
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
-      "label": "BBHash2.000000:amzn:exponential"
+      "label": "BBHash2:amzn:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/1000000/4/0/iterations:50000000",
@@ -2673,7 +2669,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:amzn:uniform"
+      "label": "BBHash2:amzn:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/3/1/iterations:50000000",
@@ -2692,7 +2688,7 @@
       "dataset_elem_count": 10000000.0,
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
-      "label": "BBHash2.000000:amzn:exponential"
+      "label": "BBHash2:amzn:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/10000000/4/0/iterations:50000000",
@@ -2977,7 +2973,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:amzn:uniform"
+      "label": "BBHash2:amzn:uniform"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/3/1/iterations:50000000",
@@ -2996,7 +2992,7 @@
       "dataset_elem_count": 200000000.0,
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
-      "label": "BBHash2.000000:amzn:exponential"
+      "label": "BBHash2:amzn:exponential"
     },
     {
       "name": "LookupTime<BBHash2>/200000000/4/0/iterations:50000000",
@@ -32843,7 +32839,7 @@
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
       "items_per_second": 1852.2927695611647,
-      "label": "BBHash1.000000:amzn"
+      "label": "BBHash1:amzn"
     },
     {
       "name": "PresortedBuildTime<BBHash1>/1000/4",
@@ -33003,7 +32999,7 @@
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
       "items_per_second": 230685.66878943826,
-      "label": "BBHash1.000000:amzn"
+      "label": "BBHash1:amzn"
     },
     {
       "name": "PresortedBuildTime<BBHash1>/100000/4",
@@ -33163,7 +33159,7 @@
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
       "items_per_second": 15348426.392607903,
-      "label": "BBHash1.000000:amzn"
+      "label": "BBHash1:amzn"
     },
     {
       "name": "PresortedBuildTime<BBHash1>/1000000/4",
@@ -33323,7 +33319,7 @@
       "hashfn_bits_per_key": 3.0949696,
       "hashfn_bytes": 3868712.0,
       "items_per_second": 411466450.80318844,
-      "label": "BBHash1.000000:amzn"
+      "label": "BBHash1:amzn"
     },
     {
       "name": "PresortedBuildTime<BBHash1>/10000000/4",
@@ -33483,7 +33479,7 @@
       "hashfn_bits_per_key": 3.0955508,
       "hashfn_bytes": 77388770.0,
       "items_per_second": 818561195.9948909,
-      "label": "BBHash1.000000:amzn"
+      "label": "BBHash1:amzn"
     },
     {
       "name": "PresortedBuildTime<BBHash1>/200000000/4",
@@ -33643,7 +33639,7 @@
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
       "items_per_second": 1648.165446408919,
-      "label": "BBHash2.000000:amzn"
+      "label": "BBHash2:amzn"
     },
     {
       "name": "PresortedBuildTime<BBHash2>/1000/4",
@@ -33803,7 +33799,7 @@
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
       "items_per_second": 243909.36069632674,
-      "label": "BBHash2.000000:amzn"
+      "label": "BBHash2:amzn"
     },
     {
       "name": "PresortedBuildTime<BBHash2>/100000/4",
@@ -33963,7 +33959,7 @@
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
       "items_per_second": 15833945.737905057,
-      "label": "BBHash2.000000:amzn"
+      "label": "BBHash2:amzn"
     },
     {
       "name": "PresortedBuildTime<BBHash2>/1000000/4",
@@ -34123,7 +34119,7 @@
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
       "items_per_second": 399896426.82821345,
-      "label": "BBHash2.000000:amzn"
+      "label": "BBHash2:amzn"
     },
     {
       "name": "PresortedBuildTime<BBHash2>/10000000/4",
@@ -34283,7 +34279,7 @@
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
       "items_per_second": 815888501.7203839,
-      "label": "BBHash2.000000:amzn"
+      "label": "BBHash2:amzn"
     },
     {
       "name": "PresortedBuildTime<BBHash2>/200000000/4",
@@ -49243,7 +49239,7 @@
       "hashfn_bits_per_key": 8.896,
       "hashfn_bytes": 1112.0,
       "items_per_second": 1324.9643304013991,
-      "label": "BBHash1.000000:amzn"
+      "label": "BBHash1:amzn"
     },
     {
       "name": "UnorderedBuildTime<BBHash1>/1000/4",
@@ -49403,7 +49399,7 @@
       "hashfn_bits_per_key": 3.11104,
       "hashfn_bytes": 38888.0,
       "items_per_second": 237992.386285596,
-      "label": "BBHash1.000000:amzn"
+      "label": "BBHash1:amzn"
     },
     {
       "name": "UnorderedBuildTime<BBHash1>/100000/4",
@@ -49563,7 +49559,7 @@
       "hashfn_bits_per_key": 3.063168,
       "hashfn_bytes": 382896.0,
       "items_per_second": 16247783.111871567,
-      "label": "BBHash1.000000:amzn"
+      "label": "BBHash1:amzn"
     },
     {
       "name": "UnorderedBuildTime<BBHash1>/1000000/4",
@@ -49723,7 +49719,7 @@
       "hashfn_bits_per_key": 3.0949696,
       "hashfn_bytes": 3868712.0,
       "items_per_second": 560322216.6655595,
-      "label": "BBHash1.000000:amzn"
+      "label": "BBHash1:amzn"
     },
     {
       "name": "UnorderedBuildTime<BBHash1>/10000000/4",
@@ -49883,7 +49879,7 @@
       "hashfn_bits_per_key": 3.0955508,
       "hashfn_bytes": 77388770.0,
       "items_per_second": 930242362.4632983,
-      "label": "BBHash1.000000:amzn"
+      "label": "BBHash1:amzn"
     },
     {
       "name": "UnorderedBuildTime<BBHash1>/200000000/4",
@@ -50043,7 +50039,7 @@
       "hashfn_bits_per_key": 9.792,
       "hashfn_bytes": 1224.0,
       "items_per_second": 1466.1807042007358,
-      "label": "BBHash2.000000:amzn"
+      "label": "BBHash2:amzn"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000/4",
@@ -50203,7 +50199,7 @@
       "hashfn_bits_per_key": 3.76576,
       "hashfn_bytes": 47072.0,
       "items_per_second": 254224.5368362429,
-      "label": "BBHash2.000000:amzn"
+      "label": "BBHash2:amzn"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/100000/4",
@@ -50363,7 +50359,7 @@
       "hashfn_bits_per_key": 3.715264,
       "hashfn_bytes": 464408.0,
       "items_per_second": 16236611.331005897,
-      "label": "BBHash2.000000:amzn"
+      "label": "BBHash2:amzn"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/1000000/4",
@@ -50523,7 +50519,7 @@
       "hashfn_bits_per_key": 3.710176,
       "hashfn_bytes": 4637720.0,
       "items_per_second": 564174798.7542557,
-      "label": "BBHash2.000000:amzn"
+      "label": "BBHash2:amzn"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/10000000/4",
@@ -50683,7 +50679,7 @@
       "hashfn_bits_per_key": 3.7096496,
       "hashfn_bytes": 92741240.0,
       "items_per_second": 872665079.3118653,
-      "label": "BBHash2.000000:amzn"
+      "label": "BBHash2:amzn"
     },
     {
       "name": "UnorderedBuildTime<BBHash2>/200000000/4",
@@ -65567,3 +65563,4 @@
     }
   ]
 }
+
