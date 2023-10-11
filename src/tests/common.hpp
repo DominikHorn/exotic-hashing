@@ -36,7 +36,7 @@ namespace tests::common {
          std::unordered_set<size_t> seen;
          for (size_t i = 0; i < monotone_order.size(); i++) {
             const auto index = h(monotone_order[i]);
-            EXPECT_FALSE(seen.contains(index));
+            EXPECT_TRUE(seen.find(index) == seen.end());
             seen.insert(index);
          }
       }

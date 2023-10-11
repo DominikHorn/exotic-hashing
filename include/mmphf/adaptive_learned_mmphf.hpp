@@ -28,8 +28,7 @@ namespace exotic_hashing {
        * the job
        */
       struct BuildingBlock {
-         enum Type
-         {
+         enum Type {
             MWHC = 0x0,
             LearnedLinear = 0x1
          };
@@ -168,7 +167,7 @@ namespace exotic_hashing {
                region_size = std::distance(a, b);
             }
             // ensure regions are now properly sized
-            assert(region_size == static_cast < size_t(std::distance(a, b)));
+            assert(region_size == static_cast<size_t>(std::distance(a, b)));
             assert(i + 1 >= clusters.size() || region_size >= size_threshold);
 
             if (i + 1 < clusters.size())
